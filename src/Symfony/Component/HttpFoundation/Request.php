@@ -230,11 +230,6 @@ class Symfony_Component_HttpFoundation_Request
      */
     var$formats;
 
-    function Symfony_Component_HttpFoundation_Request($query = array(), $request = array(), $attributes = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
-    {
-        $this->__construct($query, $request, $attributes, $cookies, $files, $server, $content);
-    }
-
     /**
      * Constructor.
      *
@@ -250,7 +245,7 @@ class Symfony_Component_HttpFoundation_Request
      *
      * @access public
      */
-    function __construct($query = array(), $request = array(), $attributes = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
+    function Symfony_Component_HttpFoundation_Request($query = array(), $request = array(), $attributes = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
     {
         $this->initialize($query, $request, $attributes, $cookies, $files, $server, $content);
     }
@@ -440,7 +435,15 @@ class Symfony_Component_HttpFoundation_Request
     function duplicate($query = null, $request = null, $attributes = null, $cookies = null, $files = null, $server = null)
     {
         $dup = $this; // clone
-        $dup->__clone();
+
+        $dup->query      = $this->query;
+        $dup->request    = $this->request;
+        $dup->attributes = $this->attributes;
+        $dup->cookies    = $this->cookies;
+        $dup->files      = $this->files;
+        $dup->server     = $this->server;
+        $dup->headers    = $this->headers;
+
         if ($query !== null) {
             $dup->query = new Symfony_Component_HttpFoundation_ParameterBag($query);
         }
@@ -483,13 +486,13 @@ class Symfony_Component_HttpFoundation_Request
      */
     function __clone()
     {
-        $this->query      = $this->query;
-        $this->request    = $this->request;
-        $this->attributes = $this->attributes;
-        $this->cookies    = $this->cookies;
-        $this->files      = $this->files;
-        $this->server     = $this->server;
-        $this->headers    = $this->headers;
+//         $this->query      = clone $this->query;
+//         $this->request    = clone $this->request;
+//         $this->attributes = clone $this->attributes;
+//         $this->cookies    = clone $this->cookies;
+//         $this->files      = clone $this->files;
+//         $this->server     = clone $this->server;
+//         $this->headers    = clone $this->headers;
     }
 
     /**

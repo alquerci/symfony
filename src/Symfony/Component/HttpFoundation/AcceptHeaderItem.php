@@ -44,11 +44,6 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      */
     var $attributes = array();
 
-    function Symfony_Component_HttpFoundation_AcceptHeaderItem($value, $attributes = array())
-    {
-        $this->__construct($value, $attributes = array());
-    }
-
     /**
      * Constructor.
      *
@@ -57,7 +52,7 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      *
      * @access public
      */
-    function __construct($value, $attributes = array())
+    function Symfony_Component_HttpFoundation_AcceptHeaderItem($value, $attributes = array())
     {
         assert(is_array($attributes));
 

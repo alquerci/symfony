@@ -67,11 +67,6 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      */
     var $error;
 
-    function Symfony_Component_HttpFoundation_File_UploadedFile($path, $originalName, $mimeType = null, $size = null, $error = null, $test = false)
-    {
-        $this->__construct($path, $originalName, $mimeType, $size, $error, $test);
-    }
-
     /**
      * Accepts the information of the uploaded file as provided by the PHP global $_FILES.
      *
@@ -100,7 +95,7 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      *
      * @access public
      */
-    function __construct($path, $originalName, $mimeType = null, $size = null, $error = null, $test = false)
+    function Symfony_Component_HttpFoundation_File_UploadedFile($path, $originalName, $mimeType = null, $size = null, $error = null, $test = false)
     {
         if (!ini_get('file_uploads')) {
             trigger_error(sprintf('Unable to create UploadedFile because "file_uploads" is disabled in your php.ini file (%s)', get_cfg_var('cfg_file_path')));
@@ -112,7 +107,7 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
         $this->error = $error ? $error : UPLOAD_ERR_OK;
         $this->test = (Boolean) $test;
 
-        parent::__construct($path, UPLOAD_ERR_OK === $this->error);
+        parent::Symfony_Component_HttpFoundation_File_File($path, UPLOAD_ERR_OK === $this->error);
     }
 
     /**

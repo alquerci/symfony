@@ -32,11 +32,6 @@ class Symfony_Component_HttpFoundation_HeaderBag
      */
     var $cacheControl;
 
-    function Symfony_Component_HttpFoundation_HeaderBag($headers = array())
-    {
-        $this->__construct($headers);
-    }
-
     /**
      * Constructor.
      *
@@ -46,7 +41,7 @@ class Symfony_Component_HttpFoundation_HeaderBag
      *
      * @access public
      */
-    function __construct($headers = array())
+    function Symfony_Component_HttpFoundation_HeaderBag($headers = array())
     {
         assert(is_array($headers));
 

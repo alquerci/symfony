@@ -33,11 +33,6 @@ class Symfony_Component_HttpFoundation_AcceptHeader
      */
     var $sorted = true;
 
-    function Symfony_Component_HttpFoundation_AcceptHeader($items)
-    {
-        $this->__construct($items);
-    }
-
     /**
      * Constructor.
      *
@@ -45,7 +40,7 @@ class Symfony_Component_HttpFoundation_AcceptHeader
      *
      * @access public
      */
-    function __construct($items)
+    function Symfony_Component_HttpFoundation_AcceptHeader($items)
     {
         assert(is_array($items));
 

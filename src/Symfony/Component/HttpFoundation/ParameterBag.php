@@ -27,11 +27,6 @@ class Symfony_Component_HttpFoundation_ParameterBag
      */
     var $parameters;
 
-    function Symfony_Component_HttpFoundation_ParameterBag($parameters = array())
-    {
-        $this->__construct($parameters);
-    }
-
     /**
      * Constructor.
      *
@@ -41,7 +36,7 @@ class Symfony_Component_HttpFoundation_ParameterBag
      *
      * @access public
      */
-    function __construct($parameters = array())
+    function Symfony_Component_HttpFoundation_ParameterBag($parameters = array())
     {
         assert(is_array($parameters));
 

@@ -32,28 +32,11 @@ class Symfony_Component_HttpFoundation_File_File extends SplFileInfo
      */
     function Symfony_Component_HttpFoundation_File_File($path, $checkPath = true)
     {
-        $this->__construct($path, $checkPath);
-    }
-
-    /**
-     * Constructs a new file from the given path.
-     *
-     * @param string  $path      The path to the file
-     * @param Boolean $checkPath Whether to check the path or not
-     *
-     * @throws FileNotFoundException If the given path is not a file
-     *
-     * @api
-     *
-     * @access public
-     */
-    function __construct($path, $checkPath = true)
-    {
         if ($checkPath && !is_file($path)) {
             trigger_error($path);
         }
 
-        parent::__construct($path);
+        parent::SplFileInfo($path);
     }
 
     /**

@@ -25,11 +25,6 @@ class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFou
      */
     var $fileKeys = array('error', 'name', 'size', 'tmp_name', 'type');
 
-    function Symfony_Component_HttpFoundation_FileBag($parameters = array())
-    {
-        $this->__construct($parameters);
-    }
-
     /**
      * Constructor.
      *
@@ -39,7 +34,7 @@ class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFou
      *
      * @access public
      */
-    function __construct($parameters = array())
+    function Symfony_Component_HttpFoundation_FileBag($parameters = array())
     {
         assert(is_array($parameters));
 
