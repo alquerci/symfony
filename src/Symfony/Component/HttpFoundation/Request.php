@@ -1622,6 +1622,7 @@ class Symfony_Component_HttpFoundation_Request
         }
 
         $obj = Symfony_Component_HttpFoundation_AcceptHeader::fromString($this->headers->get('Accept-Charset'));
+
         return $this->charsets = array_keys($obj->all());
     }
 
@@ -1641,6 +1642,7 @@ class Symfony_Component_HttpFoundation_Request
         }
 
         $obj = Symfony_Component_HttpFoundation_AcceptHeader::fromString($this->headers->get('Accept'));
+
         return $this->acceptableContentTypes = array_keys($obj->all());
     }
 

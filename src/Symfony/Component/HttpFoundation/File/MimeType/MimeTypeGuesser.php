@@ -107,7 +107,7 @@ class Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesser extends Sym
      *
      * @param string $path The path to the file
      *
-     * @return string         The mime type or NULL, if none could be guessed
+     * @return string The mime type or NULL, if none could be guessed
      *
      * @throws \LogicException
      * @throws FileNotFoundException

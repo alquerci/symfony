@@ -298,7 +298,7 @@ class Symfony_Component_HttpFoundation_HeaderBag
     }
 
     /**
-     * @param unknown_type $key
+     * @param  unknown_type $key
      * @return boolean
      *
      * @access public
@@ -309,8 +309,8 @@ class Symfony_Component_HttpFoundation_HeaderBag
     }
 
     /**
-     * @param unknown_type $key
-     * @return Ambigous <NULL, unknown_type>
+     * @param  unknown_type $key
+     * @return Ambigous     <NULL, unknown_type>
      *
      * @access public
      */

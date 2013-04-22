@@ -165,6 +165,7 @@ class Symfony_Component_HttpFoundation_AcceptHeader
             return preg_match($pattern, $item->getValue());
         }
         $class = get_class($this);
+
         return new $class(array_filter($this->items, 'callback'));
     }
 

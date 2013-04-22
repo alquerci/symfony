@@ -96,8 +96,8 @@ class Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesser extends Sy
      * returns a value that is not NULL, this method terminates and returns the
      * value.
      *
-     * @param string $mimeType The mime type
-     * @return string          The guessed extension or NULL, if none could be guessed
+     * @param  string $mimeType The mime type
+     * @return string The guessed extension or NULL, if none could be guessed
      *
      * @access public
      */

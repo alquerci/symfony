@@ -123,8 +123,8 @@ class Symfony_Component_HttpFoundation_File_File extends SplFileInfo
     }
 
     /**
-     * @param string $directory
-     * @param string $name [Optional]
+     * @param  string        $directory
+     * @param  string        $name      [Optional]
      * @throws FileException
      * @return File
      *
