@@ -26,22 +26,14 @@
  */
 class Symfony_Component_HttpFoundation_Request
 {
-    var $HEADER_CLIENT_IP    = 'client_ip';
-    var $HEADER_CLIENT_HOST  = 'client_host';
-    var $HEADER_CLIENT_PROTO = 'client_proto';
-    var $HEADER_CLIENT_PORT  = 'client_port';
+    const HEADER_CLIENT_IP    = 'client_ip';
+    const HEADER_CLIENT_HOST  = 'client_host';
+    const HEADER_CLIENT_PROTO = 'client_proto';
+    const HEADER_CLIENT_PORT  = 'client_port';
 
-    /**
-     * @access protected
-     * @static
-     */
-    var $trustProxy = false;
+    protected static $trustProxy = false;
 
-    /**
-     * @access protected
-     * @static
-     */
-    var $trustedProxies = array();
+    protected static $trustedProxies = array();
 
     /**
      * Names for headers that can be trusted when
@@ -49,186 +41,134 @@ class Symfony_Component_HttpFoundation_Request
      *
      * The default names are non-standard, but widely used
      * by popular reverse proxies (like Apache mod_proxy or Amazon EC2).
-     *
-     * @access protected
-     * @static
      */
-    var $trustedHeaders = array(
-        'client_ip'    => 'X_FORWARDED_FOR',
-        'client_host'  => 'X_FORWARDED_HOST',
-        'client_proto' => 'X_FORWARDED_PROTO',
-        'client_port'  => 'X_FORWARDED_PORT',
+    protected static $trustedHeaders = array(
+        self::HEADER_CLIENT_IP    => 'X_FORWARDED_FOR',
+        self::HEADER_CLIENT_HOST  => 'X_FORWARDED_HOST',
+        self::HEADER_CLIENT_PROTO => 'X_FORWARDED_PROTO',
+        self::HEADER_CLIENT_PORT  => 'X_FORWARDED_PORT',
     );
 
-    /**
-     * @var unknown_type
-     *
-     * @access protected
-     * @static
-     */
-    var $httpMethodParameterOverride = false;
+    protected static $httpMethodParameterOverride = false;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
+     * @var Symfony_Component_HttpFoundation_ParameterBag
      *
      * @api
-     *
-     * @access public
      */
-    var $attributes;
+    public $attributes;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
+     * @var Symfony_Component_HttpFoundation_ParameterBag
      *
      * @api
-     *
-     * @access public
      */
-    var $request;
+    public $request;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
+     * @var Symfony_Component_HttpFoundation_ParameterBag
      *
      * @api
-     *
-     * @access public
      */
-    var $query;
+    public $query;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\ServerBag
+     * @var Symfony_Component_HttpFoundation_ServerBag
      *
      * @api
-     *
-     * @access public
      */
-    var $server;
+    public $server;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\FileBag
+     * @var Symfony_Component_HttpFoundation_FileBag
      *
      * @api
-     *
-     * @access public
      */
-    var $files;
+    public $files;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\ParameterBag
+     * @var Symfony_Component_HttpFoundation_ParameterBag
      *
      * @api
-     *
-     * @access public
      */
-    var $cookies;
+    public $cookies;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\HeaderBag
+     * @var Symfony_Component_HttpFoundation_HeaderBag
      *
      * @api
-     *
-     * @access public
      */
-    var $headers;
+    public $headers;
 
     /**
      * @var string
-     *
-     * @access protected
      */
-    var $content;
+    protected $content;
 
     /**
      * @var array
-     *
-     * @access protected
      */
-    var $languages;
+    protected $languages;
 
     /**
      * @var array
-     *
-     * @access protected
      */
-    var $charsets;
+    protected $charsets;
 
     /**
      * @var array
-     *
-     * @access protected
      */
-    var $acceptableContentTypes;
+    protected $acceptableContentTypes;
 
     /**
      * @var string
-     *
-     * @access protected
      */
-    var $pathInfo;
+    protected $pathInfo;
 
     /**
      * @var string
-     *
-     * @access protected
      */
-    var $requestUri;
+    protected $requestUri;
 
     /**
      * @var string
-     *
-     * @access protected
      */
-    var $baseUrl;
+    protected $baseUrl;
 
     /**
      * @var string
-     *
-     * @access protected
      */
-    var $basePath;
+    protected $basePath;
 
     /**
      * @var string
-     *
-     * @access protected
      */
-    var $method;
+    protected $method;
 
     /**
      * @var string
-     *
-     * @access protected
      */
-    var $format;
+    protected $format;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Session\SessionInterface
-     *
-     * @access protected
+     * @var Symfony_Component_HttpFoundation_Session_SessionInterface
      */
-    var $session;
+    protected $session;
 
     /**
      * @var string
-     *
-     * @access protected
      */
-    var $locale;
+    protected $locale;
 
     /**
      * @var string
-     *
-     * @access protected
      */
-    var $defaultLocale = 'en';
+    protected $defaultLocale = 'en';
 
     /**
      * @var array
-     *
-     * @access protected
-     * @static
      */
-    var$formats;
+    protected static $formats;
 
     /**
      * Constructor.
@@ -242,10 +182,8 @@ class Symfony_Component_HttpFoundation_Request
      * @param string $content    The raw body data
      *
      * @api
-     *
-     * @access public
      */
-    function Symfony_Component_HttpFoundation_Request($query = array(), $request = array(), $attributes = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
+    public function __construct(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null)
     {
         $this->initialize($query, $request, $attributes, $cookies, $files, $server, $content);
     }
@@ -264,10 +202,8 @@ class Symfony_Component_HttpFoundation_Request
      * @param string $content    The raw body data
      *
      * @api
-     *
-     * @access public
      */
-    function initialize($query = array(), $request = array(), $attributes = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
+    public function initialize(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null)
     {
         $this->request = new Symfony_Component_HttpFoundation_ParameterBag($request);
         $this->query = new Symfony_Component_HttpFoundation_ParameterBag($query);
@@ -295,13 +231,10 @@ class Symfony_Component_HttpFoundation_Request
      * @return Symfony_Component_HttpFoundation_Request A new request
      *
      * @api
-     *
-     * @access public
-     * @static
      */
-    function createFromGlobals()
+    public static function createFromGlobals()
     {
-        $request = new Symfony_Component_HttpFoundation_Request($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
+        $request = new self($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('PUT', 'DELETE', 'PATCH'))
@@ -330,11 +263,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return Symfony_Component_HttpFoundation_Request A Request instance
      *
      * @api
-     *
-     * @access public
-     * @static
      */
-    function create($uri, $method = 'GET', $parameters = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
+    public static function create($uri, $method = 'GET', $parameters = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
     {
         $server = array_replace(array(
             'SERVER_NAME'          => 'localhost',
@@ -413,7 +343,7 @@ class Symfony_Component_HttpFoundation_Request
         $server['REQUEST_URI'] = $components['path'].('' !== $queryString ? '?'.$queryString : '');
         $server['QUERY_STRING'] = $queryString;
 
-        return new Symfony_Component_HttpFoundation_Request($query, $request, array(), $cookies, $files, $server, $content);
+        return new self($query, $request, array(), $cookies, $files, $server, $content);
     }
 
     /**
@@ -429,21 +359,10 @@ class Symfony_Component_HttpFoundation_Request
      * @return Symfony_Component_HttpFoundation_Request The duplicated request
      *
      * @api
-     *
-     * @access public
      */
-    function duplicate($query = null, $request = null, $attributes = null, $cookies = null, $files = null, $server = null)
+    public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null)
     {
-        $dup = $this; // clone
-
-        $dup->query      = $this->query;
-        $dup->request    = $this->request;
-        $dup->attributes = $this->attributes;
-        $dup->cookies    = $this->cookies;
-        $dup->files      = $this->files;
-        $dup->server     = $this->server;
-        $dup->headers    = $this->headers;
-
+        $dup = clone $this;
         if ($query !== null) {
             $dup->query = new Symfony_Component_HttpFoundation_ParameterBag($query);
         }
@@ -481,28 +400,24 @@ class Symfony_Component_HttpFoundation_Request
      *
      * Note that the session is not cloned as duplicated requests
      * are most of the time sub-requests of the main one.
-     *
-     * @access public
      */
-    function __clone()
+    public function __clone()
     {
-//         $this->query      = clone $this->query;
-//         $this->request    = clone $this->request;
-//         $this->attributes = clone $this->attributes;
-//         $this->cookies    = clone $this->cookies;
-//         $this->files      = clone $this->files;
-//         $this->server     = clone $this->server;
-//         $this->headers    = clone $this->headers;
+        $this->query      = clone $this->query;
+        $this->request    = clone $this->request;
+        $this->attributes = clone $this->attributes;
+        $this->cookies    = clone $this->cookies;
+        $this->files      = clone $this->files;
+        $this->server     = clone $this->server;
+        $this->headers    = clone $this->headers;
     }
 
     /**
      * Returns the request as a string.
      *
      * @return string The request
-     *
-     * @access public
      */
-    function __toString()
+    public function __toString()
     {
         return
             sprintf('%s %s %s', $this->getMethod(), $this->getRequestUri(), $this->server->get('SERVER_PROTOCOL'))."\r\n".
@@ -517,10 +432,8 @@ class Symfony_Component_HttpFoundation_Request
      * $_FILES is never override, see rfc1867
      *
      * @api
-     *
-     * @access public
      */
-    function overrideGlobals()
+    public function overrideGlobals()
     {
         $_GET = $this->query->all();
         $_POST = $this->request->all();
@@ -538,13 +451,8 @@ class Symfony_Component_HttpFoundation_Request
 
         $request = array('g' => $_GET, 'p' => $_POST, 'c' => $_COOKIE);
 
-        if (false == $requestOrder = ini_get('request_order')) {
-           $requestOrder = ini_get('variable_order');
-        }
-
-        if (false == $requestOrder = preg_replace('#[^cgp]#', '', strtolower($requestOrder))) {
-            $requestOrder = 'gp';
-        }
+        $requestOrder = ($v = ini_get('request_order')) ? $v : ini_get('variable_order');
+        $requestOrder = ($v = preg_replace('#[^cgp]#', '', strtolower($requestOrder))) ? $v : 'gp';
 
         $_REQUEST = array();
         foreach (str_split($requestOrder) as $order) {
@@ -556,15 +464,12 @@ class Symfony_Component_HttpFoundation_Request
      * Trusts $_SERVER entries coming from proxies.
      *
      * @deprecated Deprecated since version 2.0, to be removed in 2.3. Use setTrustedProxies instead.
-     *
-     * @access public
-     * @static
      */
-    function trustProxyData()
+    public static function trustProxyData()
     {
         trigger_error('trustProxyData() is deprecated since version 2.0 and will be removed in 2.3. Use setTrustedProxies() instead.', E_USER_DEPRECATED);
 
-        $this->trustProxy = true;
+        self::$trustProxy = true;
     }
 
     /**
@@ -575,29 +480,21 @@ class Symfony_Component_HttpFoundation_Request
      * @param array $proxies A list of trusted proxies
      *
      * @api
-     *
-     * @access public
-     * @static
      */
-    function setTrustedProxies($proxies)
+    public static function setTrustedProxies(array $proxies)
     {
-        assert(is_array($proxies));
-
-        $this->trustedProxies = $proxies;
-        $this->trustProxy = $proxies ? true : false;
+        self::$trustedProxies = $proxies;
+        self::$trustProxy = $proxies ? true : false;
     }
 
     /**
      * Gets the list of trusted proxies.
      *
      * @return array An array of trusted proxies.
-     *
-     * @access public
-     * @static
      */
-    function getTrustedProxies()
+    public static function getTrustedProxies()
     {
-        return $this->trustedProxies;
+        return self::$trustedProxies;
     }
 
     /**
@@ -615,18 +512,15 @@ class Symfony_Component_HttpFoundation_Request
      * @param string $key   The header key
      * @param string $value The header name
      *
-     * @throws \InvalidArgumentException
-     *
-     * @access public
-     * @static
+     * @throws InvalidArgumentException
      */
-    function setTrustedHeaderName($key, $value)
+    public static function setTrustedHeaderName($key, $value)
     {
-        if (!array_key_exists($key, $this->trustedHeaders)) {
-            trigger_error(sprintf('Unable to set the trusted header name for key "%s".', $key));
+        if (!array_key_exists($key, self::$trustedHeaders)) {
+            throw new InvalidArgumentException(sprintf('Unable to set the trusted header name for key "%s".', $key));
         }
 
-        $this->trustedHeaders[$key] = $value;
+        self::$trustedHeaders[$key] = $value;
     }
 
     /**
@@ -636,13 +530,10 @@ class Symfony_Component_HttpFoundation_Request
      * @return boolean
      *
      * @deprecated Deprecated since version 2.2, to be removed in 2.3. Use getTrustedProxies instead.
-     *
-     * @access public
-     * @static
      */
-    function isProxyTrusted()
+    public static function isProxyTrusted()
     {
-        return $this->trustProxy;
+        return self::$trustProxy;
     }
 
     /**
@@ -654,11 +545,8 @@ class Symfony_Component_HttpFoundation_Request
      * @param string $qs Query string
      *
      * @return string A normalized query string for the Request
-     *
-     * @access public
-     * @static
      */
-    function normalizeQueryString($qs)
+    public static function normalizeQueryString($qs)
     {
         if ('' == $qs) {
             return '';
@@ -698,26 +586,20 @@ class Symfony_Component_HttpFoundation_Request
      * Check that you are using CSRF tokens when required.
      *
      * The HTTP method can only be overridden when the real HTTP method is POST.
-     *
-     * @access public
-     * @static
      */
-    function enableHttpMethodParameterOverride()
+    public static function enableHttpMethodParameterOverride()
     {
-        $this->httpMethodParameterOverride = true;
+        self::$httpMethodParameterOverride = true;
     }
 
     /**
      * Checks whether support for the _method request parameter is enabled.
      *
      * @return Boolean True when the _method request parameter is enabled, false otherwise
-     *
-     * @access public
-     * @static
      */
-    function getHttpMethodParameterOverride()
+    public static function getHttpMethodParameterOverride()
     {
-        return $this->httpMethodParameterOverride;
+        return self::$httpMethodParameterOverride;
     }
 
     /**
@@ -740,10 +622,8 @@ class Symfony_Component_HttpFoundation_Request
      * @param Boolean $deep    is parameter deep in multidimensional array
      *
      * @return mixed
-     *
-     * @access public
      */
-    function get($key, $default = null, $deep = false)
+    public function get($key, $default = null, $deep = false)
     {
         return $this->query->get($key, $this->attributes->get($key, $this->request->get($key, $default, $deep), $deep), $deep);
     }
@@ -751,13 +631,11 @@ class Symfony_Component_HttpFoundation_Request
     /**
      * Gets the Session.
      *
-     * @return SessionInterface|null The session
+     * @return Symfony_Component_HttpFoundation_Session_SessionInterface|null The session
      *
      * @api
-     *
-     * @access public
      */
-    function getSession()
+    public function getSession()
     {
         return $this->session;
     }
@@ -769,10 +647,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return Boolean
      *
      * @api
-     *
-     * @access public
      */
-    function hasPreviousSession()
+    public function hasPreviousSession()
     {
         // the check for $this->session avoids malicious users trying to fake a session cookie with proper name
         return $this->hasSession() && $this->cookies->has($this->session->getName());
@@ -788,10 +664,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return Boolean true when the Request contains a Session object, false otherwise
      *
      * @api
-     *
-     * @access public
      */
-    function hasSession()
+    public function hasSession()
     {
         return null !== $this->session;
     }
@@ -799,16 +673,12 @@ class Symfony_Component_HttpFoundation_Request
     /**
      * Sets the Session.
      *
-     * @param SessionInterface $session The Session
+     * @param Symfony_Component_HttpFoundation_Session_SessionInterface $session The Session
      *
      * @api
-     *
-     * @access public
      */
-    function setSession($session)
+    public function setSession(Symfony_Component_HttpFoundation_Session_SessionInterface $session)
     {
-        trigger_error('not imlemeted');
-
         $this->session = $session;
     }
 
@@ -830,25 +700,23 @@ class Symfony_Component_HttpFoundation_Request
      * @see http://en.wikipedia.org/wiki/X-Forwarded-For
      *
      * @api
-     *
-     * @access public
      */
-    function getClientIp()
+    public function getClientIp()
     {
         $ip = $this->server->get('REMOTE_ADDR');
 
-        if (!$this->trustProxy) {
+        if (!self::$trustProxy) {
             return $ip;
         }
 
-        if (!$this->trustedHeaders[$this->HEADER_CLIENT_IP] || !$this->headers->has($this->trustedHeaders[$this->HEADER_CLIENT_IP])) {
+        if (!self::$trustedHeaders[self::HEADER_CLIENT_IP] || !$this->headers->has(self::$trustedHeaders[self::HEADER_CLIENT_IP])) {
             return $ip;
         }
 
-        $clientIps = array_map('trim', explode(',', $this->headers->get($this->trustedHeaders[$this->HEADER_CLIENT_IP])));
+        $clientIps = array_map('trim', explode(',', $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_IP])));
         $clientIps[] = $ip;
 
-        $trustedProxies = $this->trustProxy && !$this->trustedProxies ? array($ip) : $this->trustedProxies;
+        $trustedProxies = self::$trustProxy && !self::$trustedProxies ? array($ip) : self::$trustedProxies;
         $clientIps = array_diff($clientIps, $trustedProxies);
 
         return array_pop($clientIps);
@@ -860,10 +728,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string
      *
      * @api
-     *
-     * @access public
      */
-    function getScriptName()
+    public function getScriptName()
     {
         return $this->server->get('SCRIPT_NAME', $this->server->get('ORIG_SCRIPT_NAME', ''));
     }
@@ -883,10 +749,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string The raw path (i.e. not urldecoded)
      *
      * @api
-     *
-     * @access public
      */
-    function getPathInfo()
+    public function getPathInfo()
     {
         if (null === $this->pathInfo) {
             $this->pathInfo = $this->preparePathInfo();
@@ -908,10 +772,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string The raw path (i.e. not urldecoded)
      *
      * @api
-     *
-     * @access public
      */
-    function getBasePath()
+    public function getBasePath()
     {
         if (null === $this->basePath) {
             $this->basePath = $this->prepareBasePath();
@@ -931,10 +793,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string The raw url (i.e. not urldecoded)
      *
      * @api
-     *
-     * @access public
      */
-    function getBaseUrl()
+    public function getBaseUrl()
     {
         if (null === $this->baseUrl) {
             $this->baseUrl = $this->prepareBaseUrl();
@@ -949,10 +809,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string
      *
      * @api
-     *
-     * @access public
      */
-    function getScheme()
+    public function getScheme()
     {
         return $this->isSecure() ? 'https' : 'http';
     }
@@ -971,12 +829,10 @@ class Symfony_Component_HttpFoundation_Request
      * @return string
      *
      * @api
-     *
-     * @access public
      */
-    function getPort()
+    public function getPort()
     {
-        if ($this->trustProxy && $this->trustedHeaders[$this->HEADER_CLIENT_PORT] && $port = $this->headers->get($this->trustedHeaders[$this->HEADER_CLIENT_PORT])) {
+        if (self::$trustProxy && self::$trustedHeaders[self::HEADER_CLIENT_PORT] && $port = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_PORT])) {
             return $port;
         }
 
@@ -987,10 +843,8 @@ class Symfony_Component_HttpFoundation_Request
      * Returns the user.
      *
      * @return string|null
-     *
-     * @access public
      */
-    function getUser()
+    public function getUser()
     {
         return $this->server->get('PHP_AUTH_USER');
     }
@@ -999,10 +853,8 @@ class Symfony_Component_HttpFoundation_Request
      * Returns the password.
      *
      * @return string|null
-     *
-     * @access public
      */
-    function getPassword()
+    public function getPassword()
     {
         return $this->server->get('PHP_AUTH_PW');
     }
@@ -1011,10 +863,8 @@ class Symfony_Component_HttpFoundation_Request
      * Gets the user info.
      *
      * @return string A user name and, optionally, scheme-specific information about how to gain authorization to access the server
-     *
-     * @access public
      */
-    function getUserInfo()
+    public function getUserInfo()
     {
         $userinfo = $this->getUser();
 
@@ -1034,10 +884,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string
      *
      * @api
-     *
-     * @access public
      */
-    function getHttpHost()
+    public function getHttpHost()
     {
         $scheme = $this->getScheme();
         $port   = $this->getPort();
@@ -1055,10 +903,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string The raw URI (i.e. not urldecoded)
      *
      * @api
-     *
-     * @access public
      */
-    function getRequestUri()
+    public function getRequestUri()
     {
         if (null === $this->requestUri) {
             $this->requestUri = $this->prepareRequestUri();
@@ -1074,10 +920,8 @@ class Symfony_Component_HttpFoundation_Request
      * and the password are not added to the generated string.
      *
      * @return string The scheme and HTTP host
-     *
-     * @access public
      */
-    function getSchemeAndHttpHost()
+    public function getSchemeAndHttpHost()
     {
         return $this->getScheme().'://'.$this->getHttpHost();
     }
@@ -1090,10 +934,8 @@ class Symfony_Component_HttpFoundation_Request
      * @see getQueryString()
      *
      * @api
-     *
-     * @access public
      */
-    function getUri()
+    public function getUri()
     {
         if (null !== $qs = $this->getQueryString()) {
             $qs = '?'.$qs;
@@ -1110,10 +952,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string The normalized URI for the path
      *
      * @api
-     *
-     * @access public
      */
-    function getUriForPath($path)
+    public function getUriForPath($path)
     {
         return $this->getSchemeAndHttpHost().$this->getBaseUrl().$path;
     }
@@ -1127,12 +967,10 @@ class Symfony_Component_HttpFoundation_Request
      * @return string|null A normalized query string for the Request
      *
      * @api
-     *
-     * @access public
      */
-    function getQueryString()
+    public function getQueryString()
     {
-        $qs = $this->normalizeQueryString($this->server->get('QUERY_STRING'));
+        $qs = self::normalizeQueryString($this->server->get('QUERY_STRING'));
 
         return '' === $qs ? null : $qs;
     }
@@ -1152,12 +990,10 @@ class Symfony_Component_HttpFoundation_Request
      * @return Boolean
      *
      * @api
-     *
-     * @access public
      */
-    function isSecure()
+    public function isSecure()
     {
-        if ($this->trustProxy && $this->trustedHeaders[$this->HEADER_CLIENT_PROTO] && $proto = $this->headers->get($this->trustedHeaders[$this->HEADER_CLIENT_PROTO])) {
+        if (self::$trustProxy && self::$trustedHeaders[self::HEADER_CLIENT_PROTO] && $proto = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_PROTO])) {
             return in_array(strtolower($proto), array('https', 'on', '1'));
         }
 
@@ -1177,15 +1013,13 @@ class Symfony_Component_HttpFoundation_Request
      *
      * @return string
      *
-     * @throws \UnexpectedValueException when the host name is invalid
+     * @throws UnexpectedValueException when the host name is invalid
      *
      * @api
-     *
-     * @access public
      */
-    function getHost()
+    public function getHost()
     {
-        if ($this->trustProxy && $this->trustedHeaders[$this->HEADER_CLIENT_HOST] && $host = $this->headers->get($this->trustedHeaders[$this->HEADER_CLIENT_HOST])) {
+        if (self::$trustProxy && self::$trustedHeaders[self::HEADER_CLIENT_HOST] && $host = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_HOST])) {
             $elements = explode(',', $host);
 
             $host = $elements[count($elements) - 1];
@@ -1202,7 +1036,7 @@ class Symfony_Component_HttpFoundation_Request
         // as the host can come from the user (HTTP_HOST and depending on the configuration, SERVER_NAME too can come from the user)
         // check that it does not contain forbidden characters (see RFC 952 and RFC 2181)
         if ($host && !preg_match('/^\[?(?:[a-zA-Z0-9-:\]_]+\.?)+$/', $host)) {
-            trigger_error('Invalid Host');
+            throw new UnexpectedValueException('Invalid Host');
         }
 
         return $host;
@@ -1214,10 +1048,8 @@ class Symfony_Component_HttpFoundation_Request
      * @param string $method
      *
      * @api
-     *
-     * @access public
      */
-    function setMethod($method)
+    public function setMethod($method)
     {
         $this->method = null;
         $this->server->set('REQUEST_METHOD', $method);
@@ -1239,10 +1071,8 @@ class Symfony_Component_HttpFoundation_Request
      * @api
      *
      * @see getRealMethod
-     *
-     * @access public
      */
-    function getMethod()
+    public function getMethod()
     {
         if (null === $this->method) {
             $this->method = strtoupper($this->server->get('REQUEST_METHOD', 'GET'));
@@ -1250,7 +1080,7 @@ class Symfony_Component_HttpFoundation_Request
             if ('POST' === $this->method) {
                 if ($method = $this->headers->get('X-HTTP-METHOD-OVERRIDE')) {
                     $this->method = strtoupper($method);
-                } elseif ($this->httpMethodParameterOverride) {
+                } elseif (self::$httpMethodParameterOverride) {
                     $this->method = strtoupper($this->request->get('_method', $this->query->get('_method', 'POST')));
                 }
             }
@@ -1265,10 +1095,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string The request method
      *
      * @see getMethod
-     *
-     * @access public
      */
-    function getRealMethod()
+    public function getRealMethod()
     {
         return strtoupper($this->server->get('REQUEST_METHOD', 'GET'));
     }
@@ -1281,16 +1109,14 @@ class Symfony_Component_HttpFoundation_Request
      * @return string The associated mime type (null if not found)
      *
      * @api
-     *
-     * @access public
      */
-    function getMimeType($format)
+    public function getMimeType($format)
     {
-        if (null === $this->formats) {
-            $this->initializeFormats();
+        if (null === self::$formats) {
+            self::initializeFormats();
         }
 
-        return isset($this->formats[$format]) ? $this->formats[$format][0] : null;
+        return isset(self::$formats[$format]) ? self::$formats[$format][0] : null;
     }
 
     /**
@@ -1301,20 +1127,18 @@ class Symfony_Component_HttpFoundation_Request
      * @return string|null The format (null if not found)
      *
      * @api
-     *
-     * @access public
      */
-    function getFormat($mimeType)
+    public function getFormat($mimeType)
     {
         if (false !== $pos = strpos($mimeType, ';')) {
             $mimeType = substr($mimeType, 0, $pos);
         }
 
-        if (null === $this->formats) {
-            $this->initializeFormats();
+        if (null === self::$formats) {
+            self::initializeFormats();
         }
 
-        foreach ($this->formats as $format => $mimeTypes) {
+        foreach (self::$formats as $format => $mimeTypes) {
             if (in_array($mimeType, (array) $mimeTypes)) {
                 return $format;
             }
@@ -1330,16 +1154,14 @@ class Symfony_Component_HttpFoundation_Request
      * @param string|array $mimeTypes The associated mime types (the preferred one must be the first as it will be used as the content type)
      *
      * @api
-     *
-     * @access public
      */
-    function setFormat($format, $mimeTypes)
+    public function setFormat($format, $mimeTypes)
     {
-        if (null === $this->formats) {
-            $this->initializeFormats();
+        if (null === self::$formats) {
+            self::initializeFormats();
         }
 
-        $this->formats[$format] = is_array($mimeTypes) ? $mimeTypes : array($mimeTypes);
+        self::$formats[$format] = is_array($mimeTypes) ? $mimeTypes : array($mimeTypes);
     }
 
     /**
@@ -1356,10 +1178,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string The request format
      *
      * @api
-     *
-     * @access public
      */
-    function getRequestFormat($default = 'html')
+    public function getRequestFormat($default = 'html')
     {
         if (null === $this->format) {
             $this->format = $this->get('_format', $default);
@@ -1374,10 +1194,8 @@ class Symfony_Component_HttpFoundation_Request
      * @param string $format The request format.
      *
      * @api
-     *
-     * @access public
      */
-    function setRequestFormat($format)
+    public function setRequestFormat($format)
     {
         $this->format = $format;
     }
@@ -1388,10 +1206,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return string|null The format (null if no content type is present)
      *
      * @api
-     *
-     * @access public
      */
-    function getContentType()
+    public function getContentType()
     {
         return $this->getFormat($this->headers->get('CONTENT_TYPE'));
     }
@@ -1402,10 +1218,8 @@ class Symfony_Component_HttpFoundation_Request
      * @param string $locale
      *
      * @api
-     *
-     * @access public
      */
-    function setDefaultLocale($locale)
+    public function setDefaultLocale($locale)
     {
         $this->defaultLocale = $locale;
 
@@ -1420,10 +1234,8 @@ class Symfony_Component_HttpFoundation_Request
      * @param string $locale
      *
      * @api
-     *
-     * @access public
      */
-    function setLocale($locale)
+    public function setLocale($locale)
     {
         $this->setPhpDefaultLocale($this->locale = $locale);
     }
@@ -1432,10 +1244,8 @@ class Symfony_Component_HttpFoundation_Request
      * Get the locale.
      *
      * @return string
-     *
-     * @access public
      */
-    function getLocale()
+    public function getLocale()
     {
         return null === $this->locale ? $this->defaultLocale : $this->locale;
     }
@@ -1446,10 +1256,8 @@ class Symfony_Component_HttpFoundation_Request
      * @param string $method Uppercase request method (GET, POST etc).
      *
      * @return Boolean
-     *
-     * @access public
      */
-    function isMethod($method)
+    public function isMethod($method)
     {
         return $this->getMethod() === strtoupper($method);
     }
@@ -1460,10 +1268,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return Boolean
      *
      * @api
-     *
-     * @access public
      */
-    function isMethodSafe()
+    public function isMethodSafe()
     {
         return in_array($this->getMethod(), array('GET', 'HEAD'));
     }
@@ -1475,14 +1281,12 @@ class Symfony_Component_HttpFoundation_Request
      *
      * @return string|resource The request body content or a resource to read the body stream.
      *
-     * @throws \LogicException
-     *
-     * @access public
+     * @throws LogicException
      */
-    function getContent($asResource = false)
+    public function getContent($asResource = false)
     {
         if (false === $this->content || (true === $asResource && null !== $this->content)) {
-            trigger_error('getContent() can only be called once when using the resource return type.');
+            throw new LogicException('getContent() can only be called once when using the resource return type.');
         }
 
         if (true === $asResource) {
@@ -1502,20 +1306,16 @@ class Symfony_Component_HttpFoundation_Request
      * Gets the Etags.
      *
      * @return array The entity tags
-     *
-     * @access public
      */
-    function getETags()
+    public function getETags()
     {
         return preg_split('/\s*,\s*/', $this->headers->get('if_none_match'), null, PREG_SPLIT_NO_EMPTY);
     }
 
     /**
      * @return Boolean
-     *
-     * @access public
      */
-    function isNoCache()
+    public function isNoCache()
     {
         return $this->headers->hasCacheControlDirective('no-cache') || 'no-cache' == $this->headers->get('Pragma');
     }
@@ -1528,13 +1328,9 @@ class Symfony_Component_HttpFoundation_Request
      * @return string|null The preferred locale
      *
      * @api
-     *
-     * @access public
      */
-    function getPreferredLanguage($locales = null)
+    public function getPreferredLanguage(array $locales = null)
     {
-        assert(is_array($locales));
-
         $preferredLanguages = $this->getLanguages();
 
         if (empty($locales)) {
@@ -1567,17 +1363,14 @@ class Symfony_Component_HttpFoundation_Request
      * @return array Languages ordered in the user browser preferences
      *
      * @api
-     *
-     * @access public
      */
-    function getLanguages()
+    public function getLanguages()
     {
         if (null !== $this->languages) {
             return $this->languages;
         }
 
-        $obj = Symfony_Component_HttpFoundation_AcceptHeader::fromString($this->headers->get('Accept-Language'));
-        $languages = $obj->all();
+        $languages = Symfony_Component_HttpFoundation_AcceptHeader::fromString($this->headers->get('Accept-Language'))->all();
         $this->languages = array();
         foreach (array_keys($languages) as $lang) {
             if (strstr($lang, '-')) {
@@ -1612,18 +1405,14 @@ class Symfony_Component_HttpFoundation_Request
      * @return array List of charsets in preferable order
      *
      * @api
-     *
-     * @access public
      */
-    function getCharsets()
+    public function getCharsets()
     {
         if (null !== $this->charsets) {
             return $this->charsets;
         }
 
-        $obj = Symfony_Component_HttpFoundation_AcceptHeader::fromString($this->headers->get('Accept-Charset'));
-
-        return $this->charsets = array_keys($obj->all());
+        return $this->charsets = array_keys(Symfony_Component_HttpFoundation_AcceptHeader::fromString($this->headers->get('Accept-Charset'))->all());
     }
 
     /**
@@ -1632,18 +1421,14 @@ class Symfony_Component_HttpFoundation_Request
      * @return array List of content types in preferable order
      *
      * @api
-     *
-     * @access public
      */
-    function getAcceptableContentTypes()
+    public function getAcceptableContentTypes()
     {
         if (null !== $this->acceptableContentTypes) {
             return $this->acceptableContentTypes;
         }
 
-        $obj = Symfony_Component_HttpFoundation_AcceptHeader::fromString($this->headers->get('Accept'));
-
-        return $this->acceptableContentTypes = array_keys($obj->all());
+        return $this->acceptableContentTypes = array_keys(Symfony_Component_HttpFoundation_AcceptHeader::fromString($this->headers->get('Accept'))->all());
     }
 
     /**
@@ -1656,10 +1441,8 @@ class Symfony_Component_HttpFoundation_Request
      * @return Boolean true if the request is an XMLHttpRequest, false otherwise
      *
      * @api
-     *
-     * @access public
      */
-    function isXmlHttpRequest()
+    public function isXmlHttpRequest()
     {
         return 'XMLHttpRequest' == $this->headers->get('X-Requested-With');
     }
@@ -1672,16 +1455,13 @@ class Symfony_Component_HttpFoundation_Request
      * @return array Array indexed by the values of the Accept-* header in preferred order
      *
      * @deprecated Deprecated since version 2.2, to be removed in 2.3.
-     *
-     * @access public
      */
-    function splitHttpAcceptHeader($header)
+    public function splitHttpAcceptHeader($header)
     {
         trigger_error('splitHttpAcceptHeader() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         $headers = array();
-        $obj = Symfony_Component_HttpFoundation_AcceptHeader::fromString($header);
-        foreach ($obj->all() as $item) {
+        foreach (Symfony_Component_HttpFoundation_AcceptHeader::fromString($header)->all() as $item) {
             $key = $item->getValue();
             foreach ($item->getAttributes() as $name => $value) {
                 $key .= sprintf(';%s=%s', $name, $value);
@@ -1700,11 +1480,7 @@ class Symfony_Component_HttpFoundation_Request
      * Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
      */
 
-    /**
-     * @return string
-     * @access protected
-     */
-    function prepareRequestUri()
+    protected function prepareRequestUri()
     {
         $requestUri = '';
 
@@ -1747,10 +1523,8 @@ class Symfony_Component_HttpFoundation_Request
      * Prepares the base URL.
      *
      * @return string
-     *
-     * @access protected
      */
-    function prepareBaseUrl()
+    protected function prepareBaseUrl()
     {
         $filename = basename($this->server->get('SCRIPT_FILENAME'));
 
@@ -1815,10 +1589,8 @@ class Symfony_Component_HttpFoundation_Request
      * Prepares the base path.
      *
      * @return string base path
-     *
-     * @access protected
      */
-    function prepareBasePath()
+    protected function prepareBasePath()
     {
         $filename = basename($this->server->get('SCRIPT_FILENAME'));
         $baseUrl = $this->getBaseUrl();
@@ -1843,10 +1615,8 @@ class Symfony_Component_HttpFoundation_Request
      * Prepares the path info.
      *
      * @return string path info
-     *
-     * @access protected
      */
-    function preparePathInfo()
+    protected function preparePathInfo()
     {
         $baseUrl = $this->getBaseUrl();
 
@@ -1873,13 +1643,10 @@ class Symfony_Component_HttpFoundation_Request
 
     /**
      * Initializes HTTP request formats.
-     *
-     * @access protected
-     * @static
      */
-    function initializeFormats()
+    protected static function initializeFormats()
     {
-        $this->formats = array(
+        self::$formats = array(
             'html' => array('text/html', 'application/xhtml+xml'),
             'txt'  => array('text/plain'),
             'js'   => array('application/javascript', 'application/x-javascript', 'text/javascript'),
@@ -1896,17 +1663,21 @@ class Symfony_Component_HttpFoundation_Request
      * Sets the default PHP locale.
      *
      * @param string $locale
-     *
-     * @access private
      */
-    function setPhpDefaultLocale($locale)
+    private function setPhpDefaultLocale($locale)
     {
         // if either the class Locale doesn't exist, or an exception is thrown when
         // setting the default locale, the intl module is not installed, and
         // the call can be ignored:
+        try {
+            if (class_exists('Locale', false)) {
+                Locale::setDefault($locale);
+            }
+        } catch (Exception $e) {
+        }
     }
 
-    /**
+    /*
      * Returns the prefix as encoded in the string when the string starts with
      * the given prefix, false otherwise.
      *
@@ -1914,10 +1685,8 @@ class Symfony_Component_HttpFoundation_Request
      * @param string $prefix The prefix not encoded
      *
      * @return string|false The prefix as it is encoded in $string, or false
-     *
-     * @access private
      */
-    function getUrlencodedPrefix($string, $prefix)
+    private function getUrlencodedPrefix($string, $prefix)
     {
         if (0 !== strpos(rawurldecode($string), $prefix)) {
             return false;

@@ -16,16 +16,14 @@
  *
  * @api
  */
-class Symfony_Component_HttpFoundation_ParameterBag
+class Symfony_Component_HttpFoundation_ParameterBag implements IteratorAggregate, Countable
 {
     /**
      * Parameter storage.
      *
      * @var array
-     *
-     * @access protected
      */
-    var $parameters;
+    protected $parameters;
 
     /**
      * Constructor.
@@ -33,13 +31,9 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @param array $parameters An array of parameters
      *
      * @api
-     *
-     * @access public
      */
-    function Symfony_Component_HttpFoundation_ParameterBag($parameters = array())
+    public function __construct(array $parameters = array())
     {
-        assert(is_array($parameters));
-
         $this->parameters = $parameters;
     }
 
@@ -49,10 +43,8 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @return array An array of parameters
      *
      * @api
-     *
-     * @access public
      */
-    function all()
+    public function all()
     {
         return $this->parameters;
     }
@@ -63,10 +55,8 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @return array An array of parameter keys
      *
      * @api
-     *
-     * @access public
      */
-    function keys()
+    public function keys()
     {
         return array_keys($this->parameters);
     }
@@ -77,13 +67,9 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @param array $parameters An array of parameters
      *
      * @api
-     *
-     * @access public
      */
-    function replace($parameters = array())
+    public function replace(array $parameters = array())
     {
-        assert(is_array($parameters));
-
         $this->parameters = $parameters;
     }
 
@@ -93,13 +79,9 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @param array $parameters An array of parameters
      *
      * @api
-     *
-     * @access public
      */
-    function add($parameters = array())
+    public function add(array $parameters = array())
     {
-        assert(is_array($parameters));
-
         $this->parameters = array_replace($this->parameters, $parameters);
     }
 
@@ -112,13 +94,11 @@ class Symfony_Component_HttpFoundation_ParameterBag
      *
      * @return mixed
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @api
-     *
-     * @access public
      */
-    function get($path, $default = null, $deep = false)
+    public function get($path, $default = null, $deep = false)
     {
         if (!$deep || false === $pos = strpos($path, '[')) {
             return array_key_exists($path, $this->parameters) ? $this->parameters[$path] : $default;
@@ -136,13 +116,13 @@ class Symfony_Component_HttpFoundation_ParameterBag
 
             if ('[' === $char) {
                 if (null !== $currentKey) {
-                    trigger_error(sprintf('Malformed path. Unexpected "[" at position %d.', $i));
+                    throw new InvalidArgumentException(sprintf('Malformed path. Unexpected "[" at position %d.', $i));
                 }
 
                 $currentKey = '';
             } elseif (']' === $char) {
                 if (null === $currentKey) {
-                    trigger_error(sprintf('Malformed path. Unexpected "]" at position %d.', $i));
+                    throw new InvalidArgumentException(sprintf('Malformed path. Unexpected "]" at position %d.', $i));
                 }
 
                 if (!is_array($value) || !array_key_exists($currentKey, $value)) {
@@ -153,7 +133,7 @@ class Symfony_Component_HttpFoundation_ParameterBag
                 $currentKey = null;
             } else {
                 if (null === $currentKey) {
-                    trigger_error(sprintf('Malformed path. Unexpected "%s" at position %d.', $char, $i));
+                    throw new InvalidArgumentException(sprintf('Malformed path. Unexpected "%s" at position %d.', $char, $i));
                 }
 
                 $currentKey .= $char;
@@ -161,7 +141,7 @@ class Symfony_Component_HttpFoundation_ParameterBag
         }
 
         if (null !== $currentKey) {
-            trigger_error(sprintf('Malformed path. Path must end with "]".'));
+            throw new InvalidArgumentException(sprintf('Malformed path. Path must end with "]".'));
         }
 
         return $value;
@@ -174,10 +154,8 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @param mixed  $value The value
      *
      * @api
-     *
-     * @access public
      */
-    function set($key, $value)
+    public function set($key, $value)
     {
         $this->parameters[$key] = $value;
     }
@@ -190,10 +168,8 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @return Boolean true if the parameter exists, false otherwise
      *
      * @api
-     *
-     * @access public
      */
-    function has($key)
+    public function has($key)
     {
         return array_key_exists($key, $this->parameters);
     }
@@ -204,10 +180,8 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @param string $key The key
      *
      * @api
-     *
-     * @access public
      */
-    function remove($key)
+    public function remove($key)
     {
         unset($this->parameters[$key]);
     }
@@ -222,10 +196,8 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @return string The filtered value
      *
      * @api
-     *
-     * @access public
      */
-    function getAlpha($key, $default = '', $deep = false)
+    public function getAlpha($key, $default = '', $deep = false)
     {
         return preg_replace('/[^[:alpha:]]/', '', $this->get($key, $default, $deep));
     }
@@ -240,10 +212,8 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @return string The filtered value
      *
      * @api
-     *
-     * @access public
      */
-    function getAlnum($key, $default = '', $deep = false)
+    public function getAlnum($key, $default = '', $deep = false)
     {
         return preg_replace('/[^[:alnum:]]/', '', $this->get($key, $default, $deep));
     }
@@ -258,10 +228,8 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @return string The filtered value
      *
      * @api
-     *
-     * @access public
      */
-    function getDigits($key, $default = '', $deep = false)
+    public function getDigits($key, $default = '', $deep = false)
     {
         // we need to remove - and + because they're allowed in the filter
         return str_replace(array('-', '+'), '', $this->filter($key, $default, $deep, FILTER_SANITIZE_NUMBER_INT));
@@ -277,10 +245,8 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @return integer The filtered value
      *
      * @api
-     *
-     * @access public
      */
-    function getInt($key, $default = 0, $deep = false)
+    public function getInt($key, $default = 0, $deep = false)
     {
         return (int) $this->get($key, $default, $deep);
     }
@@ -297,10 +263,8 @@ class Symfony_Component_HttpFoundation_ParameterBag
      * @see http://php.net/manual/en/function.filter-var.php
      *
      * @return mixed
-     *
-     * @access public
      */
-    function filter($key, $default = null, $deep = false, $filter=FILTER_DEFAULT, $options=array())
+    public function filter($key, $default = null, $deep = false, $filter=FILTER_DEFAULT, $options=array())
     {
         $value = $this->get($key, $default, $deep);
 
@@ -320,23 +284,19 @@ class Symfony_Component_HttpFoundation_ParameterBag
     /**
      * Returns an iterator for parameters.
      *
-     * @return \ArrayIterator An \ArrayIterator instance
-     *
-     * @access public
+     * @return ArrayIterator An \ArrayIterator instance
      */
-    function getIterator()
+    public function getIterator()
     {
-        return $this->parameters;
+        return new ArrayIterator($this->parameters);
     }
 
     /**
      * Returns the number of parameters.
      *
      * @return int The number of parameters
-     *
-     * @access public
      */
-    function count()
+    public function count()
     {
         return count($this->parameters);
     }

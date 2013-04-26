@@ -24,50 +24,40 @@
  * The last registered guesser is preferred over previously registered ones.
  *
  */
-class Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesser extends Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesserInterface
+class Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesser implements Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesserInterface
 {
     /**
      * The singleton instance
      *
-     * @var ExtensionGuesser
-     *
-     * @access private
-     * @static
+     * @var Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesser
      */
-    var $instance = null;
+    private static $instance = null;
 
     /**
      * All registered ExtensionGuesserInterface instances
      *
      * @var array
-     *
-     * @access protected
      */
-     var $guessers = array();
+    protected $guessers = array();
 
     /**
      * Returns the singleton instance
      *
-     * @return ExtensionGuesser
-     *
-     * @access public
-     * @static
+     * @return Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesser
      */
-    function getInstance()
+    public static function getInstance()
     {
-        if (null ===$this->instance) {
-            $this->instance = new Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesser();
+        if (null === self::$instance) {
+            self::$instance = new self();
         }
 
-        return $this->instance;
+        return self::$instance;
     }
 
     /**
      * Registers all natively provided extension guessers
-     *
-     * @access private
      */
-    function Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesser()
+    private function __construct()
     {
         $this->register(new Symfony_Component_HttpFoundation_File_MimeType_MimeTypeExtensionGuesser());
     }
@@ -77,14 +67,10 @@ class Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesser extends Sy
      *
      * When guessing, this guesser is preferred over previously registered ones.
      *
-     * @param ExtensionGuesserInterface $guesser
-     *
-     * @access public
+     * @param Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesserInterface $guesser
      */
-    function register($guesser)
+    public function register(Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesserInterface $guesser)
     {
-        assert(is_a($guesser, 'Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesserInterface'));
-
         array_unshift($this->guessers, $guesser);
     }
 
@@ -96,12 +82,10 @@ class Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesser extends Sy
      * returns a value that is not NULL, this method terminates and returns the
      * value.
      *
-     * @param  string $mimeType The mime type
-     * @return string The guessed extension or NULL, if none could be guessed
-     *
-     * @access public
+     * @param string $mimeType The mime type
+     * @return string          The guessed extension or NULL, if none could be guessed
      */
-    function guess($mimeType)
+    public function guess($mimeType)
     {
         foreach ($this->guessers as $guesser) {
             $extension = $guesser->guess($mimeType);

@@ -25,52 +25,40 @@
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesser extends Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface
+class Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesser implements Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface
 {
     /**
      * The singleton instance
      *
-     * @var MimeTypeGuesser
-     *
-     * @access private
-     *
-     * @static
+     * @var Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesser
      */
-    var $instance = null;
+    private static $instance = null;
 
     /**
      * All registered MimeTypeGuesserInterface instances
      *
      * @var array
-     *
-     * @access protected
      */
-    var $guessers = array();
+    protected $guessers = array();
 
     /**
      * Returns the singleton instance
      *
-     * @return MimeTypeGuesser
-     *
-     * @access public
-     *
-     * @static
+     * @return Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesser
      */
-    function getInstance()
+    public static function getInstance()
     {
-        if (null === $this->instance) {
-            $this->instance = new Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesser();
+        if (null === self::$instance) {
+            self::$instance = new self();
         }
 
-        return $this->instance;
+        return self::$instance;
     }
 
     /**
      * Registers all natively provided mime type guessers
-     *
-     * @access private
      */
-    function Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesser()
+    private function __construct()
     {
         if (Symfony_Component_HttpFoundation_File_MimeType_FileBinaryMimeTypeGuesser::isSupported()) {
             $this->register(new Symfony_Component_HttpFoundation_File_MimeType_FileBinaryMimeTypeGuesser());
@@ -86,14 +74,10 @@ class Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesser extends Sym
      *
      * When guessing, this guesser is preferred over previously registered ones.
      *
-     * @param MimeTypeGuesserInterface $guesser
-     *
-     * @access public
+     * @param Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface $guesser
      */
-    function register($guesser)
+    public function register(Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface $guesser)
     {
-        assert(is_a($guesser, 'Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface'));
-
         array_unshift($this->guessers, $guesser);
     }
 
@@ -107,26 +91,24 @@ class Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesser extends Sym
      *
      * @param string $path The path to the file
      *
-     * @return string The mime type or NULL, if none could be guessed
+     * @return string         The mime type or NULL, if none could be guessed
      *
-     * @throws \LogicException
-     * @throws FileNotFoundException
-     * @throws AccessDeniedException
-     *
-     * @access public
+     * @throws LogicException
+     * @throws Symfony_Component_HttpFoundation_File_Exception_FileNotFoundException
+     * @throws Symfony_Component_HttpFoundation_File_Exception_AccessDeniedException
      */
-    function guess($path)
+    public function guess($path)
     {
         if (!is_file($path)) {
-            trigger_error($path);
+            throw new Symfony_Component_HttpFoundation_File_Exception_FileNotFoundException($path);
         }
 
         if (!is_readable($path)) {
-            trigger_error($path);
+            throw new Symfony_Component_HttpFoundation_File_Exception_AccessDeniedException($path);
         }
 
         if (!$this->guessers) {
-            trigger_error('Unable to guess the mime type as no guessers are available (Did you enable the php_fileinfo extension?)');
+            throw new LogicException('Unable to guess the mime type as no guessers are available (Did you enable the php_fileinfo extension?)');
         }
 
         foreach ($this->guessers as $guesser) {

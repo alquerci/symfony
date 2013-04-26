@@ -19,11 +19,7 @@
  */
 class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFoundation_ParameterBag
 {
-    /**
-     * @access private
-     * @static
-     */
-    var $fileKeys = array('error', 'name', 'size', 'tmp_name', 'type');
+    private static $fileKeys = array('error', 'name', 'size', 'tmp_name', 'type');
 
     /**
      * Constructor.
@@ -31,13 +27,9 @@ class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFou
      * @param array $parameters An array of HTTP files
      *
      * @api
-     *
-     * @access public
      */
-    function Symfony_Component_HttpFoundation_FileBag($parameters = array())
+    public function __construct(array $parameters = array())
     {
-        assert(is_array($parameters));
-
         $this->replace($parameters);
     }
 
@@ -45,13 +37,9 @@ class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFou
      * {@inheritdoc}
      *
      * @api
-     *
-     * @access public
      */
-    function replace($files = array())
+    public function replace(array $files = array())
     {
-        assert(is_array($files));
-
         $this->parameters = array();
         $this->add($files);
     }
@@ -60,13 +48,11 @@ class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFou
      * {@inheritdoc}
      *
      * @api
-     *
-     * @access public
      */
-    function set($key, $value)
+    public function set($key, $value)
     {
-        if (!is_array($value) && !is_a($value, 'Symfony_Component_HttpFoundation_File_UploadedFile')) {
-            trigger_error('An uploaded file must be an array or an instance of UploadedFile.');
+        if (!is_array($value) && !$value instanceof Symfony_Component_HttpFoundation_File_UploadedFile) {
+            throw new InvalidArgumentException('An uploaded file must be an array or an instance of UploadedFile.');
         }
 
         parent::set($key, $this->convertFileInformation($value));
@@ -76,13 +62,9 @@ class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFou
      * {@inheritdoc}
      *
      * @api
-     *
-     * @access public
      */
-    function add($files = array())
+    public function add(array $files = array())
     {
-        assert(is_array($files));
-
         foreach ($files as $key => $file) {
             $this->set($key, $file);
         }
@@ -91,15 +73,13 @@ class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFou
     /**
      * Converts uploaded files to UploadedFile instances.
      *
-     * @param array|UploadedFile $file A (multi-dimensional) array of uploaded file information
+     * @param array|Symfony_Component_HttpFoundation_File_UploadedFile $file A (multi-dimensional) array of uploaded file information
      *
      * @return array A (multi-dimensional) array of UploadedFile instances
-     *
-     * @access protected
      */
-    function convertFileInformation($file)
+    protected function convertFileInformation($file)
     {
-        if (is_a($file, 'Symfony_Component_HttpFoundation_File_UploadedFile')) {
+        if ($file instanceof Symfony_Component_HttpFoundation_File_UploadedFile) {
             return $file;
         }
 
@@ -108,7 +88,7 @@ class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFou
             $keys = array_keys($file);
             sort($keys);
 
-            if ($keys == $this->fileKeys) {
+            if ($keys == self::$fileKeys) {
                 if (UPLOAD_ERR_NO_FILE == $file['error']) {
                     $file = null;
                 } else {
@@ -137,10 +117,8 @@ class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFou
      * @param array $data
      *
      * @return array
-     *
-     * @access protected
      */
-    function fixPhpFilesArray($data)
+    protected function fixPhpFilesArray($data)
     {
         if (!is_array($data)) {
             return $data;
@@ -149,12 +127,12 @@ class Symfony_Component_HttpFoundation_FileBag extends Symfony_Component_HttpFou
         $keys = array_keys($data);
         sort($keys);
 
-        if ($this->fileKeys != $keys || !isset($data['name']) || !is_array($data['name'])) {
+        if (self::$fileKeys != $keys || !isset($data['name']) || !is_array($data['name'])) {
             return $data;
         }
 
         $files = $data;
-        foreach ($this->fileKeys as $k) {
+        foreach (self::$fileKeys as $k) {
             unset($files[$k]);
         }
 

@@ -16,21 +16,10 @@
  *
  * @api
  */
-class Symfony_Component_HttpFoundation_HeaderBag
+class Symfony_Component_HttpFoundation_HeaderBag implements IteratorAggregate, Countable
 {
-    /**
-     * @var unknown_type
-     *
-     * @access protected
-     */
-    var $headers;
-
-    /**
-     * @var unknown_type
-     *
-     * @access protected
-     */
-    var $cacheControl;
+    protected $headers;
+    protected $cacheControl;
 
     /**
      * Constructor.
@@ -38,13 +27,9 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @param array $headers An array of HTTP headers
      *
      * @api
-     *
-     * @access public
      */
-    function Symfony_Component_HttpFoundation_HeaderBag($headers = array())
+    public function __construct(array $headers = array())
     {
-        assert(is_array($headers));
-
         $this->cacheControl = array();
         $this->headers = array();
         foreach ($headers as $key => $values) {
@@ -56,10 +41,8 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * Returns the headers as a string.
      *
      * @return string The headers
-     *
-     * @access public
      */
-    function __toString()
+    public function __toString()
     {
         if (!$this->headers) {
             return '';
@@ -84,10 +67,8 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @return array An array of headers
      *
      * @api
-     *
-     * @access public
      */
-    function all()
+    public function all()
     {
         return $this->headers;
     }
@@ -98,10 +79,8 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @return array An array of parameter keys
      *
      * @api
-     *
-     * @access public
      */
-    function keys()
+    public function keys()
     {
         return array_keys($this->headers);
     }
@@ -112,13 +91,9 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @param array $headers An array of HTTP headers
      *
      * @api
-     *
-     * @access public
      */
-    function replace($headers = array())
+    public function replace(array $headers = array())
     {
-        assert(is_array($headers));
-
         $this->headers = array();
         $this->add($headers);
     }
@@ -129,13 +104,9 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @param array $headers An array of HTTP headers
      *
      * @api
-     *
-     * @access public
      */
-    function add($headers)
+    public function add(array $headers)
     {
-        assert(is_array($headers));
-
         foreach ($headers as $key => $values) {
             $this->set($key, $values);
         }
@@ -151,10 +122,8 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @return string|array The first header value if $first is true, an array of values otherwise
      *
      * @api
-     *
-     * @access public
      */
-    function get($key, $default = null, $first = true)
+    public function get($key, $default = null, $first = true)
     {
         $key = strtr(strtolower($key), '_', '-');
 
@@ -181,10 +150,8 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @param Boolean      $replace Whether to replace the actual value or not (true by default)
      *
      * @api
-     *
-     * @access public
      */
-    function set($key, $values, $replace = true)
+    public function set($key, $values, $replace = true)
     {
         $key = strtr(strtolower($key), '_', '-');
 
@@ -209,10 +176,8 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @return Boolean true if the parameter exists, false otherwise
      *
      * @api
-     *
-     * @access public
      */
-    function has($key)
+    public function has($key)
     {
         return array_key_exists(strtr(strtolower($key), '_', '-'), $this->headers);
     }
@@ -226,10 +191,8 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @return Boolean true if the value is contained in the header, false otherwise
      *
      * @api
-     *
-     * @access public
      */
-    function contains($key, $value)
+    public function contains($key, $value)
     {
         return in_array($value, $this->get($key, null, false));
     }
@@ -240,10 +203,8 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @param string $key The HTTP header name
      *
      * @api
-     *
-     * @access public
      */
-    function remove($key)
+    public function remove($key)
     {
         $key = strtr(strtolower($key), '_', '-');
 
@@ -265,66 +226,38 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @throws \RuntimeException When the HTTP header is not parseable
      *
      * @api
-     *
-     * @access public
      */
-    function getDate($key, $default = null)
+    public function getDate($key, DateTime $default = null)
     {
-        assert(is_a($default, 'DateTime') || null);
-
         if (null === $value = $this->get($key)) {
             return $default;
         }
 
-        $date = new DateTime();
-        if (false === $date = DateTime::createFromFormat($date->RFC2822, $value)) {
-            trigger_error(sprintf('The %s HTTP header is not parseable (%s).', $key, $value));
+        if (false === $date = DateTime::createFromFormat(DATE_RFC2822, $value)) {
+            throw new RuntimeException(sprintf('The %s HTTP header is not parseable (%s).', $key, $value));
         }
 
         return $date;
     }
 
-    /**
-     * @param unknown_type $key
-     * @param unknown_type $value
-     *
-     * @access public
-     */
-    function addCacheControlDirective($key, $value = true)
+    public function addCacheControlDirective($key, $value = true)
     {
         $this->cacheControl[$key] = $value;
 
         $this->set('Cache-Control', $this->getCacheControlHeader());
     }
 
-    /**
-     * @param  unknown_type $key
-     * @return boolean
-     *
-     * @access public
-     */
-    function hasCacheControlDirective($key)
+    public function hasCacheControlDirective($key)
     {
         return array_key_exists($key, $this->cacheControl);
     }
 
-    /**
-     * @param  unknown_type $key
-     * @return Ambigous     <NULL, unknown_type>
-     *
-     * @access public
-     */
-    function getCacheControlDirective($key)
+    public function getCacheControlDirective($key)
     {
         return array_key_exists($key, $this->cacheControl) ? $this->cacheControl[$key] : null;
     }
 
-    /**
-     * @param unknown_type $key
-     *
-     * @access public
-     */
-    function removeCacheControlDirective($key)
+    public function removeCacheControlDirective($key)
     {
         unset($this->cacheControl[$key]);
 
@@ -334,33 +267,24 @@ class Symfony_Component_HttpFoundation_HeaderBag
     /**
      * Returns an iterator for headers.
      *
-     * @return \ArrayIterator An \ArrayIterator instance
-     *
-     * @access public
+     * @return ArrayIterator An ArrayIterator instance
      */
-    function getIterator()
+    public function getIterator()
     {
-        return $this->headers;
+        return new ArrayIterator($this->headers);
     }
 
     /**
      * Returns the number of headers.
      *
      * @return int The number of headers
-     *
-     * @access public
      */
-    function count()
+    public function count()
     {
         return count($this->headers);
     }
 
-    /**
-     * @return string
-     *
-     * @access protected
-     */
-    function getCacheControlHeader()
+    protected function getCacheControlHeader()
     {
         $parts = array();
         ksort($this->cacheControl);
@@ -385,10 +309,8 @@ class Symfony_Component_HttpFoundation_HeaderBag
      * @param string $header The value of the Cache-Control HTTP header
      *
      * @return array An array representing the attribute values
-     *
-     * @access protected
      */
-    function parseCacheControl($header)
+    protected function parseCacheControl($header)
     {
         $cacheControl = array();
         preg_match_all('#([a-zA-Z][a-zA-Z_-]*)\s*(?:=(?:"([^"]*)"|([^ \t",;]*)))?#', $header, $matches, PREG_SET_ORDER);

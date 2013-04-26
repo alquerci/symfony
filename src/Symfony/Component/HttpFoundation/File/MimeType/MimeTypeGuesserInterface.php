@@ -14,19 +14,17 @@
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface
+interface Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface
 {
     /**
      * Guesses the mime type of the file with the given path.
      *
      * @param string $path The path to the file
      *
-     * @return string The mime type or NULL, if none could be guessed
+     * @return string         The mime type or NULL, if none could be guessed
      *
-     * @throws FileNotFoundException If the file does not exist
-     * @throws AccessDeniedException If the file could not be read
-     *
-     * @access public
+     * @throws Symfony_Component_HttpFoundation_File_Exception_FileNotFoundException  If the file does not exist
+     * @throws Symfony_Component_HttpFoundation_File_Exception_AccessDeniedException  If the file could not be read
      */
-    function guess($path){}
+    public function guess($path);
 }

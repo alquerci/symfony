@@ -12,15 +12,13 @@
 /**
  * Guesses the file extension corresponding to a given mime type
  */
-class Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesserInterface
+interface Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesserInterface
 {
     /**
      * Makes a best guess for a file extension, given a mime type
      *
-     * @param  string $mimeType The mime type
-     * @return string The guessed extension or NULL, if none could be guessed
-     *
-     * @access public
+     * @param string $mimeType The mime type
+     * @return string          The guessed extension or NULL, if none could be guessed
      */
-    function guess($mimeType){}
+    public function guess($mimeType);
 }

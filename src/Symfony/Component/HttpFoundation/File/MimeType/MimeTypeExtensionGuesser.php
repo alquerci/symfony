@@ -12,7 +12,7 @@
 /**
  * Provides a best-guess mapping of mime type to file extension.
  */
-class Symfony_Component_HttpFoundation_File_MimeType_MimeTypeExtensionGuesser extends Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesserInterface
+class Symfony_Component_HttpFoundation_File_MimeType_MimeTypeExtensionGuesser implements Symfony_Component_HttpFoundation_File_MimeType_ExtensionGuesserInterface
 {
     /**
      * A map of mime types and their default extensions.
@@ -22,10 +22,8 @@ class Symfony_Component_HttpFoundation_File_MimeType_MimeTypeExtensionGuesser ex
      * @see http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types
      *
      * @var array
-     *
-     * @access protected
      */
-    var $defaultExtensions = array(
+    protected $defaultExtensions = array(
         'application/andrew-inset' => 'ez',
         'application/applixware' => 'aw',
         'application/atom+xml' => 'atom',
@@ -732,10 +730,8 @@ class Symfony_Component_HttpFoundation_File_MimeType_MimeTypeExtensionGuesser ex
 
     /**
      * {@inheritdoc}
-     *
-     * @access public
      */
-    function guess($mimeType)
+    public function guess($mimeType)
     {
         return isset($this->defaultExtensions[$mimeType]) ? $this->defaultExtensions[$mimeType] : null;
     }

@@ -14,42 +14,36 @@
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class Symfony_Component_HttpFoundation_File_MimeType_FileinfoMimeTypeGuesser extends Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface
+class Symfony_Component_HttpFoundation_File_MimeType_FileinfoMimeTypeGuesser implements Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface
 {
     /**
      * Returns whether this guesser is supported on the current OS/PHP setup
      *
      * @return Boolean
-     *
-     * @access public
-     *
-     * @static
      */
-    function isSupported()
+    public static function isSupported()
     {
         return function_exists('finfo_open');
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @access public
      */
-    function guess($path)
+    public function guess($path)
     {
         if (!is_file($path)) {
-            trigger_error($path);
+            throw new Symfony_Component_HttpFoundation_File_Exception_FileNotFoundException($path);
         }
 
         if (!is_readable($path)) {
-            trigger_error($path);
+            throw new Symfony_Component_HttpFoundation_File_Exception_AccessDeniedException($path);
         }
 
-        if (!Symfony_Component_HttpFoundation_File_MimeType_FileinfoMimeTypeGuesser::isSupported()) {
+        if (!self::isSupported()) {
             return null;
         }
 
-        if (!$finfo = new finfo(FILEINFO_MIME_TYPE)) {
+        if (!$finfo = new \finfo(FILEINFO_MIME_TYPE)) {
             return null;
         }
 

@@ -18,44 +18,32 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
 {
     /**
      * @var string
-     *
-     * @access private
      */
-    var $value;
+    private $value;
 
     /**
      * @var float
-     *
-     * @access private
      */
-    var $quality = 1.0;
+    private $quality = 1.0;
 
     /**
      * @var int
-     *
-     * @access private
      */
-    var $index = 0;
+    private $index = 0;
 
     /**
      * @var array
-     *
-     * @access private
      */
-    var $attributes = array();
+    private $attributes = array();
 
     /**
      * Constructor.
      *
      * @param string $value
      * @param array  $attributes
-     *
-     * @access public
      */
-    function Symfony_Component_HttpFoundation_AcceptHeaderItem($value, $attributes = array())
+    public function __construct($value, array $attributes = array())
     {
-        assert(is_array($attributes));
-
         $this->value = $value;
         foreach ($attributes as $name => $value) {
             $this->setAttribute($name, $value);
@@ -67,12 +55,9 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      *
      * @param string $itemValue
      *
-     * @return AcceptHeaderItem
-     *
-     * @access public
-     * @static
+     * @return Symfony_Component_HttpFoundation_AcceptHeaderItem
      */
-    function fromString($itemValue)
+    public static function fromString($itemValue)
     {
         $bits = preg_split('/\s*(?:;*("[^"]+");*|;*(\'[^\']+\');*|;+)\s*/', $itemValue, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
         $value = array_shift($bits);
@@ -91,26 +76,21 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
             }
         }
 
-        return new Symfony_Component_HttpFoundation_AcceptHeaderItem(($start = substr($value, 0, 1)) === ($end = substr($value, -1)) && ($start === '"' || $start === '\'') ? substr($value, 1, -1) : $value, $attributes);
+        return new self(($start = substr($value, 0, 1)) === ($end = substr($value, -1)) && ($start === '"' || $start === '\'') ? substr($value, 1, -1) : $value, $attributes);
     }
 
     /**
      * Returns header  value's string representation.
      *
      * @return string
-     *
-     * @access public
      */
-    function __toString()
+    public function __toString()
     {
-        function callback($name, $value)
-        {
-            return sprintf(preg_match('/[,;=]/', $value) ? '%s="%s"' : '%s=%s', $name, $value);
-        }
-
         $string = $this->value.($this->quality < 1 ? ';q='.$this->quality : '');
         if (count($this->attributes) > 0) {
-            $string .= ';'.implode(';', array_map('callback', array_keys($this->attributes), $this->attributes));
+            $string .= ';'.implode(';', array_map(create_function('$name, $value', '
+                return sprintf(preg_match(\'/[,;=]/\', $value) ? \'%s="%s"\' : \'%s=%s\', $name, $value);
+            '), array_keys($this->attributes), $this->attributes));
         }
 
         return $string;
@@ -121,9 +101,9 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      *
      * @param string $value
      *
-     * @return AcceptHeaderItem
+     * @return Symfony_Component_HttpFoundation_AcceptHeaderItem
      */
-    function setValue($value)
+    public function setValue($value)
     {
         $this->value = $value;
 
@@ -135,7 +115,7 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      *
      * @return string
      */
-    function getValue()
+    public function getValue()
     {
         return $this->value;
     }
@@ -145,11 +125,9 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      *
      * @param float $quality
      *
-     * @return AcceptHeaderItem
-     *
-     * @access public
+     * @return Symfony_Component_HttpFoundation_AcceptHeaderItem
      */
-    function setQuality($quality)
+    public function setQuality($quality)
     {
         $this->quality = $quality;
 
@@ -160,10 +138,8 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      * Returns the item quality.
      *
      * @return float
-     *
-     * @access public
      */
-    function getQuality()
+    public function getQuality()
     {
         return $this->quality;
     }
@@ -173,11 +149,9 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      *
      * @param int $index
      *
-     * @return AcceptHeaderItem
-     *
-     * @access public
+     * @return Symfony_Component_HttpFoundation_AcceptHeaderItem
      */
-    function setIndex($index)
+    public function setIndex($index)
     {
         $this->index = $index;
 
@@ -188,10 +162,8 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      * Returns the item index.
      *
      * @return int
-     *
-     * @access public
      */
-    function getIndex()
+    public function getIndex()
     {
         return $this->index;
     }
@@ -202,10 +174,8 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      * @param string $name
      *
      * @return Boolean
-     *
-     * @access public
      */
-    function hasAttribute($name)
+    public function hasAttribute($name)
     {
         return isset($this->attributes[$name]);
     }
@@ -217,10 +187,8 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      * @param mixed  $default
      *
      * @return mixed
-     *
-     * @access public
      */
-    function getAttribute($name, $default = null)
+    public function getAttribute($name, $default = null)
     {
         return isset($this->attributes[$name]) ? $this->attributes[$name] : $default;
     }
@@ -229,10 +197,8 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      * Returns all attributes.
      *
      * @return array
-     *
-     * @access public
      */
-    function getAttributes()
+    public function getAttributes()
     {
         return $this->attributes;
     }
@@ -244,10 +210,8 @@ class Symfony_Component_HttpFoundation_AcceptHeaderItem
      * @param string $value
      *
      * @return AcceptHeaderItem
-     *
-     * @access public
      */
-    function setAttribute($name, $value)
+    public function setAttribute($name, $value)
     {
         if ('q' === $name) {
             $this->quality = (float) $value;

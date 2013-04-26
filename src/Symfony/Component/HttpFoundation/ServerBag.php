@@ -22,10 +22,8 @@ class Symfony_Component_HttpFoundation_ServerBag extends Symfony_Component_HttpF
      * Gets the HTTP headers.
      *
      * @return array
-     *
-     * @access public
      */
-    function getHeaders()
+    public function getHeaders()
     {
         $headers = array();
         foreach ($this->parameters as $key => $value) {

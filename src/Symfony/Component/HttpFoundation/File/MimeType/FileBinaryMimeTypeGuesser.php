@@ -14,14 +14,9 @@
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class Symfony_Component_HttpFoundation_File_MimeType_FileBinaryMimeTypeGuesser extends Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface
+class Symfony_Component_HttpFoundation_File_MimeType_FileBinaryMimeTypeGuesser implements Symfony_Component_HttpFoundation_File_MimeType_MimeTypeGuesserInterface
 {
-    /**
-     * @var unknown_type
-     *
-     * @access private
-     */
-    var $cmd;
+    private $cmd;
 
     /**
      * Constructor.
@@ -32,10 +27,8 @@ class Symfony_Component_HttpFoundation_File_MimeType_FileBinaryMimeTypeGuesser e
      * The command output must start with the mime type of the file.
      *
      * @param string $cmd The command to run to get the mime type of a file
-     *
-     * @access public
      */
-    function Symfony_Component_HttpFoundation_File_MimeType_FileBinaryMimeTypeGuesser($cmd = 'file -b --mime %s 2>/dev/null')
+    public function __construct($cmd = 'file -b --mime %s 2>/dev/null')
     {
         $this->cmd = $cmd;
     }
@@ -44,32 +37,26 @@ class Symfony_Component_HttpFoundation_File_MimeType_FileBinaryMimeTypeGuesser e
      * Returns whether this guesser is supported on the current OS
      *
      * @return Boolean
-     *
-     * @access public
-     *
-     * @static
      */
-    function isSupported()
+    public static function isSupported()
     {
         return !defined('PHP_WINDOWS_VERSION_BUILD') && function_exists('passthru') && function_exists('escapeshellarg');
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @access public
      */
-    function guess($path)
+    public function guess($path)
     {
         if (!is_file($path)) {
-            trigger_error($path);
+            throw new Symfony_Component_HttpFoundation_File_Exception_FileNotFoundException($path);
         }
 
         if (!is_readable($path)) {
-            trigger_error($path);
+            throw new Symfony_Component_HttpFoundation_File_Exception_AccessDeniedException($path);
         }
 
-        if (!Symfony_Component_HttpFoundation_File_MimeType_FileBinaryMimeTypeGuesser::isSupported()) {
+        if (!self::isSupported()) {
             return null;
         }
 

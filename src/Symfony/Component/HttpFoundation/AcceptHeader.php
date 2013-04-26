@@ -20,30 +20,22 @@
 class Symfony_Component_HttpFoundation_AcceptHeader
 {
     /**
-     * @var AcceptHeaderItem[]
-     *
-     * @access private
+     * @var Symfony_Component_HttpFoundation_AcceptHeaderItem[]
      */
-    var $items = array();
+    private $items = array();
 
     /**
      * @var bool
-     *
-     * @access private
      */
-    var $sorted = true;
+    private $sorted = true;
 
     /**
      * Constructor.
      *
-     * @param AcceptHeaderItem[] $items
-     *
-     * @access public
+     * @param Symfony_Component_HttpFoundation_AcceptHeaderItem[] $items
      */
-    function Symfony_Component_HttpFoundation_AcceptHeader($items)
+    public function __construct(array $items)
     {
-        assert(is_array($items));
-
         foreach ($items as $item) {
             $this->add($item);
         }
@@ -54,36 +46,31 @@ class Symfony_Component_HttpFoundation_AcceptHeader
      *
      * @param string $headerValue
      *
-     * @return AcceptHeader
-     *
-     * @access public
-     * @static
+     * @return Symfony_Component_HttpFoundation_AcceptHeader
      */
-    function fromString($headerValue)
+    public static function fromString($headerValue)
     {
-        $params = array();
+        self::$_fromStringIndex = 0;
 
-        $params = preg_split('/\s*(?:,*("[^"]+"),*|,*(\'[^\']+\'),*|,+)\s*/', $headerValue, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-        $paramsMapped = array();
+        return new self(array_map(array('Symfony_Component_HttpFoundation_AcceptHeader', '_fromStringCB'), preg_split('/\s*(?:,*("[^"]+"),*|,*(\'[^\']+\'),*|,+)\s*/', $headerValue, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE)));
+    }
 
-        $index  = 0;
-        foreach ($params as $value) {
-            $item = Symfony_Component_HttpFoundation_AcceptHeaderItem::fromString($itemValue);
-            $item->setIndex($index++);
-            $paramsMapped[] = $item;
-        }
+    private static $_fromStringIndex = 0;
 
-        return new Symfony_Component_HttpFoundation_AcceptHeader($paramsMapped);
+    public static function _fromStringCB($itemValue)
+    {
+        $item = Symfony_Component_HttpFoundation_AcceptHeaderItem::fromString($itemValue);
+        $item->setIndex(self::$_fromStringIndex++);
+
+        return $item;
     }
 
     /**
      * Returns header value's string representation.
      *
      * @return string
-     *
-     * @access public
      */
-    function __toString()
+    public function __toString()
     {
         return implode(',', $this->items);
     }
@@ -94,10 +81,8 @@ class Symfony_Component_HttpFoundation_AcceptHeader
      * @param string $value
      *
      * @return Boolean
-     *
-     * @access public
      */
-    function has($value)
+    public function has($value)
     {
         return isset($this->items[$value]);
     }
@@ -107,11 +92,9 @@ class Symfony_Component_HttpFoundation_AcceptHeader
      *
      * @param string $value
      *
-     * @return AcceptHeaderItem|null
-     *
-     * @access public
+     * @return Symfony_Component_HttpFoundation_AcceptHeaderItem|null
      */
-    function get($value)
+    public function get($value)
     {
         return isset($this->items[$value]) ? $this->items[$value] : null;
     }
@@ -119,16 +102,12 @@ class Symfony_Component_HttpFoundation_AcceptHeader
     /**
      * Adds an item.
      *
-     * @param AcceptHeaderItem $item
+     * @param Symfony_Component_HttpFoundation_AcceptHeaderItem $item
      *
-     * @return AcceptHeader
-     *
-     * @access public
+     * @return Symfony_Component_HttpFoundation_AcceptHeader
      */
-    function add($item)
+    public function add(Symfony_Component_HttpFoundation_AcceptHeaderItem $item)
     {
-        assert(is_a($item, 'Symfony_Component_HttpFoundation_AcceptHeaderItem'));
-
         $this->items[$item->getValue()] = $item;
         $this->sorted = false;
 
@@ -138,11 +117,9 @@ class Symfony_Component_HttpFoundation_AcceptHeader
     /**
      * Returns all items.
      *
-     * @return AcceptHeaderItem[]
-     *
-     * @access public
+     * @return Symfony_Component_HttpFoundation_AcceptHeaderItem[]
      */
-    function all()
+    public function all()
     {
         $this->sort();
 
@@ -154,29 +131,28 @@ class Symfony_Component_HttpFoundation_AcceptHeader
      *
      * @param string $pattern
      *
-     * @return AcceptHeader
-     *
-     * @access public
+     * @return Symfony_Component_HttpFoundation_AcceptHeader
      */
-    function filter($pattern)
+    public function filter($pattern)
     {
-        function callback($item)
-        {
-            return preg_match($pattern, $item->getValue());
-        }
-        $class = get_class($this);
+        $this->_filterPattern = $pattern;
 
-        return new $class(array_filter($this->items, 'callback'));
+        return new self(array_filter($this->items, array($this, '_filterCB')));
+    }
+
+    private $_filterPattern = null;
+
+    public function _filterCB(Symfony_Component_HttpFoundation_AcceptHeaderItem $item)
+    {
+        return preg_match($this->_filterPattern, $item->getValue());
     }
 
     /**
      * Returns first item.
      *
-     * @return AcceptHeaderItem|null
-     *
-     * @access public
+     * @return Symfony_Component_HttpFoundation_AcceptHeaderItem|null
      */
-    function first()
+    public function first()
     {
         $this->sort();
 
@@ -185,14 +161,11 @@ class Symfony_Component_HttpFoundation_AcceptHeader
 
     /**
      * Sorts items by descending quality
-     *
-     * @access private
      */
-    function sort()
+    private function sort()
     {
         if (!$this->sorted) {
-            function callback($a, $b)
-            {
+            uasort($this->items, create_function('$a, $b', '
                 $qA = $a->getQuality();
                 $qB = $b->getQuality();
 
@@ -201,9 +174,7 @@ class Symfony_Component_HttpFoundation_AcceptHeader
                 }
 
                 return $qA > $qB ? -1 : 1;
-            }
-
-            uasort($this->items, 'callback');
+            '));
 
             $this->sorted = true;
         }

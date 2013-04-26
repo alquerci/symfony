@@ -26,46 +26,36 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      * Local files are used in test mode hence the code should not enforce HTTP uploads.
      *
      * @var Boolean
-     *
-     * @access private
      */
-    var $test = false;
+    private $test = false;
 
     /**
      * The original name of the uploaded file.
      *
      * @var string
-     *
-     * @access private
      */
-     var $originalName;
+    private $originalName;
 
     /**
      * The mime type provided by the uploader.
      *
      * @var string
-     *
-     * @access private
      */
-    var $mimeType;
+    private $mimeType;
 
     /**
      * The file size provided by the uploader.
      *
      * @var string
-     *
-     * @access private
      */
-    var $size;
+    private $size;
 
     /**
      * The UPLOAD_ERR_XXX constant provided by the uploader.
      *
      * @var integer
-     *
-     * @access private
      */
-    var $error;
+    private $error;
 
     /**
      * Accepts the information of the uploaded file as provided by the PHP global $_FILES.
@@ -88,17 +78,15 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      * @param integer $error        The error constant of the upload (one of PHP's UPLOAD_ERR_XXX constants)
      * @param Boolean $test         Whether the test mode is active
      *
-     * @throws FileException         If file_uploads is disabled
-     * @throws FileNotFoundException If the file does not exist
+     * @throws Symfony_Component_HttpFoundation_File_Exception_FileException         If file_uploads is disabled
+     * @throws Symfony_Component_HttpFoundation_File_Exception_FileNotFoundException If the file does not exist
      *
      * @api
-     *
-     * @access public
      */
-    function Symfony_Component_HttpFoundation_File_UploadedFile($path, $originalName, $mimeType = null, $size = null, $error = null, $test = false)
+    public function __construct($path, $originalName, $mimeType = null, $size = null, $error = null, $test = false)
     {
         if (!ini_get('file_uploads')) {
-            trigger_error(sprintf('Unable to create UploadedFile because "file_uploads" is disabled in your php.ini file (%s)', get_cfg_var('cfg_file_path')));
+            throw new Symfony_Component_HttpFoundation_File_Exception_FileException(sprintf('Unable to create UploadedFile because "file_uploads" is disabled in your php.ini file (%s)', get_cfg_var('cfg_file_path')));
         }
 
         $this->originalName = $this->getName($originalName);
@@ -107,7 +95,7 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
         $this->error = $error ? $error : UPLOAD_ERR_OK;
         $this->test = (Boolean) $test;
 
-        parent::Symfony_Component_HttpFoundation_File_File($path, UPLOAD_ERR_OK === $this->error);
+        parent::__construct($path, UPLOAD_ERR_OK === $this->error);
     }
 
     /**
@@ -119,10 +107,8 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      * @return string|null The original name
      *
      * @api
-     *
-     * @access public
      */
-    function getClientOriginalName()
+    public function getClientOriginalName()
     {
         return $this->originalName;
     }
@@ -134,10 +120,8 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      * Then is should not be considered as a safe value.
      *
      * @return string The extension
-     *
-     * @access public
      */
-    function getClientOriginalExtension()
+    public function getClientOriginalExtension()
     {
         return pathinfo($this->originalName, PATHINFO_EXTENSION);
     }
@@ -151,10 +135,8 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      * @return string|null The mime type
      *
      * @api
-     *
-     * @access public
      */
-    function getClientMimeType()
+    public function getClientMimeType()
     {
         return $this->mimeType;
     }
@@ -168,10 +150,8 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      * @return integer|null The file size
      *
      * @api
-     *
-     * @access public
      */
-    function getClientSize()
+    public function getClientSize()
     {
         return $this->size;
     }
@@ -185,10 +165,8 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      * @return integer The upload error
      *
      * @api
-     *
-     * @access public
      */
-    function getError()
+    public function getError()
     {
         return $this->error;
     }
@@ -199,10 +177,8 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      * @return Boolean True if no error occurred during uploading
      *
      * @api
-     *
-     * @access public
      */
-    function isValid()
+    public function isValid()
     {
         return $this->error === UPLOAD_ERR_OK;
     }
@@ -213,15 +189,13 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
      * @param string $directory The destination folder
      * @param string $name      The new file name
      *
-     * @return File A File object representing the new file
+     * @return Symfony_Component_HttpFoundation_File_File A File object representing the new file
      *
-     * @throws FileException if the file has not been uploaded via Http
+     * @throws Symfony_Component_HttpFoundation_File_Exception_FileException if the file has not been uploaded via Http
      *
      * @api
-     *
-     * @access public
      */
-    function move($directory, $name = null)
+    public function move($directory, $name = null)
     {
         if ($this->isValid()) {
             if ($this->test) {
@@ -231,7 +205,7 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
 
                 if (!@move_uploaded_file($this->getPathname(), $target)) {
                     $error = error_get_last();
-                    trigger_error(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target, strip_tags($error['message'])));
+                    throw new Symfony_Component_HttpFoundation_File_Exception_FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target, strip_tags($error['message'])));
                 }
 
                 @chmod($target, 0666 & ~umask());
@@ -240,19 +214,15 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
             }
         }
 
-        trigger_error(sprintf('The file "%s" has not been uploaded via Http', $this->getPathname()));
+        throw new Symfony_Component_HttpFoundation_File_Exception_FileException(sprintf('The file "%s" has not been uploaded via Http', $this->getPathname()));
     }
 
     /**
      * Returns the maximum size of an uploaded file as configured in php.ini
      *
      * @return int The maximum size of an uploaded file in bytes
-     *
-     * @access public
-     *
-     * @static
      */
-    function getMaxFilesize()
+    public static function getMaxFilesize()
     {
         $max = trim(ini_get('upload_max_filesize'));
 
