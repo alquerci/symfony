@@ -75,7 +75,7 @@ class Symfony_Component_HttpFoundation_File_File extends SplFileInfo
     /**
      * Returns the extension of the file.
      *
-     * \SplFileInfo::getExtension() is not available before PHP 5.3.6
+     * SplFileInfo::getExtension() is not available before PHP 5.3.6
      *
      * @return string The extension
      *

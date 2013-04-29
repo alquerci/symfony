@@ -28,7 +28,7 @@ class Symfony_Component_HttpKernel_Exception_FlattenException
     private $file;
     private $line;
 
-    public static function create(\Exception $exception, $statusCode = null, array $headers = array())
+    public static function create(Exception $exception, $statusCode = null, array $headers = array())
     {
         $e = new self();
         $e->setMessage($exception->getMessage());
@@ -166,7 +166,7 @@ class Symfony_Component_HttpKernel_Exception_FlattenException
         return $this->trace;
     }
 
-    public function setTraceFromException(\Exception $exception)
+    public function setTraceFromException(Exception $exception)
     {
         $trace = $exception->getTrace();
 

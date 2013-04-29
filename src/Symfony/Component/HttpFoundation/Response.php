@@ -829,13 +829,13 @@ class Symfony_Component_HttpFoundation_Response
      *
      * Passing null as value will remove the header.
      *
-     * @param \DateTime|null $date A \DateTime instance or null to remove the header
+     * @param DateTime|null $date A DateTime instance or null to remove the header
      *
      * @return Response
      *
      * @api
      */
-    public function setLastModified(\DateTime $date = null)
+    public function setLastModified(DateTime $date = null)
     {
         if (null === $date) {
             $this->headers->remove('Last-Modified');

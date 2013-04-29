@@ -284,7 +284,7 @@ class Symfony_Component_HttpFoundation_ParameterBag implements IteratorAggregate
     /**
      * Returns an iterator for parameters.
      *
-     * @return ArrayIterator An \ArrayIterator instance
+     * @return ArrayIterator An ArrayIterator instance
      */
     public function getIterator()
     {

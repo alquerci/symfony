@@ -43,7 +43,7 @@ class Symfony_Component_HttpFoundation_File_MimeType_FileinfoMimeTypeGuesser imp
             return null;
         }
 
-        if (!$finfo = new \finfo(FILEINFO_MIME_TYPE)) {
+        if (!$finfo = new finfo(FILEINFO_MIME_TYPE)) {
             return null;
         }
 

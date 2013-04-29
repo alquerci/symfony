@@ -14,6 +14,6 @@
  *
  * @author Bulat Shakirzyanov <bulat@theopenskyproject.com>
  */
-class Symfony_Component_DependencyInjection_Exception_InvalidArgumentException extends \InvalidArgumentException implements Symfony_Component_DependencyInjection_Exception_ExceptionInterface
+class Symfony_Component_DependencyInjection_Exception_InvalidArgumentException extends InvalidArgumentException implements Symfony_Component_DependencyInjection_Exception_ExceptionInterface
 {
 }

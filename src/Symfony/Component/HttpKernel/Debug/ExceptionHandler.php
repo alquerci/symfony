@@ -64,7 +64,7 @@ class Symfony_Component_HttpKernel_Debug_ExceptionHandler
     /**
      * Creates the error Response associated with the given Exception.
      *
-     * @param Exception|Symfony_Component_HttpKernel_Exception_FlattenException $exception An \Exception instance
+     * @param Exception|Symfony_Component_HttpKernel_Exception_FlattenException $exception An Exception instance
      *
      * @return Symfony_Component_HttpFoundation_Response A Response instance
      */

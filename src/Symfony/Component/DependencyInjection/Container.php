@@ -250,7 +250,7 @@ class Symfony_Component_DependencyInjection_Container implements Symfony_Compone
 
             try {
                 $service = $this->$method();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 unset($this->loading[$id]);
 
                 if (isset($this->services[$id])) {
@@ -340,7 +340,7 @@ class Symfony_Component_DependencyInjection_Container implements Symfony_Compone
 
             // add stack entry for this scope so we can restore the removed services later
             if (!isset($this->scopeStacks[$name])) {
-                $this->scopeStacks[$name] = new \SplStack();
+                $this->scopeStacks[$name] = new SplStack();
             }
             $this->scopeStacks[$name]->push($services);
         }
