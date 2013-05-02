@@ -589,7 +589,7 @@ EOF;
             return sprintf("        \$class = %s;\n\n        $return{$instantiation}new \$class(%s);\n", $class, implode(', ', $arguments));
         }
 
-        return sprintf("        $return{$instantiation}new \\%s(%s);\n", substr(str_replace('\\\\', '\\', $class), 1, -1), implode(', ', $arguments));
+        return sprintf("        $return{$instantiation}new %s(%s);\n", substr(str_replace('\\\\', '\\', $class), 1, -1), implode(', ', $arguments));
     }
 
     /**
@@ -1015,7 +1015,7 @@ EOF;
                 }
             }
 
-            return sprintf("new \\%s(%s)", substr(str_replace('\\\\', '\\', $class), 1, -1), implode(', ', $arguments));
+            return sprintf("new %s(%s)", substr(str_replace('\\\\', '\\', $class), 1, -1), implode(', ', $arguments));
         } elseif ($value instanceof Symfony_Component_DependencyInjection_Variable) {
             return '$'.$value->__toString();
         } elseif ($value instanceof Symfony_Component_DependencyInjection_Reference) {

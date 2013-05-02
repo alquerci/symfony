@@ -135,7 +135,7 @@ abstract class Symfony_Component_HttpKernel_Kernel implements Symfony_Component_
             return;
         }
 
-        if ($this->getHttpKernel() instanceof TerminableInterface) {
+        if ($this->getHttpKernel() instanceof Symfony_Component_HttpKernel_TerminableInterface) {
             $this->getHttpKernel()->terminate($request, $response);
         }
     }
@@ -164,6 +164,8 @@ abstract class Symfony_Component_HttpKernel_Kernel implements Symfony_Component_
     /**
      * {@inheritdoc}
      *
+     * @return Symfony_Component_HttpFoundation_Response A Response instance
+     *
      * @api
      */
     public function handle(Symfony_Component_HttpFoundation_Request $request, $type = Symfony_Component_HttpKernel_HttpKernelInterface::MASTER_REQUEST, $catch = true)
@@ -178,7 +180,7 @@ abstract class Symfony_Component_HttpKernel_Kernel implements Symfony_Component_
     /**
      * Gets a http kernel from the container
      *
-     * @return HttpKernel
+     * @return Symfony_Component_HttpKernel_HttpKernel
      */
     protected function getHttpKernel()
     {
@@ -213,6 +215,8 @@ abstract class Symfony_Component_HttpKernel_Kernel implements Symfony_Component_
 
     /**
      * {@inheritdoc}
+     *
+     * @return Symfony_Component_HttpKernel_Bundle_BundleInterface|Symfony_Component_HttpKernel_Bundle_BundleInterface[] A BundleInterface instance or an array of BundleInterface instances if $first is false
      *
      * @api
      */
@@ -365,6 +369,8 @@ abstract class Symfony_Component_HttpKernel_Kernel implements Symfony_Component_
 
     /**
      * {@inheritdoc}
+     *
+     * @return Symfony_Component_DependencyInjection_ContainerInterface A ContainerInterface instance
      *
      * @api
      */
