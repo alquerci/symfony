@@ -14,7 +14,7 @@
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class Symfony_Component_Config_Definition_Builder_ArrayNodeDefinition extends Symfony_Component_Config_Definition_Builder_NodeDefinition implements ParentNodeDefinitionInterface
+class Symfony_Component_Config_Definition_Builder_ArrayNodeDefinition extends Symfony_Component_Config_Definition_Builder_NodeDefinition implements Symfony_Component_Config_Definition_Builder_ParentNodeDefinitionInterface
 {
     protected $performDeepMerging;
     protected $ignoreExtraKeys;

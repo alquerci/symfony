@@ -1,0 +1,25 @@
+<?php
+
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ * CacheClearerInterface.
+ *
+ * @author Dustin Dobervich <ddobervich@gmail.com>
+ */
+interface Symfony_Component_HttpKernel_CacheClearer_CacheClearerInterface
+{
+    /**
+     * Clears any caches necessary.
+     *
+     * @param string $cacheDir The cache directory.
+     */
+    public function clear($cacheDir);
+}

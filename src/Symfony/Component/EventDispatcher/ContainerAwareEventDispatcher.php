@@ -156,7 +156,7 @@ class Symfony_Component_EventDispatcher_ContainerAwareEventDispatcher extends Sy
      *
      * @throws InvalidArgumentException if the service is not defined
      */
-    public function dispatch($eventName, Event $event = null)
+    public function dispatch($eventName, Symfony_Component_EventDispatcher_Event $event = null)
     {
         $this->lazyLoad($eventName);
 

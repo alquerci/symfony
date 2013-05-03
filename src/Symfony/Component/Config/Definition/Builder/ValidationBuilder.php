@@ -40,8 +40,8 @@ class Symfony_Component_Config_Definition_Builder_ValidationBuilder
      */
     public function rule($closure = null)
     {
-        if (null !== $then) {
-            assert(is_callable($then));
+        if (null !== $closure) {
+            assert(is_callable($closure));
         }
 
         if (null !== $closure) {

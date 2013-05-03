@@ -45,7 +45,8 @@ class Symfony_Component_Config_Definition_VariableNode extends Symfony_Component
      */
     public function getDefaultValue()
     {
-        return is_callable($this->defaultValue) ? call_user_func($this->defaultValue) : $this->defaultValue;
+        // return $this->defaultValue instanceof \Closure ? call_user_func($this->defaultValue) : $this->defaultValue;
+        return $this->defaultValue;
     }
 
     /**

@@ -73,7 +73,10 @@ abstract class Symfony_Component_DependencyInjection_Extension_Extension impleme
     public function getConfiguration(array $config, Symfony_Component_DependencyInjection_ContainerBuilder $container)
     {
         $reflected = new ReflectionClass($this);
-        $namespace = $reflected->getNamespaceName();
+        // $namespace = $reflected->getNamespaceName();
+        $name = $reflected->getName();
+        $pos = strrpos($name, '_');
+        $namespace = false === $pos ? $name : substr($name, 0, $pos);
 
         $class = $namespace . '_Configuration';
         if (class_exists($class)) {
