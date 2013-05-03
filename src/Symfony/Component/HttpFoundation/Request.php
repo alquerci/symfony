@@ -234,7 +234,7 @@ class Symfony_Component_HttpFoundation_Request
      */
     public static function createFromGlobals()
     {
-        $request = new self($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
+        $request = new /* static */ self($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('PUT', 'DELETE', 'PATCH'))
@@ -343,7 +343,7 @@ class Symfony_Component_HttpFoundation_Request
         $server['REQUEST_URI'] = $components['path'].('' !== $queryString ? '?'.$queryString : '');
         $server['QUERY_STRING'] = $queryString;
 
-        return new self($query, $request, array(), $cookies, $files, $server, $content);
+        return new /* static */ self($query, $request, array(), $cookies, $files, $server, $content);
     }
 
     /**
@@ -1112,11 +1112,11 @@ class Symfony_Component_HttpFoundation_Request
      */
     public function getMimeType($format)
     {
-        if (null === self::$formats) {
-            self::initializeFormats();
+        if (null === /* static */ self::$formats) {
+            /* static */ self::initializeFormats();
         }
 
-        return isset(self::$formats[$format]) ? self::$formats[$format][0] : null;
+        return isset(/* static */ self::$formats[$format]) ? /* static */ self::$formats[$format][0] : null;
     }
 
     /**
@@ -1134,11 +1134,11 @@ class Symfony_Component_HttpFoundation_Request
             $mimeType = substr($mimeType, 0, $pos);
         }
 
-        if (null === self::$formats) {
-            self::initializeFormats();
+        if (null === /* static */ self::$formats) {
+            /* static */ self::initializeFormats();
         }
 
-        foreach (self::$formats as $format => $mimeTypes) {
+        foreach (/* static */ self::$formats as $format => $mimeTypes) {
             if (in_array($mimeType, (array) $mimeTypes)) {
                 return $format;
             }
@@ -1157,11 +1157,11 @@ class Symfony_Component_HttpFoundation_Request
      */
     public function setFormat($format, $mimeTypes)
     {
-        if (null === self::$formats) {
-            self::initializeFormats();
+        if (null === /* static */ self::$formats) {
+            /* static */ self::initializeFormats();
         }
 
-        self::$formats[$format] = is_array($mimeTypes) ? $mimeTypes : array($mimeTypes);
+        /* static */ self::$formats[$format] = is_array($mimeTypes) ? $mimeTypes : array($mimeTypes);
     }
 
     /**
@@ -1646,7 +1646,7 @@ class Symfony_Component_HttpFoundation_Request
      */
     protected static function initializeFormats()
     {
-        self::$formats = array(
+        /* static */ self::$formats = array(
             'html' => array('text/html', 'application/xhtml+xml'),
             'txt'  => array('text/plain'),
             'js'   => array('application/javascript', 'application/x-javascript', 'text/javascript'),

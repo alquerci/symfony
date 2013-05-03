@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-// TODO use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 // TODO use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 // TODO use Symfony\Component\DependencyInjection\Loader\IniFileLoader;
 
@@ -691,7 +690,7 @@ abstract class Symfony_Component_HttpKernel_Kernel implements Symfony_Component_
     {
         $locator = new Symfony_Component_HttpKernel_Config_FileLocator($this);
         $resolver = new Symfony_Component_Config_Loader_LoaderResolver(array(
-//             new XmlFileLoader($container, $locator),
+            new Symfony_Component_DependencyInjection_Loader_XmlFileLoader($container, $locator),
 //             new YamlFileLoader($container, $locator),
 //             new IniFileLoader($container, $locator),
             new Symfony_Component_DependencyInjection_Loader_PhpFileLoader($container, $locator),

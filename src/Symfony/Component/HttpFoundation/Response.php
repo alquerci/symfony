@@ -160,7 +160,7 @@ class Symfony_Component_HttpFoundation_Response
      */
     public static function create($content = '', $status = 200, $headers = array())
     {
-        return new self($content, $status, $headers);
+        return new /* static */ self($content, $status, $headers);
     }
 
     /**
