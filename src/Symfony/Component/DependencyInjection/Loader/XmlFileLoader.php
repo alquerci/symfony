@@ -268,7 +268,7 @@ class Symfony_Component_DependencyInjection_Loader_XmlFileLoader extends Symfony
      */
     public function validateSchema(DOMDocument $dom)
     {
-        $schemaLocations = array('http://symfony.com/schema/dic/services' => str_replace('\\', '/', __DIR__.'/schema/dic/services/services-1.0.xsd'));
+        $schemaLocations = array('http://symfony.com/schema/dic/services' => str_replace('\\', '/', dirname(__FILE__).'/schema/dic/services/services-1.0.xsd'));
 
         if ($element = $dom->documentElement->getAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation')) {
             $items = preg_split('/\s+/', $element);

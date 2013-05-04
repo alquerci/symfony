@@ -688,7 +688,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
      */
     public function getXsdValidationBasePath()
     {
-        return __DIR__.'/../Resources/config/schema';
+        return dirname(__FILE__).'/../Resources/config/schema';
     }
 
     public function getNamespace()
