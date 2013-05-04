@@ -89,7 +89,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         // TODO $this->registerTranslatorConfiguration($config['translator'], $container);
 
         if (isset($config['router'])) {
-            // TODO $this->registerRouterConfiguration($config['router'], $container, $loader);
+            $this->registerRouterConfiguration($config['router'], $container, $loader);
         }
 
         // TODO $this->registerAnnotationsConfiguration($config['annotations'], $container, $loader);
@@ -274,10 +274,10 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         $container->setParameter('request_listener.https_port', $config['https_port']);
 
         $this->addClassesToCompile(array(
-            'Symfony\\Component\\Routing\\Generator\\UrlGenerator',
-            'Symfony\\Component\\Routing\\RequestContext',
-            'Symfony\\Component\\Routing\\Router',
-            'Symfony\\Bundle\\FrameworkBundle\\Routing\\RedirectableUrlMatcher',
+            'Symfony_Component_Routing_Generator_UrlGenerator',
+            'Symfony_Component_Routing_RequestContext',
+            'Symfony_Component_Routing_Router',
+            'Symfony_Bundle_FrameworkBundle_Routing_RedirectableUrlMatcher',
             $container->findDefinition('router.default')->getClass(),
         ));
     }

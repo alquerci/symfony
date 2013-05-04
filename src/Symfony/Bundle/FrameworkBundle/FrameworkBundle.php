@@ -31,7 +31,7 @@ class Symfony_Bundle_FrameworkBundle_FrameworkBundle extends Symfony_Component_H
 
         $container->addScope(new Symfony_Component_DependencyInjection_Scope('request'));
 
-        // TODO $container->addCompilerPass(new RoutingResolverPass());
+        $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_RoutingResolverPass());
         // TODO $container->addCompilerPass(new ProfilerPass());
         $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_RegisterKernelListenersPass(), Symfony_Component_DependencyInjection_Compiler_PassConfig::TYPE_AFTER_REMOVING);
         // TODO $container->addCompilerPass(new TemplatingPass());

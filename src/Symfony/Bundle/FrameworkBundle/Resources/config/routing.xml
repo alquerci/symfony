@@ -1,0 +1,99 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="router.class">Symfony_Bundle_FrameworkBundle_Routing_Router</parameter>
+        <parameter key="router.request_context.class">Symfony_Component_Routing_RequestContext</parameter>
+        <parameter key="routing.loader.class">Symfony_Bundle_FrameworkBundle_Routing_DelegatingLoader</parameter>
+        <parameter key="routing.resolver.class">Symfony_Component_Config_Loader_LoaderResolver</parameter>
+        <parameter key="routing.loader.xml.class">Symfony_Component_Routing_Loader_XmlFileLoader</parameter>
+        <parameter key="routing.loader.yml.class">Symfony_Component_Routing_Loader_YamlFileLoader</parameter>
+        <parameter key="routing.loader.php.class">Symfony_Component_Routing_Loader_PhpFileLoader</parameter>
+        <parameter key="router.options.generator_class">Symfony_Component_Routing_Generator_UrlGenerator</parameter>
+        <parameter key="router.options.generator_base_class">Symfony_Component_Routing_Generator_UrlGenerator</parameter>
+        <parameter key="router.options.generator_dumper_class">Symfony_Component_Routing_Generator_Dumper_PhpGeneratorDumper</parameter>
+        <parameter key="router.options.matcher_class">Symfony_Bundle_FrameworkBundle_Routing_RedirectableUrlMatcher</parameter>
+        <parameter key="router.options.matcher_base_class">Symfony_Bundle_FrameworkBundle_Routing_RedirectableUrlMatcher</parameter>
+        <parameter key="router.options.matcher_dumper_class">Symfony_Component_Routing_Matcher_Dumper_PhpMatcherDumper</parameter>
+        <parameter key="router.cache_warmer.class">Symfony_Bundle_FrameworkBundle_CacheWarmer_RouterCacheWarmer</parameter>
+        <parameter key="router.options.matcher.cache_class">%router.cache_class_prefix%UrlMatcher</parameter>
+        <parameter key="router.options.generator.cache_class">%router.cache_class_prefix%UrlGenerator</parameter>
+        <parameter key="router_listener.class">Symfony_Component_HttpKernel_EventListener_RouterListener</parameter>
+        <parameter key="router.request_context.host">localhost</parameter>
+        <parameter key="router.request_context.scheme">http</parameter>
+        <parameter key="router.request_context.base_url"></parameter>
+    </parameters>
+
+    <services>
+        <service id="routing.resolver" class="%routing.resolver.class%" public="false" />
+
+        <service id="routing.loader.xml" class="%routing.loader.xml.class%" public="false">
+            <tag name="routing.loader" />
+            <argument type="service" id="file_locator" />
+        </service>
+
+        <service id="routing.loader.yml" class="%routing.loader.yml.class%" public="false">
+            <tag name="routing.loader" />
+            <argument type="service" id="file_locator" />
+        </service>
+
+        <service id="routing.loader.php" class="%routing.loader.php.class%" public="false">
+            <tag name="routing.loader" />
+            <argument type="service" id="file_locator" />
+        </service>
+
+        <service id="routing.loader" class="%routing.loader.class%">
+            <tag name="monolog.logger" channel="router" />
+            <argument type="service" id="controller_name_converter" />
+            <argument type="service" id="logger" on-invalid="null" />
+            <argument type="service" id="routing.resolver" />
+        </service>
+
+        <service id="router.default" class="%router.class%" public="false">
+            <tag name="monolog.logger" channel="router" />
+            <argument type="service" id="service_container" />
+            <argument>%router.resource%</argument>
+            <argument type="collection">
+                <argument key="cache_dir">%kernel.cache_dir%</argument>
+                <argument key="debug">%kernel.debug%</argument>
+                <argument key="generator_class">%router.options.generator_class%</argument>
+                <argument key="generator_base_class">%router.options.generator_base_class%</argument>
+                <argument key="generator_dumper_class">%router.options.generator_dumper_class%</argument>
+                <argument key="generator_cache_class">%router.options.generator.cache_class%</argument>
+                <argument key="matcher_class">%router.options.matcher_class%</argument>
+                <argument key="matcher_base_class">%router.options.matcher_base_class%</argument>
+                <argument key="matcher_dumper_class">%router.options.matcher_dumper_class%</argument>
+                <argument key="matcher_cache_class">%router.options.matcher.cache_class%</argument>
+            </argument>
+            <argument type="service" id="router.request_context" on-invalid="ignore" />
+            <argument type="service" id="logger" on-invalid="ignore" />
+        </service>
+
+        <service id="router" alias="router.default" />
+
+        <service id="router.request_context" class="%router.request_context.class%" public="false">
+            <argument>%router.request_context.base_url%</argument>
+            <argument>GET</argument>
+            <argument>%router.request_context.host%</argument>
+            <argument>%router.request_context.scheme%</argument>
+            <argument>%request_listener.http_port%</argument>
+            <argument>%request_listener.https_port%</argument>
+        </service>
+
+        <service id="router.cache_warmer" class="%router.cache_warmer.class%" public="false">
+            <tag name="kernel.cache_warmer" />
+            <argument type="service" id="router" />
+        </service>
+
+        <service id="router_listener" class="%router_listener.class%">
+            <tag name="kernel.event_subscriber" />
+            <tag name="monolog.logger" channel="request" />
+            <argument type="service" id="router" />
+            <argument type="service" id="router.request_context" on-invalid="ignore" />
+            <argument type="service" id="logger" on-invalid="ignore" />
+        </service>
+    </services>
+</container>
