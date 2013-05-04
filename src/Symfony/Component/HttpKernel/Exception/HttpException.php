@@ -24,7 +24,7 @@ class Symfony_Component_HttpKernel_Exception_HttpException extends RuntimeExcept
         $this->statusCode = $statusCode;
         $this->headers = $headers;
 
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $code/* , $previous */);
     }
 
     public function getStatusCode()

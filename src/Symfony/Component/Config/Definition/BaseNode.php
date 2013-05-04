@@ -301,7 +301,7 @@ abstract class Symfony_Component_Config_Definition_BaseNode implements Symfony_C
                     'Invalid configuration for path "%s": %s',
                     $this->getPath(),
                     $invalid->getMessage()
-                ), $invalid->getCode(), $invalid);
+                ), $invalid->getCode()/* , $invalid */);
             }
         }
 

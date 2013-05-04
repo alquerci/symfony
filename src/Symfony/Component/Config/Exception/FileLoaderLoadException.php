@@ -37,7 +37,7 @@ class Symfony_Component_Config_Exception_FileLoaderLoadException extends Excepti
             $message .= ' '.sprintf('Make sure the "%s" bundle is correctly registered and loaded in the application kernel class.', $bundle);
         }
 
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $code/* , $previous */);
     }
 
     protected function varToString($var)

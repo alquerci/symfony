@@ -85,7 +85,7 @@ class Symfony_Component_Config_Util_XmlUtils
                 if (empty($messages)) {
                     $messages = array(sprintf('The XML file "%s" is not valid.', $file));
                 }
-                throw new InvalidArgumentException(implode("\n", $messages), 0, $e);
+                throw new InvalidArgumentException(implode("\n", $messages), 0/* , $e */);
             }
 
             libxml_use_internal_errors($internalErrors);

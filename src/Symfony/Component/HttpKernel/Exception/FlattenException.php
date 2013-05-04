@@ -49,9 +49,9 @@ class Symfony_Component_HttpKernel_Exception_FlattenException
         $e->setClass(get_class($exception));
         $e->setFile($exception->getFile());
         $e->setLine($exception->getLine());
-        if ($exception->getPrevious()) {
-            $e->setPrevious(self::create($exception->getPrevious()));
-        }
+//         if ($exception->getPrevious()) {
+//             $e->setPrevious(self::create($exception->getPrevious()));
+//         }
 
         return $e;
     }
