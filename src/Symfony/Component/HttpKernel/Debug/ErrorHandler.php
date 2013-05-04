@@ -9,6 +9,18 @@
  * file that was distributed with this source code.
  */
 
+if (!defined('E_RECOVERABLE_ERROR')) {
+    define('E_RECOVERABLE_ERROR', 4096);
+}
+
+if (!defined('E_DEPRECATED')) {
+    define('E_DEPRECATED', 8192);
+}
+
+if (!defined('E_USER_DEPRECATED')) {
+    define('E_USER_DEPRECATED', 16384);
+}
+
 /**
  * ErrorHandler.
  *
@@ -40,6 +52,8 @@ class Symfony_Component_HttpKernel_Debug_ErrorHandler
 
     /** @var Psr_Log_LoggerInterface */
     private static $logger;
+
+    private static $lastError;
 
     /**
      * Register the error handler.
@@ -76,6 +90,13 @@ class Symfony_Component_HttpKernel_Debug_ErrorHandler
      */
     public function handle($level, $message, $file, $line, $context)
     {
+        self::$lastError = array(
+            'type'      => $level,
+            'message'   => $message,
+            'file'      => $file,
+            'line'      => $line,
+        );
+
         if (0 === $this->level) {
             return false;
         }
@@ -119,5 +140,17 @@ class Symfony_Component_HttpKernel_Debug_ErrorHandler
             $exception = new Symfony_Component_HttpKernel_Exception_FatalErrorException($message, 0, $type, $error['file'], $error['line']);
             $exceptionHandler[0]->handle($exception);
         }
+    }
+
+    public static function getLast()
+    {
+        return self::$lastError;
+    }
+}
+
+if (!function_exists('error_get_last')) {
+    function error_get_last()
+    {
+        return Symfony_Component_HttpKernel_Debug_ErrorHandler::getLast();
     }
 }
