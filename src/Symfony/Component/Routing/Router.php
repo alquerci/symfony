@@ -234,7 +234,7 @@ class Symfony_Component_Routing_Router implements Symfony_Component_Routing_Rout
             $cache->write($dumper->dump($options), $this->getRouteCollection()->getResources());
         }
 
-        require_once $cache;
+        require_once $cache->__toString();
 
         return $this->matcher = new $class($this->context);
     }
@@ -266,7 +266,7 @@ class Symfony_Component_Routing_Router implements Symfony_Component_Routing_Rout
                 $cache->write($dumper->dump($options), $this->getRouteCollection()->getResources());
             }
 
-            require_once $cache;
+            require_once $cache->__toString();
 
             $this->generator = new $class($this->context, $this->logger);
         }
