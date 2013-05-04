@@ -325,7 +325,7 @@ class Symfony_Component_Config_Definition_Builder_ArrayNodeDefinition extends Sy
      */
     public function append(Symfony_Component_Config_Definition_Builder_NodeDefinition $node)
     {
-        $this->children[$node->name] = $node->setParent($this);
+        $this->children[$node->getName()] = $node->setParent($this);
 
         return $this;
     }

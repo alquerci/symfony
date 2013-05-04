@@ -50,6 +50,16 @@ abstract class Symfony_Component_Config_Definition_Builder_NodeDefinition implem
     }
 
     /**
+     * Gets the name of this node
+     *
+     * @return string The name of this node
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * Sets the parent node.
      *
      * @param Symfony_Component_Config_Definition_Builder_NodeParentInterface $parent The parent
