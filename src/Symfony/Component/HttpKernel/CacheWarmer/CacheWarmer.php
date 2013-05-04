@@ -20,7 +20,8 @@ abstract class Symfony_Component_HttpKernel_CacheWarmer_CacheWarmer implements S
     {
         $tmpFile = tempnam(dirname($file), basename($file));
         if (false !== @file_put_contents($tmpFile, $content) && @rename($tmpFile, $file)) {
-            @chmod($file, 0666 & ~umask());
+            $umask = false === umask() ? 0022 : umask();
+            @chmod($file, 0666 & ~$umask);
 
             return;
         }

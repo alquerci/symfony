@@ -208,7 +208,8 @@ class Symfony_Component_HttpFoundation_File_UploadedFile extends Symfony_Compone
                     throw new Symfony_Component_HttpFoundation_File_Exception_FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target, strip_tags($error['message'])));
                 }
 
-                @chmod($target, 0666 & ~umask());
+                $umask = false === umask() ? 0022 : umask();
+                @chmod($target, 0666 & ~$umask);
 
                 return $target;
             }
