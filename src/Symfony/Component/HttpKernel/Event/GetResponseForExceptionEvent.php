@@ -32,7 +32,7 @@ class Symfony_Component_HttpKernel_Event_GetResponseForExceptionEvent extends Sy
      */
     private $exception;
 
-    public function __construct(Symfony_Component_HttpKernel_HttpKernelInterface $kernel, Symfony_Component_HttpFoundation_Request $request, $requestType, \Exception $e)
+    public function __construct(Symfony_Component_HttpKernel_HttpKernelInterface $kernel, Symfony_Component_HttpFoundation_Request $request, $requestType, Exception $e)
     {
         parent::__construct($kernel, $request, $requestType);
 
