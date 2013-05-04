@@ -100,7 +100,7 @@ class Symfony_Component_Config_ConfigCache
         $tmpFile = tempnam($dir, basename($this->file));
         if (false !== @file_put_contents($tmpFile, $content) && @rename($tmpFile, $this->file)) {
             $umask = false === umask() ? 0022 : umask();
-            @chmod($this->$file, 0666 & ~$umask);
+            @chmod($this->file, 0666 & ~$umask);
         } else {
             throw new RuntimeException(sprintf('Failed to write cache file "%s".', $this->file));
         }
