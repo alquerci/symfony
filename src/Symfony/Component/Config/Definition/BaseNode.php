@@ -245,7 +245,7 @@ abstract class Symfony_Component_Config_Definition_BaseNode implements Symfony_C
 
         // run custom normalization closures
         foreach ($this->normalizationClosures as $closure) {
-            $value = $closure($value);
+            $value = call_user_func($closure, $value);
         }
 
         // replace value with their equivalent
@@ -293,7 +293,7 @@ abstract class Symfony_Component_Config_Definition_BaseNode implements Symfony_C
         // The closure is also allowed to return another value.
         foreach ($this->finalValidationClosures as $closure) {
             try {
-                $value = $closure($value);
+                $value = call_user_func($closure, $value);
             } catch (Symfony_Component_Config_Definition_Exception_Exception $correctEx) {
                 throw $correctEx;
             } catch (Exception $invalid) {
