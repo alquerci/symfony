@@ -14,7 +14,7 @@
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class Symfony_Component_Config_Definition_ArrayNode extends Symfony_Component_Config_Definition_BaseNode implements Symfony_Component_Config_Definition_PrototypeNodeInterface
+class Symfony_Component_Config_Definition_ArrayNode extends Symfony_Component_Config_Definition_BaseNode implements Symfony_Component_Config_Definition_PrototypeNodeInterface, Symfony_Component_Config_Definition_Builder_NodeParentInterface
 {
     protected $xmlRemappings;
     protected $children;

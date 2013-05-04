@@ -357,7 +357,7 @@ class Symfony_Component_Config_Definition_Builder_ArrayNodeDefinition extends Sy
             $node->setAddIfNotSet($this->addDefaults);
 
             foreach ($this->children as $child) {
-                $child->parent = $node;
+                $child->setParent($node);
                 $node->addChild($child->getNode());
             }
         } else {
@@ -384,7 +384,7 @@ class Symfony_Component_Config_Definition_Builder_ArrayNodeDefinition extends Sy
                 }
             }
 
-            $this->prototype->parent = $node;
+            $this->prototype->setParent($node);
             $node->setPrototype($this->prototype->getNode());
         }
 
