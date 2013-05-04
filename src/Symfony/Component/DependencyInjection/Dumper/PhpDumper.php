@@ -46,7 +46,7 @@ class Symfony_Component_DependencyInjection_Dumper_PhpDumper extends Symfony_Com
     {
         parent::__construct($container);
 
-        $this->inlinedDefinitions = new SplObjectStorage;
+        $this->inlinedDefinitions = new Symfony_Component_DependencyInjection_Dumper_SplObjectStorage;
     }
 
     /**
@@ -181,8 +181,8 @@ class Symfony_Component_DependencyInjection_Dumper_PhpDumper extends Symfony_Com
     {
         $code = '';
         $variableMap = $this->definitionVariables;
-        $nbOccurrences = new SplObjectStorage();
-        $processed = new SplObjectStorage();
+        $nbOccurrences = new Symfony_Component_DependencyInjection_Dumper_SplObjectStorage();
+        $processed = new Symfony_Component_DependencyInjection_Dumper_SplObjectStorage();
         $inlinedDefinitions = $this->getInlinedDefinitions($definition);
 
         foreach ($inlinedDefinitions as $definition) {
@@ -363,7 +363,7 @@ class Symfony_Component_DependencyInjection_Dumper_PhpDumper extends Symfony_Com
         $this->referenceVariables[$id] = new Symfony_Component_DependencyInjection_Variable('instance');
 
         $code = '';
-        $processed = new SplObjectStorage();
+        $processed = new Symfony_Component_DependencyInjection_Dumper_SplObjectStorage();
         foreach ($this->getInlinedDefinitions($definition) as $iDefinition) {
             if ($processed->contains($iDefinition)) {
                 continue;
@@ -424,7 +424,7 @@ class Symfony_Component_DependencyInjection_Dumper_PhpDumper extends Symfony_Com
     private function addService($id, $definition)
     {
         $name = Symfony_Component_DependencyInjection_Container::camelize($id);
-        $this->definitionVariables = new SplObjectStorage();
+        $this->definitionVariables = new Symfony_Component_DependencyInjection_Dumper_SplObjectStorage();
         $this->referenceVariables = array();
         $this->variableCount = 0;
 
