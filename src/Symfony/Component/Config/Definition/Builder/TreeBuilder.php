@@ -27,7 +27,7 @@ class Symfony_Component_Config_Definition_Builder_TreeBuilder implements Symfony
      * @param string      $type    The type of the root node
      * @param Symfony_Component_Config_Definition_Builder_NodeBuilder $builder A custom node builder instance
      *
-     * @return ArrayNodeDefinition|NodeDefinition The root node (as an ArrayNodeDefinition when the type is 'array')
+     * @return Symfony_Component_Config_Definition_Builder_ArrayNodeDefinition|Symfony_Component_Config_Definition_Builder_NodeDefinition The root node (as an ArrayNodeDefinition when the type is 'array')
      *
      * @throws RuntimeException When the node type is not supported
      */
