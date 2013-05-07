@@ -241,16 +241,16 @@ EOF;
 
             if (1 === count($methods)) {
                 $code .= <<<EOF
+            \$allow[] = '$methods[0]';
             if (\$this->context->getMethod() == '$methods[0]') {
-                \$allow[] = '$methods[0]';
 
 
 EOF;
             } else {
                 $methods = implode("', '", $methods);
                 $code .= <<<EOF
+            \$allow = array_merge(\$allow, array('$methods'));
             if (in_array(\$this->context->getMethod(), array('$methods'))) {
-                \$allow = array_merge(\$allow, array('$methods'));
 
 
 EOF;
