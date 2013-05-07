@@ -34,7 +34,7 @@ class Symfony_Component_HttpKernel_Exception_FlattenException
         $e->setMessage($exception->getMessage());
         $e->setCode($exception->getCode());
 
-        if ($exception instanceof HttpExceptionInterface) {
+        if ($exception instanceof Symfony_Component_HttpKernel_Exception_HttpExceptionInterface) {
             $statusCode = $exception->getStatusCode();
             $headers = array_merge($headers, $exception->getHeaders());
         }
@@ -49,9 +49,9 @@ class Symfony_Component_HttpKernel_Exception_FlattenException
         $e->setClass(get_class($exception));
         $e->setFile($exception->getFile());
         $e->setLine($exception->getLine());
-//         if ($exception->getPrevious()) {
-//             $e->setPrevious(self::create($exception->getPrevious()));
-//         }
+        if (is_callable(array($exception, 'getPrevious')) && $exception->getPrevious()) {
+            $e->setPrevious(self::create($exception->getPrevious()));
+        }
 
         return $e;
     }

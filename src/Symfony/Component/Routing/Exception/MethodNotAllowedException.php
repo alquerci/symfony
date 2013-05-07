@@ -25,11 +25,21 @@ class Symfony_Component_Routing_Exception_MethodNotAllowedException extends Runt
      */
     protected $allowedMethods = array();
 
-    public function __construct(array $allowedMethods, $message = null, $code = 0, \Exception $previous = null)
+    /**
+     * @var Exception
+     */
+    private $previous;
+
+    public function __construct(array $allowedMethods, $message = null, $code = 0, Exception $previous = null)
     {
         $this->allowedMethods = array_map('strtoupper', $allowedMethods);
 
-        parent::__construct($message, $code, $previous);
+        if (method_exists($this, 'getPrevious')) {
+            parent::__construct($message, $code, $previous);
+        } else {
+            $this->previous = $previous;
+            parent::__construct($message, $code);
+        }
     }
 
     /**
@@ -40,5 +50,20 @@ class Symfony_Component_Routing_Exception_MethodNotAllowedException extends Runt
     public function getAllowedMethods()
     {
         return $this->allowedMethods;
+    }
+
+    public function __call($name, array $arguments)
+    {
+        switch ($name) {
+            case 'getPrevious':
+                return $this->previous;
+            default:
+        }
+
+        throw new BadMethodCallException(sprintf('Call an undefined method %s->%s(%s)',
+            get_class($this),
+            $name,
+            implode(', ', array_map('gettype', $arguments))
+        ));
     }
 }

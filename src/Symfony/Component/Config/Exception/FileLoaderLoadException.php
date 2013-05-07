@@ -17,6 +17,11 @@
 class Symfony_Component_Config_Exception_FileLoaderLoadException extends Exception
 {
     /**
+     * @var Exception
+     */
+    private $previous;
+
+    /**
      * @param string     $resource       The resource that could not be imported
      * @param string     $sourceResource The original resource importing the new resource
      * @param integer    $code           The error code
@@ -37,7 +42,12 @@ class Symfony_Component_Config_Exception_FileLoaderLoadException extends Excepti
             $message .= ' '.sprintf('Make sure the "%s" bundle is correctly registered and loaded in the application kernel class.', $bundle);
         }
 
-        parent::__construct($message, $code/* , $previous */);
+        if (method_exists($this, 'getPrevious')) {
+            parent::__construct($message, $code, $previous);
+        } else {
+            $this->previous = $previous;
+            parent::__construct($message, $code);
+        }
     }
 
     protected function varToString($var)
@@ -72,5 +82,20 @@ class Symfony_Component_Config_Exception_FileLoaderLoadException extends Excepti
         }
 
         return (string) $var;
+    }
+
+    public function __call($name, array $arguments)
+    {
+        switch ($name) {
+            case 'getPrevious':
+                return $this->previous;
+            default:
+        }
+
+        throw new BadMethodCallException(sprintf('Call an undefined method %s->%s(%s)',
+            get_class($this),
+            $name,
+            implode(', ', array_map('gettype', $arguments))
+        ));
     }
 }

@@ -19,12 +19,22 @@ class Symfony_Component_HttpKernel_Exception_HttpException extends RuntimeExcept
     private $statusCode;
     private $headers;
 
+    /**
+     * @var Exception
+     */
+    private $previous;
+
     public function __construct($statusCode, $message = null, Exception $previous = null, array $headers = array(), $code = 0)
     {
         $this->statusCode = $statusCode;
         $this->headers = $headers;
 
-        parent::__construct($message, $code/* , $previous */);
+        if (method_exists($this, 'getPrevious')) {
+            parent::__construct($message, $code, $previous);
+        } else {
+            $this->previous = $previous;
+            parent::__construct($message, $code);
+        }
     }
 
     public function getStatusCode()
@@ -35,5 +45,20 @@ class Symfony_Component_HttpKernel_Exception_HttpException extends RuntimeExcept
     public function getHeaders()
     {
         return $this->headers;
+    }
+
+    public function __call($name, array $arguments)
+    {
+        switch ($name) {
+            case 'getPrevious':
+                return $this->previous;
+            default:
+        }
+
+        throw new BadMethodCallException(sprintf('Call an undefined method %s->%s(%s)',
+            get_class($this),
+            $name,
+            implode(', ', array_map('gettype', $arguments))
+        ));
     }
 }

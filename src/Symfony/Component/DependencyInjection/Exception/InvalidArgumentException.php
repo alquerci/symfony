@@ -16,8 +16,38 @@
  */
 class Symfony_Component_DependencyInjection_Exception_InvalidArgumentException extends InvalidArgumentException implements Symfony_Component_DependencyInjection_Exception_ExceptionInterface
 {
-    public function __construct($message = "", $code = 0, Exception $previous = null)
+    /**
+     * @var Exception
+     */
+    private $previous;
+
+    /**
+     * @param string     $message   The Exception message to throw. [Optional]
+     * @param integer    $code      The error code                  [Optional]
+     * @param Exception  $previous  A previous exception            [Optional]
+     */
+    public function __construct($message = '', $code = null, Exception $previous = null)
     {
-        parent::__construct($message, $code);
+        if (method_exists($this, 'getPrevious')) {
+            parent::__construct($message, $code, $previous);
+        } else {
+            $this->previous = $previous;
+            parent::__construct($message, $code);
+        }
+    }
+
+    public function __call($name, array $arguments)
+    {
+        switch ($name) {
+            case 'getPrevious':
+                return $this->previous;
+            default:
+        }
+
+        throw new BadMethodCallException(sprintf('Call an undefined method %s->%s(%s)',
+            get_class($this),
+            $name,
+            implode(', ', array_map('gettype', $arguments))
+        ));
     }
 }
