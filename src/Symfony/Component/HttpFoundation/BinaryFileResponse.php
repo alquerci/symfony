@@ -232,12 +232,10 @@ class Symfony_Component_HttpFoundation_BinaryFileResponse extends Symfony_Compon
             return;
         }
 
-        $out = fopen('php://output', 'wb');
         $file = fopen($this->file->getPathname(), 'rb');
 
-        stream_copy_to_stream($file, $out, $this->maxlen, $this->offset);
+        echo stream_get_contents($file, $this->maxlen, $this->offset);
 
-        fclose($out);
         fclose($file);
     }
 
