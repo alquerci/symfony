@@ -160,7 +160,7 @@ class Symfony_Component_HttpFoundation_Response
      */
     public static function create($content = '', $status = 200, $headers = array())
     {
-        return new self($content, $status, $headers);
+        return new /* static */ self($content, $status, $headers);
     }
 
     /**
@@ -1163,7 +1163,7 @@ class Symfony_Component_HttpFoundation_Response
      */
     public function isRedirect($location = null)
     {
-        return in_array($this->statusCode, array(201, 301, 302, 303, 307, 308)) && (null === $location ? null : $location == $this->headers->get('Location'));
+        return in_array($this->statusCode, array(201, 301, 302, 303, 307, 308)) && (null === $location ? true : $location == $this->headers->get('Location'));
     }
 
     /**

@@ -216,32 +216,35 @@ class Symfony_Component_DependencyInjection_ParameterBag_ParameterBag implements
             return $this->resolved ? $this->get($key) : $this->resolveValue($this->get($key), $resolving);
         }
 
-        $self = $this;
+        $this->_resolveStringCBvalue = $value;
+        $this->_resolveStringCBresolving = $resolving;
+        return preg_replace_callback('/%%|%([^%\s]+)%/', array($this, '_resolveStringCB'), $value);
+    }
 
-        return preg_replace_callback('/%%|%([^%\s]+)%/', create_function('$match', '
-            global $self, $resolving, $value;
+    private $_resolveStringCBresolving;
+    private $_resolveStringCBvalue;
+    public function _resolveStringCB($match)
+    {
+        // skip %%
+        if (!isset($match[1])) {
+            return '%%';
+        }
 
-            // skip %%
-            if (!isset($match[1])) {
-                return \'%%\';
-            }
+        $key = strtolower($match[1]);
+        if (isset($this->_resolveStringCBresolving[$key])) {
+            throw new Symfony_Component_DependencyInjection_Exception_ParameterCircularReferenceException(array_keys($this->_resolveStringCBresolving));
+        }
 
-            $key = strtolower($match[1]);
-            if (isset($resolving[$key])) {
-                throw new Symfony_Component_DependencyInjection_Exception_ParameterCircularReferenceException(array_keys($resolving));
-            }
+        $resolved = $this->get($key);
 
-            $resolved = $self->get($key);
+        if (!is_string($resolved) && !is_numeric($resolved)) {
+            throw new Symfony_Component_DependencyInjection_Exception_RuntimeException(sprintf('A string value must be composed of strings and/or numbers, but found parameter "%s" of type %s inside string value "%s".', $key, gettype($resolved), $this->_resolveStringCBvalue));
+        }
 
-            if (!is_string($resolved) && !is_numeric($resolved)) {
-                throw new Symfony_Component_DependencyInjection_Exception_RuntimeException(sprintf(\'A string value must be composed of strings and/or numbers, but found parameter "%s" of type %s inside string value "%s".\', $key, gettype($resolved), $value));
-            }
+        $resolved = (string) $resolved;
+        $this->_resolveStringCBresolving[$key] = true;
 
-            $resolved = (string) $resolved;
-            $resolving[$key] = true;
-
-            return $self->isResolved() ? $resolved : $self->resolveString($resolved, $resolving);
-        '), $value);
+        return $this->isResolved() ? $resolved : $this->resolveString($resolved, $this->_resolveStringCBresolving);
     }
 
     public function isResolved()

@@ -461,7 +461,7 @@ class Symfony_Component_DependencyInjection_Container implements Symfony_Compone
      */
     public static function camelize($id)
     {
-        return preg_replace_callback('/(^|_|\.)+(.)/', create_function('$match', 'return (\'.\' === $match[1] ? \'_\' : \'\').strtoupper($match[2]); }'), $id);
+        return preg_replace_callback('/(^|_|\.)+(.)/', create_function('$match', 'return (\'.\' === $match[1] ? \'_\' : \'\').strtoupper($match[2]);'), $id);
     }
 
     /**
