@@ -153,11 +153,11 @@ class Symfony_Component_HttpFoundation_ResponseHeaderBag extends Symfony_Compone
     /**
      * Sets a cookie.
      *
-     * @param Cookie $cookie
+     * @param Symfony_Component_HttpFoundation_Cookie $cookie
      *
      * @api
      */
-    public function setCookie(Cookie $cookie)
+    public function setCookie(Symfony_Component_HttpFoundation_Cookie $cookie)
     {
         $this->cookies[$cookie->getDomain()][$cookie->getPath()][$cookie->getName()] = $cookie;
     }
