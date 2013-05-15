@@ -338,7 +338,7 @@ class Symfony_Component_HttpFoundation_Session_Storage_NativeSessionStorage impl
     public function setSaveHandler($saveHandler = null)
     {
         // Wrap $saveHandler in proxy
-        if (!$saveHandler instanceof Symfony_Component_HttpFoundation_Session_Storage_Proxy_AbstractProxy && $saveHandler instanceof \SessionHandlerInterface) {
+        if (!$saveHandler instanceof Symfony_Component_HttpFoundation_Session_Storage_Proxy_AbstractProxy && $saveHandler instanceof SessionHandlerInterface) {
             $saveHandler = new Symfony_Component_HttpFoundation_Session_Storage_Proxy_SessionHandlerProxy($saveHandler);
         } elseif (!$saveHandler instanceof Symfony_Component_HttpFoundation_Session_Storage_Proxy_AbstractProxy) {
             $saveHandler = new Symfony_Component_HttpFoundation_Session_Storage_Proxy_NativeProxy();
