@@ -171,7 +171,7 @@ class Symfony_Component_DependencyInjection_Dumper_XmlDumper extends Symfony_Com
     private function addServiceAlias($alias, $id, DOMElement $parent)
     {
         $service = $this->document->createElement('service');
-        $service->setAttribute('id', $alias);
+        $service->setAttribute('id', is_object($alias) && method_exists($alias, '__toString') ? $alias->__toString() : $alias);
         $service->setAttribute('alias', $id);
         if (!$id->isPublic()) {
             $service->setAttribute('public', 'false');
