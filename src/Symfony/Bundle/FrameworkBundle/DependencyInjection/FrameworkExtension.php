@@ -70,7 +70,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         }
 
         if (isset($config['session'])) {
-            // TODO $this->registerSessionConfiguration($config['session'], $container, $loader);
+            $this->registerSessionConfiguration($config['session'], $container, $loader);
         }
 
         if ($this->isConfigEnabled($container, $config['form'])) {
@@ -322,11 +322,11 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         $container->setParameter('session.save_path', $config['save_path']);
 
         $this->addClassesToCompile(array(
-            'Symfony\\Bundle\\FrameworkBundle\\EventListener\\SessionListener',
-            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\NativeSessionStorage',
-            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Handler\\NativeFileSessionHandler',
-            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Proxy\\AbstractProxy',
-            'Symfony\\Component\\HttpFoundation\\Session\\Storage\\Proxy\\SessionHandlerProxy',
+            'Symfony_Bundle_FrameworkBundle_EventListener_SessionListener',
+            'Symfony_Component_HttpFoundation_Session_Storage_NativeSessionStorage',
+            'Symfony_Component_HttpFoundation_Session_Storage_Handler_NativeFileSessionHandler',
+            'Symfony_Component_HttpFoundation_Session_Storage_Proxy_AbstractProxy',
+            'Symfony_Component_HttpFoundation_Session_Storage_Proxy_SessionHandlerProxy',
             $container->getDefinition('session')->getClass(),
         ));
 
