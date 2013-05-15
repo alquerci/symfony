@@ -31,7 +31,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
 
         $loader->load('web.xml');
         $loader->load('services.xml');
-        // TODO $loader->load('fragment_renderer.xml');
+        $loader->load('fragment_renderer.xml');
 
         // A translator must always be registered (as support is included by
         // default in the Form component). If disabled, an identity translator
@@ -84,7 +84,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
 
         // TODO $this->registerValidationConfiguration($config['validation'], $container, $loader);
         // TODO $this->registerEsiConfiguration($config['esi'], $container, $loader);
-        // TODO $this->registerFragmentsConfiguration($config['fragments'], $container, $loader);
+        $this->registerFragmentsConfiguration($config['fragments'], $container, $loader);
         // TODO $this->registerProfilerConfiguration($config['profiler'], $container, $loader);
         // TODO $this->registerTranslatorConfiguration($config['translator'], $container);
 

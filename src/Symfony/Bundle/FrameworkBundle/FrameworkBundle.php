@@ -43,7 +43,7 @@ class Symfony_Bundle_FrameworkBundle_FrameworkBundle extends Symfony_Component_H
         $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_AddCacheClearerPass());
         // TODO $container->addCompilerPass(new TranslationExtractorPass());
         // TODO $container->addCompilerPass(new TranslationDumperPass());
-        // TODO $container->addCompilerPass(new FragmentRendererPass(), Symfony_Component_DependencyInjection_Compiler_PassConfig::TYPE_AFTER_REMOVING);
+        $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_FragmentRendererPass(), Symfony_Component_DependencyInjection_Compiler_PassConfig::TYPE_AFTER_REMOVING);
 
         if ($container->getParameter('kernel.debug')) {
             $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_ContainerBuilderDebugDumpPass(), Symfony_Component_DependencyInjection_Compiler_PassConfig::TYPE_AFTER_REMOVING);
