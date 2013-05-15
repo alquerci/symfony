@@ -172,7 +172,7 @@ class Symfony_Component_DependencyInjection_Dumper_XmlDumper extends Symfony_Com
     {
         $service = $this->document->createElement('service');
         $service->setAttribute('id', is_object($alias) && method_exists($alias, '__toString') ? $alias->__toString() : $alias);
-        $service->setAttribute('alias', $id);
+        $service->setAttribute('alias', is_object($id) && method_exists($id, '__toString') ? $id->__toString() : $id);
         if (!$id->isPublic()) {
             $service->setAttribute('public', 'false');
         }
