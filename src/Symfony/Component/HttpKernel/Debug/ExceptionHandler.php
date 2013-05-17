@@ -238,7 +238,7 @@ EOF;
 
     private function abbrClass($class)
     {
-        $parts = preg_split('#[_\\\]#', $class);
+        $parts = preg_split('#[_\\\\]#', $class);
 
         return sprintf("<abbr title=\"%s\">%s</abbr>", $class, array_pop($parts));
     }

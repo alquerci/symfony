@@ -9,8 +9,6 @@
  * file that was distributed with this source code.
  */
 
-// TODO use Symfony\Component\Finder\Finder;
-
 /**
  * FrameworkExtension.
  *
@@ -79,7 +77,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         }
 
         if (isset($config['templating'])) {
-            // TODO $this->registerTemplatingConfiguration($config['templating'], $config['ide'], $container, $loader);
+            $this->registerTemplatingConfiguration($config['templating'], $config['ide'], $container, $loader);
         }
 
         // TODO $this->registerValidationConfiguration($config['validation'], $container, $loader);
@@ -404,7 +402,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
 
             // Use a delegation unless only a single loader was registered
             if (1 === count($loaders)) {
-                $container->setAlias('templating.loader', (string) reset($loaders));
+                $container->setAlias('templating.loader', (string) reset($loaders)->__toString());
             } else {
                 $container->getDefinition('templating.loader.chain')->addArgument($loaders);
                 $container->setAlias('templating.loader', 'templating.loader.chain');
@@ -422,17 +420,17 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         }
 
         $this->addClassesToCompile(array(
-            'Symfony\\Bundle\\FrameworkBundle\\Templating\\GlobalVariables',
-            'Symfony\\Bundle\\FrameworkBundle\\Templating\\TemplateReference',
-            'Symfony\\Bundle\\FrameworkBundle\\Templating\\TemplateNameParser',
+            'Symfony_Bundle_FrameworkBundle_Templating_GlobalVariables',
+            'Symfony_Bundle_FrameworkBundle_Templating_TemplateReference',
+            'Symfony_Bundle_FrameworkBundle_Templating_TemplateNameParser',
             $container->findDefinition('templating.locator')->getClass(),
         ));
 
         if (in_array('php', $config['engines'], true)) {
             $this->addClassesToCompile(array(
-                'Symfony\\Component\\Templating\\Storage\\FileStorage',
-                'Symfony\\Bundle\\FrameworkBundle\\Templating\\PhpEngine',
-                'Symfony\\Bundle\\FrameworkBundle\\Templating\\Loader\\FilesystemLoader',
+                'Symfony_Component_Templating_Storage_FileStorage',
+                'Symfony_Bundle_FrameworkBundle_Templating_PhpEngine',
+                'Symfony_Bundle_FrameworkBundle_Templating_Loader_FilesystemLoader',
             ));
         }
 
@@ -441,7 +439,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
 
         // Use a delegation unless only a single engine was registered
         if (1 === count($engines)) {
-            $container->setAlias('templating', (string) reset($engines));
+            $container->setAlias('templating', (string) reset($engines)->__toString());
         } else {
             foreach ($engines as $engine) {
                 $container->getDefinition('templating.engine.delegating')->addMethodCall('addEngine', array($engine));
@@ -566,25 +564,24 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         }
 
         // Register translation resources
-        // TODO needs Symfony Finder component
-//         if ($dirs) {
-//             foreach ($dirs as $dir) {
-//                 $container->addResource(new Symfony_Component_Config_Resource_DirectoryResource($dir));
-//             }
-//             $finder = Finder::create()
-//                 ->files()
-//                 ->filter(function (\SplFileInfo $file) {
-//                     return 2 === substr_count($file->getBasename(), '.') && preg_match('/\.\w+$/', $file->getBasename());
-//                 })
-//                 ->in($dirs)
-//             ;
+        if ($dirs) {
+            foreach ($dirs as $dir) {
+                $container->addResource(new Symfony_Component_Config_Resource_DirectoryResource($dir));
+            }
+            $finder = Finder::create()
+                ->files()
+                ->filter(create_function ('SplFileInfo $file', '
+                    return 2 === substr_count($file->getBasename(), '.') && preg_match(\'/\.\w+$/\', $file->getBasename());
+                '))
+                ->in($dirs)
+            ;
 
-//             foreach ($finder as $file) {
-//                 // filename is domain.locale.format
-//                 list($domain, $locale, $format) = explode('.', $file->getBasename(), 3);
-//                 $translator->addMethodCall('addResource', array($format, (string) $file, $locale, $domain));
-//             }
-//         }
+            foreach ($finder as $file) {
+                // filename is domain.locale.format
+                list($domain, $locale, $format) = explode('.', $file->getBasename(), 3);
+                $translator->addMethodCall('addResource', array($format, (string) $file, $locale, $domain));
+            }
+        }
     }
 
     /**

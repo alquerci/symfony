@@ -235,16 +235,15 @@ class Symfony_Component_Config_Definition_Builder_ExprBuilder
     {
         foreach ($expressions as $k => $expr) {
             if ($expr instanceof Symfony_Component_Config_Definition_Builder_ExprBuilder) {
-                self::$_buildExpressionsCB_expr = $expr;
-                $expressions[$k] = array('Symfony_Component_Config_Definition_Builder_ExprBuilder', '_buildExpressionsCB');
+                $expressions[$k] = array($expr, '_buildExpressionsCB');
             }
         }
 
         return $expressions;
     }
-    private static $_buildExpressionsCB_expr;
-    public static function _buildExpressionsCB($v)
+
+    public function _buildExpressionsCB($v)
     {
-        return call_user_func(self::$_buildExpressionsCB_expr->ifPart, $v) ? call_user_func(self::$_buildExpressionsCB_expr->thenPart, $v) : $v;
+        return call_user_func($this->ifPart, $v) ? call_user_func($this->thenPart, $v) : $v;
     }
 }
