@@ -91,10 +91,10 @@
             <argument>%kernel.charset%</argument>
         </service>
 
-<!--         <service id="templating.helper.translator" class="%templating.helper.translator.class%">
+        <service id="templating.helper.translator" class="%templating.helper.translator.class%">
             <tag name="templating.helper" alias="translator" />
             <argument type="service" id="translator" />
-        </service> -->
+        </service>
 
         <service id="templating.helper.form" class="%templating.helper.form.class%">
             <tag name="templating.helper" alias="form" />
