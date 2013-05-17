@@ -471,7 +471,7 @@ class Symfony_Component_Templating_PhpEngine implements Symfony_Component_Templa
     {
         // Numbers and Boolean values get turned into strings which can cause problems
         // with type comparisons (e.g. === or is_int() etc).
-        return is_string($value) ? htmlspecialchars(str_replace('&amp;', '&', $value), ENT_QUOTES | ENT_SUBSTITUTE, $this->getCharset()/* , false */) : $value;
+        return is_string($value) ? htmlspecialchars(htmlspecialchars_decode($value, ENT_QUOTES), ENT_QUOTES | ENT_SUBSTITUTE, $this->getCharset()/* , false */) : $value;
     }
 
     /**
