@@ -568,10 +568,10 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
             foreach ($dirs as $dir) {
                 $container->addResource(new Symfony_Component_Config_Resource_DirectoryResource($dir));
             }
-            $finder = Finder::create()
+            $finder = Symfony_Component_Finder_Finder::create()
                 ->files()
                 ->filter(create_function ('SplFileInfo $file', '
-                    return 2 === substr_count($file->getBasename(), '.') && preg_match(\'/\.\w+$/\', $file->getBasename());
+                    return 2 === substr_count($file->getBasename(), \'.\') && preg_match(\'/\.\w+$/\', $file->getBasename());
                 '))
                 ->in($dirs)
             ;

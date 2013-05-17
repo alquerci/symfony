@@ -37,11 +37,11 @@ class Symfony_Component_Templating_PhpEngine implements Symfony_Component_Templa
     /**
      * Constructor.
      *
-     * @param TemplateNameParserInterface $parser  A TemplateNameParserInterface instance
+     * @param Symfony_Component_Templating_TemplateNameParserInterface $parser  A TemplateNameParserInterface instance
      * @param Symfony_Component_Templating_Loader_LoaderInterface             $loader  A loader instance
      * @param Symfony_Component_Templating_Helper_HelperInterface[]           $helpers An array of helper instances
      */
-    public function __construct(TemplateNameParserInterface $parser, Symfony_Component_Templating_Loader_LoaderInterface $loader, array $helpers = array())
+    public function __construct(Symfony_Component_Templating_TemplateNameParserInterface $parser, Symfony_Component_Templating_Loader_LoaderInterface $loader, array $helpers = array())
     {
         $this->parser  = $parser;
         $this->loader  = $loader;
