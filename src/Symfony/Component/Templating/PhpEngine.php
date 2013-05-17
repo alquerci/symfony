@@ -158,14 +158,14 @@ class Symfony_Component_Templating_PhpEngine implements Symfony_Component_Templa
             extract($parameters, EXTR_SKIP);
             $view = $this;
             ob_start();
-            require $__template__;
+            require $__template__->__toString();
 
             return ob_get_clean();
         } elseif ($__template__ instanceof Symfony_Component_Templating_Storage_StringStorage) {
             extract($parameters, EXTR_SKIP);
             $view = $this;
             ob_start();
-            eval('; ?>'.$__template__.'<?php ;');
+            eval('; ?>'.$__template__->__toString().'<?php ;');
 
             return ob_get_clean();
         }
