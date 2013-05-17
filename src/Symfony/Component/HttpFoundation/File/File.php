@@ -86,6 +86,21 @@ class Symfony_Component_HttpFoundation_File_File extends SplFileInfo
         return pathinfo($this->getBasename(), PATHINFO_EXTENSION);
     }
 
+    public function getBasename($suffix = null)
+    {
+        return basename($this->getFilename(), $suffix);
+    }
+
+    public function getLinkTarget()
+    {
+        return readlink($this->getFilename());
+    }
+
+    public function getRealPath()
+    {
+        return realpath($this->getFilename());
+    }
+
     /**
      * Moves the file to a new location.
      *
