@@ -53,11 +53,11 @@
         <service id="translation.loader.php" class="%translation.loader.php.class%">
             <tag name="translation.loader" alias="php" />
         </service>
-<!-- 
+
         <service id="translation.loader.yml" class="%translation.loader.yml.class%">
             <tag name="translation.loader" alias="yml" />
         </service>
-
+<!--
         <service id="translation.loader.xliff" class="%translation.loader.xliff.class%">
             <tag name="translation.loader" alias="xlf" legacy-alias="xliff" />
         </service>
