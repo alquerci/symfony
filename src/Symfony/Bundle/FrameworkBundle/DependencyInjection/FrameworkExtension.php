@@ -34,7 +34,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         // A translator must always be registered (as support is included by
         // default in the Form component). If disabled, an identity translator
         // will be used and everything will still work as expected.
-        // TODO $loader->load('translation.xml');
+        $loader->load('translation.xml');
 
         if ($container->getParameter('kernel.debug')) {
             // TODO line above remove after load debug.xml
@@ -84,7 +84,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         // TODO $this->registerEsiConfiguration($config['esi'], $container, $loader);
         $this->registerFragmentsConfiguration($config['fragments'], $container, $loader);
         // TODO $this->registerProfilerConfiguration($config['profiler'], $container, $loader);
-        // TODO $this->registerTranslatorConfiguration($config['translator'], $container);
+        $this->registerTranslatorConfiguration($config['translator'], $container);
 
         if (isset($config['router'])) {
             $this->registerRouterConfiguration($config['router'], $container, $loader);
@@ -534,18 +534,18 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
 
         // Discover translation directories
         $dirs = array();
-        if (class_exists('Symfony\Component\Validator\Validator')) {
-            $r = new ReflectionClass('Symfony\Component\Validator\Validator');
+        if (class_exists('Symfony_Component_Validator_Validator')) {
+            $r = new ReflectionClass('Symfony_Component_Validator_Validator');
 
             $dirs[] = dirname($r->getFilename()).'/Resources/translations';
         }
-        if (class_exists('Symfony\Component\Form\Form')) {
-            $r = new ReflectionClass('Symfony\Component\Form\Form');
+        if (class_exists('Symfony_Component_Form_Form')) {
+            $r = new ReflectionClass('Symfony_Component_Form_Form');
 
             $dirs[] = dirname($r->getFilename()).'/Resources/translations';
         }
-        if (class_exists('Symfony\Component\Security\Core\Exception\AuthenticationException')) {
-            $r = new ReflectionClass('Symfony\Component\Security\Core\Exception\AuthenticationException');
+        if (class_exists('Symfony_Component_Security_Core_Exception_AuthenticationException')) {
+            $r = new ReflectionClass('Symfony_Component_Security_Core_Exception_AuthenticationException');
 
             $dirs[] = dirname($r->getFilename()).'/../../Resources/translations';
         }
@@ -579,7 +579,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
             foreach ($finder as $file) {
                 // filename is domain.locale.format
                 list($domain, $locale, $format) = explode('.', $file->getBasename(), 3);
-                $translator->addMethodCall('addResource', array($format, (string) $file, $locale, $domain));
+                $translator->addMethodCall('addResource', array($format, (string) $file->__toString(), $locale, $domain));
             }
         }
     }
