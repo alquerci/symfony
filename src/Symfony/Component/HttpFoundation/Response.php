@@ -278,6 +278,7 @@ class Symfony_Component_HttpFoundation_Response
 
         // status
         header(sprintf('HTTP/%s %s %s', $this->version, $this->statusCode, $this->statusText));
+        header(sprintf('Status: %s %s', $this->statusCode, $this->statusText));
 
         // headers
         foreach ($this->headers->allPreserveCase() as $name => $values) {
