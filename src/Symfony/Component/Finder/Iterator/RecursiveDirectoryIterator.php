@@ -14,23 +14,21 @@
  *
  * @author Victor Berchet <victor@suumit.com>
  */
-class Symfony_Component_Finder_Iterator_RecursiveDirectoryIterator extends RecursiveDirectoryIterator
+class Symfony_Component_Finder_Iterator_RecursiveDirectoryIterator extends FileSystemIterator implements RecursiveIterator
 {
-    const CURRENT_AS_PATHNAME = 32;
-    const CURRENT_AS_FILEINFO = 0;
-    const CURRENT_AS_SELF = 16;
-    const CURRENT_MODE_MASK = 240;
-    const KEY_AS_PATHNAME = 0;
-    const KEY_AS_FILENAME = 256;
-    const FOLLOW_SYMLINKS = 512;
-    const KEY_MODE_MASK = 3840;
-    const NEW_CURRENT_AND_KEY = 256;
-    const SKIP_DOTS = 4096;
-    const UNIX_PATHS = 8192;
+    /**
+     * @var ReflectionObject
+     */
+    private $ref;
+
+    /**
+     * @var string
+     */
+    private $subPath;
 
     public function __construct($path, $flags)
     {
-        if ($flags & (self::CURRENT_AS_PATHNAME | self::CURRENT_AS_SELF)) {
+        if ($flags & (FilesystemIterator::CURRENT_AS_PATHNAME | FilesystemIterator::CURRENT_AS_SELF)) {
             throw new RuntimeException('This iterator only support returning current as fileinfo.');
         }
 
@@ -45,5 +43,65 @@ class Symfony_Component_Finder_Iterator_RecursiveDirectoryIterator extends Recur
     public function current()
     {
         return new Symfony_Component_Finder_SplFileInfo(parent::current()->getPathname(), $this->getSubPath(), $this->getSubPathname());
+    }
+
+    public function hasChildren($allow_links = false)
+    {
+        if ($this->isDot()) {
+            return false;
+        }
+
+        if ($this->isDir()) {
+            return true;
+        }
+
+        if ($this->isLink()) {
+            return $allow_links || ($this->getFlags() & FilesystemIterator::FOLLOW_SYMLINKS) === FilesystemIterator::FOLLOW_SYMLINKS;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return Symfony_Component_Finder_Iterator_RecursiveDirectoryIterator
+     */
+    public function getChildren()
+    {
+        if ($this->hasChildren()) {
+            if (null === $this->ref) {
+                $this->ref = new ReflectionObject($this);
+            }
+
+            if ($this->isLink()) {
+                $path = $this->getLinkTarget();
+            } else {
+                $path = $this->getPathname();
+            }
+
+            if ($this->isDir()) {
+                $subPath = $this->subPath ? $this->subPath.DIRECTORY_SEPARATOR.$this->getBasename() : $this->getBasename();
+            } else {
+                $subPath = $this->subPath;
+            }
+
+            $instance = $this->ref->newInstance($path, $this->getFlags());
+            $instance->subPath = $subPath;
+
+            return $instance;
+        }
+    }
+
+    public function getSubPath()
+    {
+        return (string) $this->subPath;
+    }
+
+    public function getSubPathname()
+    {
+        if (null !== $this->subPath) {
+            return $this->subPath.DIRECTORY_SEPARATOR.$this->getFilename();
+        }
+
+        return $this->getFilename();
     }
 }

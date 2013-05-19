@@ -75,21 +75,21 @@ class Symfony_Component_Finder_SplFileInfo extends SplFileInfo
 
     public function getBasename($suffix = null)
     {
-        return basename($this->getFilename(), $suffix);
+        return basename($this->getPathname(), $suffix);
     }
 
     public function getExtension()
     {
-        return pathinfo($this->getFilename(), PATHINFO_EXTENSION);
+        return pathinfo($this->getPathname(), PATHINFO_EXTENSION);
     }
 
     public function getLinkTarget()
     {
-        return readlink($this->getFilename());
+        return readlink($this->getPathname());
     }
 
     public function getRealPath()
     {
-        return realpath($this->getFilename());
+        return realpath($this->getPathname());
     }
 }
