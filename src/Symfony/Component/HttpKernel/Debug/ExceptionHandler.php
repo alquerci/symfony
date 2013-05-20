@@ -273,6 +273,6 @@ EOF;
             $result[] = is_int($key) ? $formattedValue : sprintf("'%s' => %s", $key, $formattedValue);
         }
 
-        return implode(', <br />', $result);
+        return implode(', ', $result);
     }
 }
