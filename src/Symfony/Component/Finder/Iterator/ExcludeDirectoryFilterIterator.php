@@ -41,7 +41,7 @@ class Symfony_Component_Finder_Iterator_ExcludeDirectoryFilterIterator extends S
      */
     public function accept()
     {
-        $path = $this->current()->isDir() ? $this->current()->getRelativePathname() : $this->current()->getRelativePath();
+        $path = $this->isDir() ? $this->current()->getRelativePathname() : $this->current()->getRelativePath();
         $path = strtr($path, '\\', '/');
         foreach ($this->patterns as $pattern) {
             if (preg_match($pattern, $path)) {

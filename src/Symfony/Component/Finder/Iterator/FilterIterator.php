@@ -30,7 +30,14 @@ abstract class Symfony_Component_Finder_Iterator_FilterIterator extends FilterIt
 
     public function __call($name, $params)
     {
-        return call_user_func_array(array($this->it, $name), $params);
+        if (is_object($current = $this->current())) {
+            return call_user_func_array(array($current, $name), $params);
+        }
+
+        throw new BadMethodCallException(sprintf('Call an undefined method %s->%s()',
+            get_class($this),
+            $name
+        ));
     }
 
     protected function __clone()
