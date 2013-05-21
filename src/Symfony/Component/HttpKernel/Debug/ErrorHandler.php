@@ -53,8 +53,6 @@ class Symfony_Component_HttpKernel_Debug_ErrorHandler
     /** @var Psr_Log_LoggerInterface */
     private static $logger;
 
-    private static $lastError;
-
     /**
      * Register the error handler.
      *
@@ -90,13 +88,6 @@ class Symfony_Component_HttpKernel_Debug_ErrorHandler
      */
     public function handle($level, $message, $file, $line, $context)
     {
-        self::$lastError = array(
-            'type'      => $level,
-            'message'   => $message,
-            'file'      => $file,
-            'line'      => $line,
-        );
-
         if (0 === $this->level) {
             return false;
         }
@@ -140,17 +131,5 @@ class Symfony_Component_HttpKernel_Debug_ErrorHandler
             $exception = new Symfony_Component_HttpKernel_Exception_FatalErrorException($message, 0, $type, $error['file'], $error['line']);
             $exceptionHandler[0]->handle($exception);
         }
-    }
-
-    public static function getLast()
-    {
-        return self::$lastError;
-    }
-}
-
-if (!function_exists('error_get_last')) {
-    function error_get_last()
-    {
-        return Symfony_Component_HttpKernel_Debug_ErrorHandler::getLast();
     }
 }
