@@ -279,8 +279,8 @@ class Symfony_Component_HttpFoundation_Response
         // status
         header(sprintf('HTTP/%s %s %s', $this->version, $this->statusCode, $this->statusText));
 
-        // status for FastCGI server
-        if ('cgi-fcgi' === php_sapi_name()) {
+        // Fix status for FastCGI server
+        if ('cgi-fcgi' === php_sapi_name() && false == ini_get('cgi.rfc2616_headers')) {
             $this->headers->set('Status', sprintf('%s %s', $this->statusCode, $this->statusText));
         }
 
