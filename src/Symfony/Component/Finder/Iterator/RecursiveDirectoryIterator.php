@@ -42,7 +42,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
     /**
      * Returns the relative path
      *
-     * @return string the relative path
+     * @return string the current relative path
      */
     public function getRelativePath()
     {
@@ -52,7 +52,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
     /**
      * Returns the relative path name
      *
-     * @return string the relative path name
+     * @return string the current relative path name
      */
     public function getRelativePathname()
     {
@@ -62,9 +62,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
     /**
      * Returns the contents of the file
      *
-     * @return string the contents of the file
-     *
-     * @throws RuntimeException
+     * @return string the contents of the current file
      */
     public function getContents()
     {
@@ -73,7 +71,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
         error_reporting($level);
         if (false === $content) {
             $error = error_get_last();
-            throw new RuntimeException($error['message']);
+            throw new \RuntimeException($error['message']);
         }
 
         return $content;
