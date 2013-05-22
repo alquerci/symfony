@@ -38,4 +38,24 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
     {
         return new SplFileInfo(parent::current()->getPathname(), $this->getSubPath(), $this->getSubPathname());
     }
+
+    /**
+     * Returns the relative path
+     *
+     * @return string the relative path
+     */
+    public function getRelativePath()
+    {
+        return $this->getSubPath();
+    }
+
+    /**
+     * Returns the relative path name
+     *
+     * @return string the relative path name
+     */
+    public function getRelativePathname()
+    {
+        return $this->getSubPathname();
+    }
 }
