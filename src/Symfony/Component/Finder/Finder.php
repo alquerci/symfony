@@ -576,7 +576,7 @@ class Finder implements \IteratorAggregate, \Countable
             $flags |= \RecursiveDirectoryIterator::FOLLOW_SYMLINKS;
         }
 
-        $iterator = new Iterator\RecursiveIteratorIterator(
+        $iterator = new \RecursiveIteratorIterator(
             new Iterator\RecursiveDirectoryIterator($dir, $flags),
             \RecursiveIteratorIterator::SELF_FIRST
         );
