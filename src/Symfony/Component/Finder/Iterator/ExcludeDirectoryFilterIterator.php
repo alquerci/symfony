@@ -43,7 +43,7 @@ class ExcludeDirectoryFilterIterator extends FilterIterator
      */
     public function accept()
     {
-        $path = $this->isDir() ? $this->getRelativePathname() : $this->getRelativePath();
+        $path = $this->isDir() ? $this->getSubPathname() : $this->getSubPath();
         $path = strtr($path, '\\', '/');
         foreach ($this->patterns as $pattern) {
             if (preg_match($pattern, $path)) {

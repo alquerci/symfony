@@ -30,13 +30,11 @@ class FilecontentFilterIterator extends MultiplePcreFilterIterator
             return true;
         }
 
-        $fileinfo = $this->current();
-
-        if ($fileinfo->isDir() || !$fileinfo->isReadable()) {
+        if ($this->isDir() || !$this->isReadable()) {
             return false;
         }
 
-        $content = $fileinfo->getContents();
+        $content = $this->getContents();
         if (!$content) {
             return false;
         }
