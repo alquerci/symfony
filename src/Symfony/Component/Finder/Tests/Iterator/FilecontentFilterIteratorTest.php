@@ -19,21 +19,21 @@ class FilecontentFilterIteratorTest extends IteratorTestCase
     public function testAccept()
     {
         $inner = new MockFileListIterator(array('test.txt'));
-        $iterator = new FilecontentFilterIterator($inner, array(), array());
+        $iterator = new FilecontentFilterIterator(new \IteratorIterator($inner), array(), array());
         $this->assertIterator(array('test.txt'), $iterator);
     }
 
     public function testDirectory()
     {
         $inner = new MockFileListIterator(array('directory'));
-        $iterator = new FilecontentFilterIterator($inner, array('directory'), array());
+        $iterator = new FilecontentFilterIterator(new \IteratorIterator($inner), array('directory'), array());
         $this->assertIterator(array(), $iterator);
     }
 
     public function testUnreadableFile()
     {
         $inner = new MockFileListIterator(array('file r-'));
-        $iterator = new FilecontentFilterIterator($inner, array('file r-'), array());
+        $iterator = new FilecontentFilterIterator(new \IteratorIterator($inner), array('file r-'), array());
         $this->assertIterator(array(), $iterator);
     }
 
@@ -42,7 +42,7 @@ class FilecontentFilterIteratorTest extends IteratorTestCase
      */
     public function testFilter(\Iterator $inner, array $matchPatterns, array $noMatchPatterns, array $resultArray)
     {
-        $iterator = new FilecontentFilterIterator($inner, $matchPatterns, $noMatchPatterns);
+        $iterator = new FilecontentFilterIterator(new \IteratorIterator($inner), $matchPatterns, $noMatchPatterns);
         $this->assertIterator($resultArray, $iterator);
     }
 
