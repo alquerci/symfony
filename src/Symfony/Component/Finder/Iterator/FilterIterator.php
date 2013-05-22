@@ -21,6 +21,26 @@ namespace Symfony\Component\Finder\Iterator;
 abstract class FilterIterator extends \FilterIterator
 {
     /**
+     * Aggregate the inner iterator.
+     *
+     * @param string $func   Name of method to invoke
+     * @param string $params Array of parameters to pass to method
+     *
+     * @return mixed
+     */
+    public function __call($func, $params)
+    {
+        $innerIterator = $this->getInnerIterator();
+        $current = $innerIterator->current();
+
+        if (is_object($current) && is_callable(array($current, $func))) {
+            return call_user_func_array(array($current, $func), $params);
+        }
+
+        return call_user_func_array(array($innerIterator, $func), $params);
+    }
+
+    /**
      * This is a workaround for the problem with \FilterIterator leaving inner \FilesystemIterator in wrong state after
      * rewind in some cases.
      *
