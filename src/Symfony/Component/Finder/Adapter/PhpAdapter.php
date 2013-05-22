@@ -27,7 +27,7 @@ class Symfony_Component_Finder_Adapter_PhpAdapter extends Symfony_Component_Find
             $flags |= FilesystemIterator::FOLLOW_SYMLINKS;
         }
 
-        $iterator = new RecursiveIteratorIterator(
+        $iterator = new Symfony_Component_Finder_Iterator_RecursiveIteratorIterator(
             new Symfony_Component_Finder_Iterator_RecursiveDirectoryIterator($dir, $flags),
             RecursiveIteratorIterator::SELF_FIRST
         );
