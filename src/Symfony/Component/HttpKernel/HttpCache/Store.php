@@ -34,7 +34,7 @@ class Symfony_Component_HttpKernel_HttpCache_Store implements Symfony_Component_
         if (!is_dir($this->root)) {
             mkdir($this->root, 0777, true);
         }
-        $this->keyCache = new SplObjectStorage();
+        $this->keyCache = new Symfony_Component_HttpKernel_HttpCache_SplObjectStorage();
         $this->locks = array();
     }
 
