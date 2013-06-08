@@ -13,7 +13,7 @@
 class Symfony_Component_HttpKernel_HttpCache_SplObjectStorage implements ArrayAccess
 {
     private $storage = array();
-    private $metaDatas   = array();
+    private $metaDatas = array();
 
     /**
      * Adds an object inside the storage, and optionally associate it to some data.
@@ -23,14 +23,16 @@ class Symfony_Component_HttpKernel_HttpCache_SplObjectStorage implements ArrayAc
      */
     public function attach($object, $data = null)
     {
-        foreach ($this->storage as $storeObject) {
-            if ($object === $storeObject) {
-                return;
-            }
+        if ($this->contains($object)) {
+            return;
         }
 
-        $this->storage[] = $object;
-        $this->metaDatas[] = $data;
+        do {
+            $key = sha1(uniqid(mt_rand(), true));
+        } while (isset($this->storage[$key]));
+
+        $this->storage[$key] = $object;
+        $this->metaDatas[$key] = $data;
     }
 
     /**
@@ -42,10 +44,8 @@ class Symfony_Component_HttpKernel_HttpCache_SplObjectStorage implements ArrayAc
      */
     public function contains($object)
     {
-        foreach ($this->storage as $storeObject) {
-            if ($object === $storeObject) {
-                return true;
-            }
+        if (false !== $key = array_search($object, $this->storage, true)) {
+            return true;
         }
 
         return false;
@@ -59,14 +59,17 @@ class Symfony_Component_HttpKernel_HttpCache_SplObjectStorage implements ArrayAc
     public function detach($object)
     {
         if (false !== $key = array_search($object, $this->storage, true)) {
+            $this->storage[$key] = null;
+            $this->metaDatas[$key] = null;
             unset($this->storage[$key]);
+            unset($this->metaDatas[$key]);
         }
     }
 
     /**
      * @see SplObjectStorage::attach()
      */
-    public function offsetSet($object, $data = null)
+    public function offsetSet($object, $data)
     {
         $this->attach($object, $data);
     }
@@ -82,10 +85,8 @@ class Symfony_Component_HttpKernel_HttpCache_SplObjectStorage implements ArrayAc
      */
     public function offsetGet($object)
     {
-        foreach ($this->storage as $key => $storeObject) {
-            if ($object === $storeObject) {
-                return $this->metaDatas[$key];
-            }
+        if (false !== $key = array_search($object, $this->storage, true)) {
+            return $this->metaDatas[$key];
         }
 
         throw new UnexpectedValueException('The object could not be found.');
