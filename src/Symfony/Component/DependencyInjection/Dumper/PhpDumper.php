@@ -198,7 +198,7 @@ class Symfony_Component_DependencyInjection_Dumper_PhpDumper extends Symfony_Com
             if ($processed->contains($sDefinition)) {
                 continue;
             }
-            $processed->offsetSet($sDefinition);
+            $processed->offsetSet($sDefinition, null);
 
             $class = $this->dumpValue($sDefinition->getClass());
             if ($nbOccurrences->offsetGet($sDefinition) > 1 || $sDefinition->getMethodCalls() || $sDefinition->getProperties() || null !== $sDefinition->getConfigurator() || false !== strpos($class, '$')) {
@@ -368,7 +368,7 @@ class Symfony_Component_DependencyInjection_Dumper_PhpDumper extends Symfony_Com
             if ($processed->contains($iDefinition)) {
                 continue;
             }
-            $processed->offsetSet($iDefinition);
+            $processed->offsetSet($iDefinition, null);
 
             if (!$this->hasReference($id, $iDefinition->getMethodCalls(), true) && !$this->hasReference($id, $iDefinition->getProperties(), true)) {
                 continue;
