@@ -27,9 +27,7 @@ class Symfony_Component_HttpKernel_HttpCache_SplObjectStorage implements ArrayAc
             return;
         }
 
-        do {
-            $key = sha1(uniqid(mt_rand(), true));
-        } while (isset($this->storage[$key]));
+        $key = $this->getHash($object);
 
         $this->storage[$key] = $object;
         $this->metaDatas[$key] = $data;
@@ -60,8 +58,9 @@ class Symfony_Component_HttpKernel_HttpCache_SplObjectStorage implements ArrayAc
     {
         if (false !== $key = array_search($object, $this->storage, true)) {
             $this->storage[$key] = null;
-            $this->metaDatas[$key] = null;
             unset($this->storage[$key]);
+
+            $this->metaDatas[$key] = null;
             unset($this->metaDatas[$key]);
         }
     }
@@ -106,5 +105,21 @@ class Symfony_Component_HttpKernel_HttpCache_SplObjectStorage implements ArrayAc
     public function offsetUnset($object)
     {
         return $this->detach($object);
+    }
+
+    /**
+     * Calculate a unique identifier for the contained objects
+     *
+     * @param object $object The object whose identifier is to be calculated.
+     *
+     * @return string A string with the calculated identifier.
+     */
+    protected function getHash($object)
+    {
+        do {
+            $hash = sha1(uniqid(mt_rand(), true));
+        } while (isset($this->storage[$hash]));
+
+        return $hash;
     }
 }

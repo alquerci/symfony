@@ -12,10 +12,10 @@
 /**
  * @author Alexandre Quercia <alquerci@email.com>
  */
-class Symfony_Component_DependencyInjection_Dumper_SplObjectStorage
+class Symfony_Component_DependencyInjection_Dumper_SplObjectStorage implements ArrayAccess
 {
     private $storage = array();
-    private $metaDatas   = array();
+    private $metaDatas = array();
 
     /**
      * Adds an object inside the storage, and optionally associate it to some data.
@@ -25,14 +25,14 @@ class Symfony_Component_DependencyInjection_Dumper_SplObjectStorage
      */
     public function attach($object, $data = null)
     {
-        foreach ($this->storage as $storeObject) {
-            if ($object === $storeObject) {
-                return;
-            }
+        if ($this->contains($object)) {
+            return;
         }
 
-        $this->storage[] = $object;
-        $this->metaDatas[] = $data;
+        $key = $this->getHash($object);
+
+        $this->storage[$key] = $object;
+        $this->metaDatas[$key] = $data;
     }
 
     /**
@@ -44,19 +44,33 @@ class Symfony_Component_DependencyInjection_Dumper_SplObjectStorage
      */
     public function contains($object)
     {
-        foreach ($this->storage as $storeObject) {
-            if ($object === $storeObject) {
-                return true;
-            }
+        if (false !== $key = array_search($object, $this->storage, true)) {
+            return true;
         }
 
         return false;
     }
 
     /**
+     * Removes the object from the storage.
+     *
+     * @param object $object The object to remove.
+     */
+    public function detach($object)
+    {
+        if (false !== $key = array_search($object, $this->storage, true)) {
+            $this->storage[$key] = null;
+            unset($this->storage[$key]);
+
+            $this->metaDatas[$key] = null;
+            unset($this->metaDatas[$key]);
+        }
+    }
+
+    /**
      * @see SplObjectStorage::attach()
      */
-    public function offsetSet($object, $data = null)
+    public function offsetSet($object, $data)
     {
         $this->attach($object, $data);
     }
@@ -72,10 +86,8 @@ class Symfony_Component_DependencyInjection_Dumper_SplObjectStorage
      */
     public function offsetGet($object)
     {
-        foreach ($this->storage as $key => $storeObject) {
-            if ($object === $storeObject) {
-                return $this->metaDatas[$key];
-            }
+        if (false !== $key = array_search($object, $this->storage, true)) {
+            return $this->metaDatas[$key];
         }
 
         throw new UnexpectedValueException('The object could not be found.');
@@ -87,5 +99,29 @@ class Symfony_Component_DependencyInjection_Dumper_SplObjectStorage
     public function offsetExists($object)
     {
         return $this->contains($object);
+    }
+
+    /**
+     * @see SplObjectStorage::detach()
+     */
+    public function offsetUnset($object)
+    {
+        return $this->detach($object);
+    }
+
+    /**
+     * Calculate a unique identifier for the contained objects
+     *
+     * @param object $object The object whose identifier is to be calculated.
+     *
+     * @return string A string with the calculated identifier.
+     */
+    protected function getHash($object)
+    {
+        do {
+            $hash = sha1(uniqid(mt_rand(), true));
+        } while (isset($this->storage[$hash]));
+
+        return $hash;
     }
 }
