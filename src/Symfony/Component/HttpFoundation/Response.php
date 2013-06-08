@@ -1027,7 +1027,7 @@ class Symfony_Component_HttpFoundation_Response
      *
      * @api
      */
-    public function isNotModified(Request $request)
+    public function isNotModified(Symfony_Component_HttpFoundation_Request $request)
     {
         if (!$request->isMethodSafe()) {
             return false;
