@@ -10,7 +10,7 @@
 /**
  * @author Alexandre Quercia <alquerci@email.com>
  */
-class Symfony_Component_HttpKernel_HttpCache_SPLObjectStorage implements ArrayAccess
+class Symfony_Component_HttpKernel_HttpCache_SplObjectStorage implements ArrayAccess
 {
     private $storage = array();
     private $metaDatas   = array();
