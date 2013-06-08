@@ -81,7 +81,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         }
 
         // TODO $this->registerValidationConfiguration($config['validation'], $container, $loader);
-        // TODO $this->registerEsiConfiguration($config['esi'], $container, $loader);
+        $this->registerEsiConfiguration($config['esi'], $container, $loader);
         $this->registerFragmentsConfiguration($config['fragments'], $container, $loader);
         // TODO $this->registerProfilerConfiguration($config['profiler'], $container, $loader);
         $this->registerTranslatorConfiguration($config['translator'], $container);
