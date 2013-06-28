@@ -10,7 +10,7 @@
         <parameter key="translator.selector.class">Symfony_Component_Translation_MessageSelector</parameter>
         <parameter key="translation.loader.php.class">Symfony_Component_Translation_Loader_PhpFileLoader</parameter>
         <parameter key="translation.loader.yml.class">Symfony_Component_Translation_Loader_YamlFileLoader</parameter>
-        <parameter key="translation.loader.xliff.class">Symfony\Component\Translation\Loader\XliffFileLoader</parameter>
+        <parameter key="translation.loader.xliff.class">Symfony_Component_Translation_Loader_XliffFileLoader</parameter>
         <parameter key="translation.loader.po.class">Symfony\Component\Translation\Loader\PoFileLoader</parameter>
         <parameter key="translation.loader.mo.class">Symfony\Component\Translation\Loader\MoFileLoader</parameter>
         <parameter key="translation.loader.qt.class">Symfony\Component\Translation\Loader\QtFileLoader</parameter>
@@ -57,11 +57,11 @@
         <service id="translation.loader.yml" class="%translation.loader.yml.class%">
             <tag name="translation.loader" alias="yml" />
         </service>
-<!--
+
         <service id="translation.loader.xliff" class="%translation.loader.xliff.class%">
             <tag name="translation.loader" alias="xlf" legacy-alias="xliff" />
         </service>
-
+<!--
         <service id="translation.loader.po" class="%translation.loader.po.class%">
             <tag name="translation.loader" alias="po" />
         </service>
