@@ -33,7 +33,7 @@ class Symfony_Component_Security_Core_Encoder_EncoderFactory implements Symfony_
                 continue;
             }
 
-            if (!$encoder instanceof PasswordEncoderInterface) {
+            if (!$encoder instanceof Symfony_Component_Security_Core_Encoder_PasswordEncoderInterface) {
                 return $this->encoders[$class] = $this->createEncoder($encoder);
             }
 
