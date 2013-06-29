@@ -87,6 +87,7 @@ class Symfony_Component_Security_Http_RememberMe_TokenBasedRememberMeServices ex
     {
         $user = $token->getUser();
         $expires = time() + $this->options['lifetime'];
+
         $value = $this->generateCookieValue(get_class($user), $user->getUsername(), $expires, $user->getPassword());
 
         $response->headers->setCookie(
