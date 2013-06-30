@@ -370,7 +370,7 @@ EOF
                 continue;
             }
 
-            $values = /* static */ self::convertDomElementToArray($node);
+            $values = $this->convertDomElementToArray($node);
             if (!is_array($values)) {
                 $values = array();
             }
