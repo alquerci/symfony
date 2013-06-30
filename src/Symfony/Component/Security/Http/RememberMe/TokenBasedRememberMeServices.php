@@ -27,9 +27,10 @@ class Symfony_Component_Security_Http_RememberMe_TokenBasedRememberMeServices ex
         }
 
         list($class, $username, $expires, $hash) = $cookieParts;
-        if (false === $username = base64_decode($username, true)) {
+        if (preg_match('/[^a-zA-Z0-9\x2B\x2F\x3D]/u', $username)) {
             throw new Symfony_Component_Security_Core_Exception_AuthenticationException('$username contains a character from outside the base64 alphabet.');
         }
+        $username = base64_decode($username);
         try {
             $user = $this->getUserProvider($class)->loadUserByUsername($username);
         } catch (Exception $ex) {
