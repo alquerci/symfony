@@ -45,8 +45,23 @@ class Symfony_Component_Config_Definition_VariableNode extends Symfony_Component
      */
     public function getDefaultValue()
     {
-        // return $this->defaultValue instanceof \Closure ? call_user_func($this->defaultValue) : $this->defaultValue;
-        return $this->defaultValue;
+        $value = $this->defaultValue;
+
+        if ($value instanceof Closure) {
+            return $value();
+        }
+
+        if (is_string($value) && is_callable($value)) {
+            $definedFunctions = get_defined_functions();
+
+            if (!in_array($value, $definedFunctions['user'], true)
+                && !in_array($value, $definedFunctions['internal'], true)
+            ) {
+                return $value();
+            }
+        }
+
+        return $value;
     }
 
     /**
