@@ -386,7 +386,14 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         // for PHP < 5.3.0 Anonymous functions become available.
         $requireRequestScope = 'request' === $defaultPackage->getScope();
         foreach ($namedPackages as $ref) {
-            assert($ref instanceof Symfony_Component_DependencyInjection_Reference);
+            if (!$ref instanceof Symfony_Component_DependencyInjection_Reference) {
+                trigger_error(sprintf('The variable $ref must be an instance of Symfony_Component_DependencyInjection_Reference, %s given, called in %s on line %s',
+                    __METHOD__,
+                    gettype($ref),
+                    __FILE__,
+                    __LINE__
+                ), E_USER_ERROR);
+            }
             if ('request' === $container->getDefinition($ref)->getScope()) {
                 $requireRequestScope = true;
                 break;

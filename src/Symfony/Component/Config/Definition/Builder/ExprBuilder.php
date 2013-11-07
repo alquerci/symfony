@@ -41,7 +41,16 @@ class Symfony_Component_Config_Definition_Builder_ExprBuilder
     public function always($then = null)
     {
         if (null !== $then) {
-            assert(is_callable($then));
+            if (!is_callable($then)) {
+                $e = new Exception();
+                $trace = $e->getTrace();
+                trigger_error(sprintf('Argument 1 passed to %s() must be callable, %s given, called in %s on line %s',
+                    __METHOD__,
+                    gettype($then),
+                    $trace[0]['file'],
+                    $trace[0]['line']
+                ), E_USER_ERROR);
+            }
         }
 
         $this->ifPart = create_function('$v', 'return true;');
@@ -65,7 +74,16 @@ class Symfony_Component_Config_Definition_Builder_ExprBuilder
     public function ifTrue($closure = null)
     {
         if (null !== $closure) {
-            assert(is_callable($closure));
+            if (!is_callable($closure)) {
+                $e = new Exception();
+                $trace = $e->getTrace();
+                trigger_error(sprintf('Argument 1 passed to %s() must be callable, %s given, called in %s on line %s',
+                    __METHOD__,
+                    gettype($closure),
+                    $trace[0]['file'],
+                    $trace[0]['line']
+                ), E_USER_ERROR);
+            }
         }
 
         if (null === $closure) {
@@ -154,7 +172,16 @@ class Symfony_Component_Config_Definition_Builder_ExprBuilder
      */
     public function then($closure)
     {
-        assert(is_callable($closure));
+        if (!is_callable($closure)) {
+            $e = new Exception();
+            $trace = $e->getTrace();
+            trigger_error(sprintf('Argument 1 passed to %s() must be callable, %s given, called in %s on line %s',
+                __METHOD__,
+                gettype($closure),
+                $trace[0]['file'],
+                $trace[0]['line']
+            ), E_USER_ERROR);
+        }
 
         $this->thenPart = $closure;
 

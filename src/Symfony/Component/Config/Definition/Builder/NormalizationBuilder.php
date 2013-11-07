@@ -58,7 +58,16 @@ class Symfony_Component_Config_Definition_Builder_NormalizationBuilder
     public function before($closure = null)
     {
         if (null !== $closure) {
-            assert(is_callable($closure));
+            if (!is_callable($closure)) {
+                $e = new Exception();
+                $trace = $e->getTrace();
+                trigger_error(sprintf('Argument 1 passed to %s() must be callable, %s given, called in %s on line %s',
+                    __METHOD__,
+                    gettype($closure),
+                    $trace[0]['file'],
+                    $trace[0]['line']
+                ), E_USER_ERROR);
+            }
         }
 
         if (null !== $closure) {
