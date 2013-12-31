@@ -328,7 +328,13 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
         if (!$this->isFreshEnough($request, $entry)) {
             $this->record($request, 'stale');
 
-            return $this->validate($request, $entry, $catch);
+            $response = $this->validate($request, $entry, $catch);
+
+            if ($response->isCacheable()) {
+                $this->store($request, $response);
+            }
+
+            return $response;
         }
 
         $this->record($request, 'fresh');
@@ -392,10 +398,6 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
             $response = $entry;
         } else {
             $this->record($request, 'invalid');
-        }
-
-        if ($response->isCacheable()) {
-            $this->store($request, $response);
         }
 
         return $response;
