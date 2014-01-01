@@ -48,7 +48,7 @@ class Symfony_Component_Finder_Expression_Glob implements Symfony_Component_Find
      */
     public function getType()
     {
-        return Expression::TYPE_GLOB;
+        return Symfony_Component_Finder_Expression_Expression::TYPE_GLOB;
     }
 
     /**
@@ -150,6 +150,6 @@ class Symfony_Component_Finder_Expression_Glob implements Symfony_Component_Find
             $escaping = false;
         }
 
-        return new Regex('^'.$regex.'$');
+        return new Symfony_Component_Finder_Expression_Regex('^'.$regex.'$');
     }
 }
