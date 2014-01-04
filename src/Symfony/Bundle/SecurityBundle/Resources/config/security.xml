@@ -42,7 +42,9 @@
 
         <parameter key="security.http_utils.class">Symfony_Component_Security_Http_HttpUtils</parameter>
 
+        <!-- TODO uncomment when the validator has been registered
         <parameter key="security.validator.user_password.class">Symfony_Component_Security_Core_Validator_Constraints_UserPasswordValidator</parameter>
+        -->
     </parameters>
 
     <services>
@@ -134,11 +136,13 @@
         </service>
 
         <!-- Validator -->
+        <!-- TODO uncomment when the validator has been registered
         <service id="security.validator.user_password" class="%security.validator.user_password.class%">
             <tag name="validator.constraint_validator" alias="security.validator.user_password" />
             <argument type="service" id="security.context" />
             <argument type="service" id="security.encoder_factory" />
         </service>
+        -->
 
         <!-- Pseudorandom Number Generator -->
         <service id="security.secure_random" class="Symfony_Component_Security_Core_Util_SecureRandom">
