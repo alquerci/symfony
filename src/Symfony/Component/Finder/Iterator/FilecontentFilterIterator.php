@@ -15,7 +15,7 @@
  * @author Fabien Potencier  <fabien@symfony.com>
  * @author Włodzimierz Gajda <gajdaw@gajdaw.pl>
  */
-class Symfony_Component_Finder_Iterator_FilecontentFilterIterator extends MultiplePcreFilterIterator
+class Symfony_Component_Finder_Iterator_FilecontentFilterIterator extends Symfony_Component_Finder_Iterator_MultiplePcreFilterIterator
 {
     /**
      * Filters the iterator values.
