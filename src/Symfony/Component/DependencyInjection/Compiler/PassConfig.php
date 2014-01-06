@@ -98,7 +98,7 @@ class Symfony_Component_DependencyInjection_Compiler_PassConfig
      *
      * @api
      */
-    public function addPass(Symfony_Component_DependencyInjection_Compiler_CompilerPassInterface $pass, $type = self::TYPE_BEFORE_OPTIMIZATION)
+    public function addPass(Symfony_Component_DependencyInjection_Compiler_CompilerPassInterface $pass, $type = Symfony_Component_DependencyInjection_Compiler_PassConfig::TYPE_BEFORE_OPTIMIZATION)
     {
         $property = $type.'Passes';
         if (!isset($this->$property)) {

@@ -119,7 +119,7 @@ class Symfony_Component_Routing_Generator_UrlGenerator implements Symfony_Compon
     /**
      * {@inheritDoc}
      */
-    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
+    public function generate($name, $parameters = array(), $referenceType = Symfony_Component_Routing_Generator_UrlGenerator::ABSOLUTE_PATH)
     {
         if (null === $route = $this->routes->get($name)) {
             throw new Symfony_Component_Routing_Exception_RouteNotFoundException(sprintf('Unable to generate a URL for the named route "%s" as such route does not exist.', $name));

@@ -343,7 +343,7 @@ class Symfony_Component_DependencyInjection_ContainerBuilder extends Symfony_Com
      *
      * @api
      */
-    public function set($id, $service, $scope = self::SCOPE_CONTAINER)
+    public function set($id, $service, $scope = Symfony_Component_DependencyInjection_ContainerBuilder::SCOPE_CONTAINER)
     {
         $id = strtolower($id);
 

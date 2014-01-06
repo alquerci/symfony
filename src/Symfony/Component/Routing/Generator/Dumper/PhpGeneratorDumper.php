@@ -62,7 +62,7 @@ class {$options['class']} extends {$options['base_class']}
         \$this->logger = \$logger;
     }
 
-{$this->generateGenerateMethod()}
+{$this->generateGenerateMethod($options['class'])}
 }
 
 EOF;
@@ -97,12 +97,14 @@ EOF;
     /**
      * Generates PHP code representing the `generate` method that implements the UrlGeneratorInterface.
      *
+     * @param string $class The class name
+     *
      * @return string PHP code
      */
-    private function generateGenerateMethod()
+    private function generateGenerateMethod($class)
     {
         return <<<EOF
-    public function generate(\$name, \$parameters = array(), \$referenceType = self::ABSOLUTE_PATH)
+    public function generate(\$name, \$parameters = array(), \$referenceType = {$class}::ABSOLUTE_PATH)
     {
         if (!isset(self::\$declaredRoutes[\$name])) {
             throw new Symfony_Component_Routing_Exception_RouteNotFoundException(sprintf('Unable to generate a URL for the named route "%s" as such route does not exist.', \$name));

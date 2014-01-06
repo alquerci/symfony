@@ -193,7 +193,7 @@ class Symfony_Component_Routing_Router implements Symfony_Component_Routing_Rout
     /**
      * {@inheritdoc}
      */
-    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
+    public function generate($name, $parameters = array(), $referenceType = Symfony_Component_Routing_Router::ABSOLUTE_PATH)
     {
         return $this->getGenerator()->generate($name, $parameters, $referenceType);
     }

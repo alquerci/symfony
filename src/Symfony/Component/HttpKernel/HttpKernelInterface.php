@@ -38,5 +38,5 @@ interface Symfony_Component_HttpKernel_HttpKernelInterface
      *
      * @api
      */
-    public function handle(Symfony_Component_HttpFoundation_Request $request, $type = self::MASTER_REQUEST, $catch = true);
+    public function handle(Symfony_Component_HttpFoundation_Request $request, $type = Symfony_Component_HttpKernel_HttpKernel::MASTER_REQUEST, $catch = true);
 }

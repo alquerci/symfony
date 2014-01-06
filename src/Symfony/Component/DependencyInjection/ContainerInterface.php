@@ -34,7 +34,7 @@ interface Symfony_Component_DependencyInjection_ContainerInterface
      *
      * @api
      */
-    public function set($id, $service, $scope = self::SCOPE_CONTAINER);
+    public function set($id, $service, $scope = Symfony_Component_DependencyInjection_ContainerInterface::SCOPE_CONTAINER);
 
     /**
      * Gets a service.
@@ -52,7 +52,7 @@ interface Symfony_Component_DependencyInjection_ContainerInterface
      *
      * @api
      */
-    public function get($id, $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE);
+    public function get($id, $invalidBehavior = Symfony_Component_DependencyInjection_ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE);
 
     /**
      * Returns true if the given service is defined.

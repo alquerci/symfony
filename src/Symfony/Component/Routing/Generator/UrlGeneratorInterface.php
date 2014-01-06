@@ -76,5 +76,5 @@ interface Symfony_Component_Routing_Generator_UrlGeneratorInterface extends Symf
      *
      * @api
      */
-    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH);
+    public function generate($name, $parameters = array(), $referenceType = Symfony_Component_Routing_Generator_UrlGeneratorInterface::ABSOLUTE_PATH);
 }

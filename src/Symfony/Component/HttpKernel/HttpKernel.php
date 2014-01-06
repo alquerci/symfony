@@ -88,7 +88,7 @@ class Symfony_Component_HttpKernel_HttpKernel implements Symfony_Component_HttpK
      * @throws LogicException If one of the listener does not behave as expected
      * @throws Symfony_Component_HttpKernel_Exception_NotFoundHttpException When controller cannot be found
      */
-    private function handleRaw(Symfony_Component_HttpFoundation_Request $request, $type = self::MASTER_REQUEST)
+    private function handleRaw(Symfony_Component_HttpFoundation_Request $request, $type = Symfony_Component_HttpKernel_HttpKernel::MASTER_REQUEST)
     {
         // request
         $event = new Symfony_Component_HttpKernel_Event_GetResponseEvent($this, $request, $type);

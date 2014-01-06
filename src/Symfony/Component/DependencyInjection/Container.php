@@ -179,7 +179,7 @@ class Symfony_Component_DependencyInjection_Container implements Symfony_Compone
      *
      * @api
      */
-    public function set($id, $service, $scope = self::SCOPE_CONTAINER)
+    public function set($id, $service, $scope = Symfony_Component_DependencyInjection_Container::SCOPE_CONTAINER)
     {
         if (self::SCOPE_PROTOTYPE === $scope) {
             throw new Symfony_Component_DependencyInjection_Exception_InvalidArgumentException(sprintf('You cannot set service "%s" of scope "prototype".', $id));
@@ -233,7 +233,7 @@ class Symfony_Component_DependencyInjection_Container implements Symfony_Compone
      *
      * @api
      */
-    public function get($id, $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
+    public function get($id, $invalidBehavior = Symfony_Component_DependencyInjection_Container::EXCEPTION_ON_INVALID_REFERENCE)
     {
         $id = strtolower($id);
 

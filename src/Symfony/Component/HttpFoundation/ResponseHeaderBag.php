@@ -199,7 +199,7 @@ class Symfony_Component_HttpFoundation_ResponseHeaderBag extends Symfony_Compone
      *
      * @api
      */
-    public function getCookies($format = self::COOKIES_FLAT)
+    public function getCookies($format = Symfony_Component_HttpFoundation_ResponseHeaderBag::COOKIES_FLAT)
     {
         if (!in_array($format, array(self::COOKIES_FLAT, self::COOKIES_ARRAY))) {
             throw new InvalidArgumentException(sprintf('Format "%s" invalid (%s).', $format, implode(', ', array(self::COOKIES_FLAT, self::COOKIES_ARRAY))));

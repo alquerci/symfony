@@ -102,7 +102,7 @@ class Symfony_Component_Routing_Matcher_TraceableUrlMatcher extends Symfony_Comp
         }
     }
 
-    private function addTrace($log, $level = self::ROUTE_DOES_NOT_MATCH, $name = null, $route = null)
+    private function addTrace($log, $level = Symfony_Component_Routing_Matcher_TraceableUrlMatcher::ROUTE_DOES_NOT_MATCH, $name = null, $route = null)
     {
         $this->traces[] = array(
             'log'   => $log,
