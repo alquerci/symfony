@@ -59,7 +59,7 @@ class Symfony_Component_HttpFoundation_IpUtils
             $netmask = 32;
         }
 
-        return 0 === substr_compare(sprintf('%032b', ip2long($requestIp)), sprintf('%032b', ip2long($address)), 0, $netmask);
+        return 0 === strncmp(sprintf('%032b', ip2long($requestIp)), sprintf('%032b', ip2long($address)), $netmask);
     }
 
     /**
@@ -77,7 +77,7 @@ class Symfony_Component_HttpFoundation_IpUtils
      */
     public static function checkIp6($requestIp, $ip)
     {
-        if (!((extension_loaded('sockets') && defined('AF_INET6')) || @inet_pton('::1'))) {
+        if (!(extension_loaded('sockets') && defined('AF_INET6')) || !(function_exists('inet_pton') && @inet_pton('::1'))) {
             throw new RuntimeException('Unable to check Ipv6. Check that PHP was not compiled with option "disable-ipv6".');
         }
 
