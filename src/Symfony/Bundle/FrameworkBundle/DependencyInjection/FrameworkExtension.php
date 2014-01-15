@@ -64,7 +64,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         $container->setParameter('kernel.default_locale', $config['default_locale']);
 
         if (!empty($config['test'])) {
-            // TODO $loader->load('test.xml');
+            $loader->load('test.xml');
         }
 
         if (isset($config['session'])) {
