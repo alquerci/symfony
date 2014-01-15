@@ -340,6 +340,9 @@ class Symfony_Component_HttpFoundation_Request
         }
         $queryString = http_build_query($query, '', '&');
 
+        // http_build_query may return null on PHP <5.2
+        $queryString = null === $queryString ? '' : $queryString;
+
         $server['REQUEST_URI'] = $components['path'].('' !== $queryString ? '?'.$queryString : '');
         $server['QUERY_STRING'] = $queryString;
 
