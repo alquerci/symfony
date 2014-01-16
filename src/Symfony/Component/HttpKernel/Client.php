@@ -69,7 +69,7 @@ class Symfony_Component_HttpKernel_Client extends Symfony_Component_BrowserKit_C
 
         $r = new ReflectionClass('Symfony_Component_ClassLoader_ClassLoader');
         $requirePath = str_replace("'", "\\'", $r->getFileName());
-        $symfonyPath = str_replace("'", "\\'", realpath(__DIR__.'/../../..'));
+        $symfonyPath = str_replace("'", "\\'", realpath(dirname(__FILE__).'/../../..'));
 
         return <<<EOF
 <?php
