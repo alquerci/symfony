@@ -97,7 +97,7 @@ class Symfony_Component_BrowserKit_CookieJar
         $cookies = array();
 
         foreach ($setCookies as $cookie) {
-            foreach (explode(',', $cookie) as $i => $part) {
+            foreach (explode(',', ((is_object($cookie) && method_exists($cookie, '__toString')) ? $cookie->__toString() : $cookie)) as $i => $part) {
                 if (0 === $i || preg_match('/^(?P<token>\s*[0-9A-Za-z!#\$%\&\'\*\+\-\.^_`\|~]+)=/', $part)) {
                     $cookies[] = ltrim($part);
                 } else {
