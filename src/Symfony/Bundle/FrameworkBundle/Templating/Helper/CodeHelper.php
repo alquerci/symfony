@@ -84,9 +84,7 @@ class Symfony_Bundle_FrameworkBundle_Templating_Helper_CodeHelper extends Symfon
         $result = array();
         foreach ($args as $key => $item) {
             if ('object' === $item[0]) {
-                $parts = explode('\\', $item[1]);
-                $short = array_pop($parts);
-                $formattedValue = sprintf("<em>object</em>(<abbr title=\"%s\">%s</abbr>)", $item[1], $short);
+                $formattedValue = sprintf("<em>object</em>(%s)", $this->abbrClass($item[1]));
             } elseif ('array' === $item[0]) {
                 $formattedValue = sprintf("<em>array</em>(%s)", is_array($item[1]) ? $this->formatArgs($item[1]) : $item[1]);
             } elseif ('string'  === $item[0]) {
