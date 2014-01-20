@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-class Symfony_Component_BrowserKit_Tests_TestClient extends Symfony_Component_BrowserKit_Client
+class Symfony_Component_BrowserKit_Tests_ClientTest extends Symfony_Component_BrowserKit_Client
 {
     protected $nextResponse = null;
     protected $nextScript = null;
