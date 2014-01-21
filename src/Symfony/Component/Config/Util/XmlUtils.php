@@ -85,7 +85,21 @@ class Symfony_Component_Config_Util_XmlUtils
                 if (empty($messages)) {
                     $messages = array(sprintf('The XML file "%s" is not valid.', $file));
                 }
-                throw new InvalidArgumentException(implode("\n", $messages), 0/* , $e */);
+
+                $throw = true;
+                if (version_compare(LIBXML_DOTTED_VERSION, '2.6.27', '<')) {
+                    // https://github.com/symfony/symfony/issues/7291
+                    foreach ($messages as $message) {
+                        if (0 === strpos($message, '[ERROR 3070]')) {
+                            $throw = false;
+                            break;
+                        }
+                    }
+                }
+
+                if ($throw) {
+                    throw new InvalidArgumentException(implode("\n", $messages), 0/* , $e */);
+                }
             }
 
             libxml_use_internal_errors($internalErrors);
