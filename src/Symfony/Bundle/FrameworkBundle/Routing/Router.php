@@ -143,7 +143,7 @@ class Symfony_Bundle_FrameworkBundle_Routing_Router extends Symfony_Component_Ro
             'but found parameter "%s" of type %s inside string value "%s".',
             $key,
             gettype($resolved),
-            $value)
+            $this->_resolveCBvalue)
         );
     }
 }
