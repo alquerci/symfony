@@ -52,10 +52,13 @@ class Symfony_Component_ClassLoader_DebugClassLoader
         foreach ($functions as $key => $function) {
             if (version_compare(phpversion(), '5.2.11', '<')) {
                 // http://bugs.php.net/44144
-                if (is_array($function) && is_object($function[0])) {
-                    $functions[$key] = null;
+                if (is_array($function)) {
+                    $r = new ReflectionMethod($function[0], $function[1]);
+                    if (!$r->isStatic()) {
+                        $functions[$key] = null;
 
-                    continue;
+                        continue;
+                    }
                 }
             }
 
@@ -67,7 +70,7 @@ class Symfony_Component_ClassLoader_DebugClassLoader
                 continue;
             }
 
-            if (is_array($function) && !$function[0] instanceof self && $function[0] !== 'Symfony_Component_ClassLoader_DebugClassLoader' && is_callable(array($function[0], 'findFile'))) {
+            if (is_array($function) && !$function[0] instanceof self && !is_subclass_of($function[0], __CLASS__) && $function[0] !== __CLASS__ && method_exists($function[0], 'findFile')) {
                 $r = new ReflectionMethod($function[0], 'findFile');
                 if (1 === $r->getNumberOfRequiredParameters()) {
                     $parameters = $r->getParameters();
