@@ -800,6 +800,10 @@ class Symfony_Component_DependencyInjection_ContainerBuilder extends Symfony_Com
      */
     public function getDefinition($id)
     {
+        if ($id instanceof Symfony_Component_DependencyInjection_Reference) {
+            $id = $id->__toString();
+        }
+
         $id = strtolower($id);
 
         if (!$this->hasDefinition($id)) {
