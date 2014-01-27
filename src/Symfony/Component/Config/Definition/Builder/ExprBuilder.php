@@ -19,6 +19,7 @@ class Symfony_Component_Config_Definition_Builder_ExprBuilder
 {
     protected $node;
     public $ifPart;
+    private $ifPartValue;
     public $thenPart;
 
     /**
@@ -140,11 +141,15 @@ class Symfony_Component_Config_Definition_Builder_ExprBuilder
      */
     public function ifInArray(array $array)
     {
-        throw new LogicException('Not implemeted');
-
-        // $this->ifPart = function($v) use ($array) { return in_array($v, $array, true); };
+        $this->ifPartValue = $array;
+        $this->ifPart = array($this, '_ifInArrayCallback');
 
         return $this;
+    }
+
+    public function _ifInArrayCallback($v)
+    {
+        return in_array($v, $this->ifPartValue, true);
     }
 
     /**
@@ -156,11 +161,15 @@ class Symfony_Component_Config_Definition_Builder_ExprBuilder
      */
     public function ifNotInArray(array $array)
     {
-        throw new LogicException('Not implemeted');
-
-        //$this->ifPart = function($v) use ($array) { return !in_array($v, $array, true); };
+        $this->ifPartValue = $array;
+        $this->ifPart = array($this, '_ifNotInArrayCallback');
 
         return $this;
+    }
+
+    public function _ifNotInArrayCallback($v)
+    {
+        return !in_array($v, $this->ifPartValue, true);
     }
 
     /**
