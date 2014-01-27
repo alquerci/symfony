@@ -72,7 +72,7 @@ class Symfony_Component_Config_Resource_DirectoryResource implements Symfony_Com
         $newestMTime = filemtime($this->resource);
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->resource), RecursiveIteratorIterator::SELF_FIRST) as $file) {
             // if regex filtering is enabled only check matching files
-            if ($this->pattern && $file->isFile() && !preg_match($this->pattern, $file->getBasename())) {
+            if ($this->pattern && $file->isFile() && !preg_match($this->pattern, basename($file->getFilename()))) {
                 continue;
             }
 
