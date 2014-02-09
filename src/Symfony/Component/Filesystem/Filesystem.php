@@ -351,7 +351,7 @@ class Symfony_Component_Filesystem_Filesystem
             foreach ($deleteIterator as $file) {
                 $origin = str_replace($targetDir, $originDir, $file->getPathname());
                 if (!$this->exists($origin)) {
-                    $this->remove($file);
+                    $this->remove($file->getPathname());
                 }
             }
         }
@@ -368,7 +368,7 @@ class Symfony_Component_Filesystem_Filesystem
 
         foreach ($iterator as $file) {
             $target = str_replace($originDir, $targetDir, $file->getPathname());
-
+            $file = $file->getPathname();
             if ($copyOnWindows) {
                 if (is_link($file) || is_file($file)) {
                     $this->copy($file, $target, isset($options['override']) ? $options['override'] : false);
