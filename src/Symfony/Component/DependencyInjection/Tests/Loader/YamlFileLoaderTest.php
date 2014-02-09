@@ -1,0 +1,204 @@
+<?php
+
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+class Symfony_Component_DependencyInjection_Tests_Loader_YamlFileLoaderTest extends PHPUnit_Framework_TestCase
+{
+    protected static $fixturesPath;
+
+    protected function setUp()
+    {
+        if (!class_exists('Symfony_Component_Config_Loader_Loader')) {
+            $this->markTestSkipped('The "Config" component is not available');
+        }
+
+        if (!class_exists('Symfony_Component_Yaml_Yaml')) {
+            $this->markTestSkipped('The "Yaml" component is not available');
+        }
+    }
+
+    public static function setUpBeforeClass()
+    {
+        self::$fixturesPath = realpath(dirname(__FILE__).'/../Fixtures/');
+        require_once self::$fixturesPath.'/includes/foo.php';
+        require_once self::$fixturesPath.'/includes/ProjectExtension.php';
+    }
+
+    public function testLoadFile()
+    {
+        $loader = new Symfony_Component_DependencyInjection_Tests_Loader_YamlFileLoader(new Symfony_Component_DependencyInjection_ContainerBuilder(), new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/ini'));
+
+        try {
+            $loader->loadFile('foo.yml');
+            $this->fail('->load() throws an InvalidArgumentException if the loaded file does not exist');
+        } catch (Exception $e) {
+            $this->assertInstanceOf('InvalidArgumentException', $e, '->load() throws an InvalidArgumentException if the loaded file does not exist');
+            $this->assertEquals('The service file "foo.yml" is not valid.', $e->getMessage(), '->load() throws an InvalidArgumentException if the loaded file does not exist');
+        }
+
+        try {
+            $loader->loadFile('parameters.ini');
+            $this->fail('->load() throws an InvalidArgumentException if the loaded file is not a valid YAML file');
+        } catch (Exception $e) {
+            $this->assertInstanceOf('InvalidArgumentException', $e, '->load() throws an InvalidArgumentException if the loaded file is not a valid YAML file');
+            $this->assertEquals('The service file "parameters.ini" is not valid.', $e->getMessage(), '->load() throws an InvalidArgumentException if the loaded file is not a valid YAML file');
+        }
+
+        $loader = new Symfony_Component_DependencyInjection_Tests_Loader_YamlFileLoader(new Symfony_Component_DependencyInjection_ContainerBuilder(), new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/yaml'));
+
+        foreach (array('nonvalid1', 'nonvalid2') as $fixture) {
+            try {
+                $loader->loadFile($fixture.'.yml');
+                $this->fail('->load() throws an InvalidArgumentException if the loaded file does not validate');
+            } catch (Exception $e) {
+                $this->assertInstanceOf('InvalidArgumentException', $e, '->load() throws an InvalidArgumentException if the loaded file does not validate');
+                $this->assertStringMatchesFormat('The service file "nonvalid%d.yml" is not valid.', $e->getMessage(), '->load() throws an InvalidArgumentException if the loaded file does not validate');
+            }
+        }
+    }
+
+    public function testLoadParameters()
+    {
+        $container = new Symfony_Component_DependencyInjection_ContainerBuilder();
+        $loader = new Symfony_Component_DependencyInjection_Loader_YamlFileLoader($container, new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/yaml'));
+        $loader->load('services2.yml');
+        $this->assertEquals(array('foo' => 'bar', 'mixedcase' => array('MixedCaseKey' => 'value'), 'values' => array(true, false, 0, 1000.3), 'bar' => 'foo', 'escape' => '@escapeme', 'foo_bar' => new Symfony_Component_DependencyInjection_Reference('foo_bar')), $container->getParameterBag()->all(), '->load() converts YAML keys to lowercase');
+    }
+
+    public function testLoadImports()
+    {
+        $container = new Symfony_Component_DependencyInjection_ContainerBuilder();
+        $resolver = new Symfony_Component_Config_Loader_LoaderResolver(array(
+            new Symfony_Component_DependencyInjection_Loader_IniFileLoader($container, new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/yaml')),
+            new Symfony_Component_DependencyInjection_Loader_XmlFileLoader($container, new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/yaml')),
+            $loader = new Symfony_Component_DependencyInjection_Loader_YamlFileLoader($container, new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/yaml')),
+        ));
+        $loader->setResolver($resolver);
+        $loader->load('services4.yml');
+
+        $actual = $container->getParameterBag()->all();
+        $expected = array('foo' => 'bar', 'values' => array(true, false), 'bar' => '%foo%', 'escape' => '@escapeme', 'foo_bar' => new Symfony_Component_DependencyInjection_Reference('foo_bar'), 'mixedcase' => array('MixedCaseKey' => 'value'), 'imported_from_ini' => true, 'imported_from_xml' => true);
+        $this->assertEquals(array_keys($expected), array_keys($actual), '->load() imports and merges imported files');
+
+        // Bad import throws no exception due to ignore_errors value.
+        $loader->load('services4_bad_import.yml');
+    }
+
+    public function testLoadServices()
+    {
+        $container = new Symfony_Component_DependencyInjection_ContainerBuilder();
+        $loader = new Symfony_Component_DependencyInjection_Loader_YamlFileLoader($container, new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/yaml'));
+        $loader->load('services6.yml');
+        $services = $container->getDefinitions();
+        $this->assertTrue(isset($services['foo']), '->load() parses service elements');
+        $this->assertEquals('Symfony_Component_DependencyInjection_Definition', get_class($services['foo']), '->load() converts service element to Symfony_Component_DependencyInjection_Definition instances');
+        $this->assertEquals('FooClass', $services['foo']->getClass(), '->load() parses the class attribute');
+        $this->assertEquals('container', $services['scope.container']->getScope());
+        $this->assertEquals('custom', $services['scope.custom']->getScope());
+        $this->assertEquals('prototype', $services['scope.prototype']->getScope());
+        $this->assertEquals('getInstance', $services['constructor']->getFactoryMethod(), '->load() parses the factory_method attribute');
+        $this->assertEquals('%path%/foo.php', $services['file']->getFile(), '->load() parses the file tag');
+        $this->assertEquals(array('foo', new Symfony_Component_DependencyInjection_Reference('foo'), array(true, false)), $services['arguments']->getArguments(), '->load() parses the argument tags');
+        $this->assertEquals('sc_configure', $services['configurator1']->getConfigurator(), '->load() parses the configurator tag');
+        $this->assertEquals(array(new Symfony_Component_DependencyInjection_Reference('baz'), 'configure'), $services['configurator2']->getConfigurator(), '->load() parses the configurator tag');
+        $this->assertEquals(array('BazClass', 'configureStatic'), $services['configurator3']->getConfigurator(), '->load() parses the configurator tag');
+        $this->assertEquals(array(array('setBar', array()), array('setBar', array())), $services['method_call1']->getMethodCalls(), '->load() parses the method_call tag');
+        $this->assertEquals(array(array('setBar', array('foo', new Symfony_Component_DependencyInjection_Reference('foo'), array(true, false)))), $services['method_call2']->getMethodCalls(), '->load() parses the method_call tag');
+        $this->assertEquals('baz_factory', $services['factory_service']->getFactoryService());
+
+        $aliases = $container->getAliases();
+        $this->assertTrue(isset($aliases['alias_for_foo']), '->load() parses aliases');
+        $this->assertEquals('foo', (string) $aliases['alias_for_foo']->__toString(), '->load() parses aliases');
+        $this->assertTrue($aliases['alias_for_foo']->isPublic());
+        $this->assertTrue(isset($aliases['another_alias_for_foo']));
+        $this->assertEquals('foo', (string) $aliases['another_alias_for_foo']->__toString());
+        $this->assertFalse($aliases['another_alias_for_foo']->isPublic());
+    }
+
+    public function testExtensions()
+    {
+        $container = new Symfony_Component_DependencyInjection_ContainerBuilder();
+        $container->registerExtension(new ProjectExtension());
+        $loader = new Symfony_Component_DependencyInjection_Loader_YamlFileLoader($container, new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/yaml'));
+        $loader->load('services10.yml');
+        $container->compile();
+        $services = $container->getDefinitions();
+        $parameters = $container->getParameterBag()->all();
+
+        $this->assertTrue(isset($services['project.service.bar']), '->load() parses extension elements');
+        $this->assertTrue(isset($parameters['project.parameter.bar']), '->load() parses extension elements');
+
+        $this->assertEquals('BAR', $services['project.service.foo']->getClass(), '->load() parses extension elements');
+        $this->assertEquals('BAR', $parameters['project.parameter.foo'], '->load() parses extension elements');
+
+        try {
+            $loader->load('services11.yml');
+            $this->fail('->load() throws an InvalidArgumentException if the tag is not valid');
+        } catch (Exception $e) {
+            $this->assertInstanceOf('InvalidArgumentException', $e, '->load() throws an InvalidArgumentException if the tag is not valid');
+            $this->assertStringStartsWith('There is no extension able to load the configuration for "foobarfoobar" (in', $e->getMessage(), '->load() throws an InvalidArgumentException if the tag is not valid');
+        }
+    }
+
+    /**
+     * @covers Symfony_Component_DependencyInjection_Loader_YamlFileLoader::supports
+     */
+    public function testSupports()
+    {
+        $loader = new Symfony_Component_DependencyInjection_Loader_YamlFileLoader(new Symfony_Component_DependencyInjection_ContainerBuilder(), new Symfony_Component_Config_FileLocator());
+
+        $this->assertTrue($loader->supports('foo.yml'), '->supports() returns true if the resource is loadable');
+        $this->assertFalse($loader->supports('foo.foo'), '->supports() returns true if the resource is loadable');
+    }
+
+    public function testNonArrayTagThrowsException()
+    {
+        $loader = new Symfony_Component_DependencyInjection_Loader_YamlFileLoader(new Symfony_Component_DependencyInjection_ContainerBuilder(), new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/yaml'));
+        try {
+            $loader->load('badtag1.yml');
+            $this->fail('->load() should throw an exception when the tags key of a service is not an array');
+        } catch (Exception $e) {
+            $this->assertInstanceOf('Symfony_Component_DependencyInjection_Exception_InvalidArgumentException', $e, '->load() throws an InvalidArgumentException if the tags key is not an array');
+            $this->assertStringStartsWith('Parameter "tags" must be an array for service', $e->getMessage(), '->load() throws an InvalidArgumentException if the tags key is not an array');
+        }
+    }
+
+    public function testTagWithoutNameThrowsException()
+    {
+        $loader = new Symfony_Component_DependencyInjection_Loader_YamlFileLoader(new Symfony_Component_DependencyInjection_ContainerBuilder(), new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/yaml'));
+        try {
+            $loader->load('badtag2.yml');
+            $this->fail('->load() should throw an exception when a tag is missing the name key');
+        } catch (Exception $e) {
+            $this->assertInstanceOf('Symfony_Component_DependencyInjection_Exception_InvalidArgumentException', $e, '->load() throws an InvalidArgumentException if a tag is missing the name key');
+            $this->assertStringStartsWith('A "tags" entry is missing a "name" key for service ', $e->getMessage(), '->load() throws an InvalidArgumentException if a tag is missing the name key');
+        }
+    }
+
+    public function testTagWithAttributeArrayThrowsException()
+    {
+        $loader = new Symfony_Component_DependencyInjection_Loader_YamlFileLoader(new Symfony_Component_DependencyInjection_ContainerBuilder(), new Symfony_Component_Config_FileLocator(self::$fixturesPath.'/yaml'));
+        try {
+            $loader->load('badtag3.yml');
+            $this->fail('->load() should throw an exception when a tag-attribute is not a scalar');
+        } catch (Exception $e) {
+            $this->assertInstanceOf('Symfony_Component_DependencyInjection_Exception_InvalidArgumentException', $e, '->load() throws an InvalidArgumentException if a tag-attribute is not a scalar');
+            $this->assertStringStartsWith('A "tags" attribute must be of a scalar-type for service ', $e->getMessage(), '->load() throws an InvalidArgumentException if a tag-attribute is not a scalar');
+        }
+    }
+}
+
+class Symfony_Component_DependencyInjection_Tests_Loader_YamlFileLoader extends Symfony_Component_DependencyInjection_Loader_YamlFileLoader
+{
+    public function loadFile($file)
+    {
+        return parent::loadFile($file);
+    }
+}

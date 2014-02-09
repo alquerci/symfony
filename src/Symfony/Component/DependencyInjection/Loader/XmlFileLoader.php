@@ -252,7 +252,7 @@ class Symfony_Component_DependencyInjection_Loader_XmlFileLoader extends Symfony
                 $oNode->parentNode->replaceChild($nNode, $oNode);
                 $nNode->setAttribute('id', $id);
             } else {
-                $oNode->parentNode->removeChild($oNode);
+                // $oNode->parentNode->removeChild($oNode); // FIXME Segmentation fault
             }
         }
     }
@@ -296,7 +296,12 @@ class Symfony_Component_DependencyInjection_Loader_XmlFileLoader extends Symfony
             if (0 === stripos($location, 'phar://')) {
                 $tmpfile = tempnam(sys_get_temp_dir(), 'sf2');
                 if ($tmpfile) {
-                    copy($location, $tmpfile);
+                    // The copy function fails when the source path contains white space
+                    if (false === strpos($location, ' ')) {
+                        copy($location, $tmpfile);
+                    } else {
+                        file_put_contents($tmpfile, file_get_contents($location));
+                    }
                     $tmpfiles[] = $tmpfile;
                     $parts = explode('/', str_replace('\\', '/', $tmpfile));
                 }
