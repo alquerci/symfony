@@ -39,7 +39,7 @@ class Symfony_Component_Finder_Iterator_SortableIterator implements IteratorAggr
 
         if (self::SORT_BY_NAME === $sort) {
             $this->sort = create_function ('$a, $b', '
-                return strcmp($a->getRealpath(), $b->getRealpath());
+                return strcmp(realpath($a->getPathname()), realpath($b->getPathname()));
             ');
         } elseif (self::SORT_BY_TYPE === $sort) {
             $this->sort = create_function ('$a, $b', '
@@ -49,7 +49,7 @@ class Symfony_Component_Finder_Iterator_SortableIterator implements IteratorAggr
                     return 1;
                 }
 
-                return strcmp($a->getRealpath(), $b->getRealpath());
+                return strcmp(realpath($a->getPathname()), realpath($b->getPathname()));
             ');
         } elseif (self::SORT_BY_ACCESSED_TIME === $sort) {
             $this->sort = create_function ('$a, $b', '

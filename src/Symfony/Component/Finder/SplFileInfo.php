@@ -92,4 +92,9 @@ class Symfony_Component_Finder_SplFileInfo extends SplFileInfo
     {
         return realpath($this->getPathname());
     }
+
+    public function getPathname()
+    {
+        return rtrim(parent::getPathname(), DIRECTORY_SEPARATOR);
+    }
 }
