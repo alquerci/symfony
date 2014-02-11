@@ -94,7 +94,7 @@ class Symfony_Component_HttpKernel_Debug_ErrorHandler
 
         if ($level & (E_USER_DEPRECATED | E_DEPRECATED)) {
             if (null !== self::$logger) {
-                $stack = version_compare(PHP_VERSION, '5.4', '<') ? array_slice(debug_backtrace(false), 0, 10) : debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
+                $stack = version_compare(PHP_VERSION, '5.2.5', '<') ? array_slice(debug_backtrace(), 0, 10) : (version_compare(PHP_VERSION, '5.4', '<') ? array_slice(debug_backtrace(false), 0, 10) : debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10));
 
                 self::$logger->warning($message, array('type' => self::TYPE_DEPRECATION, 'stack' => $stack));
             }

@@ -63,6 +63,11 @@ class Symfony_Component_HttpKernel_Controller_ControllerResolver implements Symf
             return $controller;
         }
 
+        // create_function()
+        if (is_callable($controller) && 1 === strpos($controller, 'lambda_')) {
+            return $controller;
+        }
+
         if (false === strpos($controller, ':')) {
             if (method_exists($controller, '__invoke')) {
                 return new $controller;
@@ -96,7 +101,7 @@ class Symfony_Component_HttpKernel_Controller_ControllerResolver implements Symf
     {
         if (is_array($controller)) {
             $r = new ReflectionMethod($controller[0], $controller[1]);
-        } elseif (is_object($controller) && method_exists($controller, '__invoke')) {
+        } elseif (is_object($controller) && !$controller instanceof Closure) {
             $r = new ReflectionObject($controller);
             $r = $r->getMethod('__invoke');
         } else {

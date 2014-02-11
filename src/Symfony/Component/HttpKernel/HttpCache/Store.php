@@ -356,9 +356,10 @@ class Symfony_Component_HttpKernel_HttpCache_Store implements Symfony_Component_
             return false;
         }
 
-        if (false === @rename($tmpFile, $path)) {
+        if (false === @copy($tmpFile, $path)) {
             return false;
         }
+        @unlink($tmpFile);
 
         $umask = false === umask() ? 0022 : umask();
         @chmod($path, 0666 & ~$umask);

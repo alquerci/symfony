@@ -61,7 +61,7 @@ class Symfony_Component_HttpKernel_Event_FilterControllerEvent extends Symfony_C
     public function setController($controller)
     {
         // controller must be a callable
-        if (!is_callable($controller)) {
+        if (!(is_callable($controller) || (is_object($controller) && method_exists($controller, '__invoke')))) {
             throw new LogicException(sprintf('The controller must be a callable (%s given).', $this->varToString($controller)));
         }
 
