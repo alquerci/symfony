@@ -123,8 +123,8 @@ class Symfony_Component_Routing_RouteCompiler implements Symfony_Component_Routi
                 $nextSeparator = self::findNextSeparator($followingPattern);
                 $regexp = sprintf(
                     '[^%s%s]+',
-                    preg_quote($defaultSeparator, self::REGEX_DELIMITER),
-                    $defaultSeparator !== $nextSeparator && '' !== $nextSeparator ? preg_quote($nextSeparator, self::REGEX_DELIMITER) : ''
+                    self::escape($defaultSeparator),
+                    $defaultSeparator !== $nextSeparator && '' !== $nextSeparator ? self::escape($nextSeparator) : ''
                 );
                 if (('' !== $nextSeparator && !preg_match('#^\{\w+\}#', $followingPattern)) || '' === $followingPattern) {
                     // When we have a separator, which is disallowed for the variable, we can optimize the regex with a possessive
@@ -204,14 +204,14 @@ class Symfony_Component_Routing_RouteCompiler implements Symfony_Component_Routi
         $token = $tokens[$index];
         if ('text' === $token[0]) {
             // Text tokens
-            return preg_quote($token[1], self::REGEX_DELIMITER);
+            return self::escape($token[1]);
         } else {
             // Variable tokens
             if (0 === $index && 0 === $firstOptional) {
                 // When the only token is an optional variable token, the separator is required
-                return sprintf('%s(?P<%s>%s)?', preg_quote($token[1], self::REGEX_DELIMITER), $token[3], $token[2]);
+                return sprintf('%s(?P<%s>%s)?', self::escape($token[1]), $token[3], $token[2]);
             } else {
-                $regexp = sprintf('%s(?P<%s>%s)', preg_quote($token[1], self::REGEX_DELIMITER), $token[3], $token[2]);
+                $regexp = sprintf('%s(?P<%s>%s)', self::escape($token[1]), $token[3], $token[2]);
                 if ($index >= $firstOptional) {
                     // Enclose each optional token in a subpattern to make it optional.
                     // "?:" means it is non-capturing, i.e. the portion of the subject string that
@@ -227,5 +227,17 @@ class Symfony_Component_Routing_RouteCompiler implements Symfony_Component_Routi
                 return $regexp;
             }
         }
+    }
+
+    private static function escape($string)
+    {
+        $string = preg_quote($string, self::REGEX_DELIMITER);
+
+        // The - character is quoted until PHP 5.3.0
+        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+            $string = str_replace('-', '\\-', $string);
+        }
+
+        return $string;
     }
 }

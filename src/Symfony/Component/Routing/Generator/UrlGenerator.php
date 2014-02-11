@@ -66,6 +66,8 @@ class Symfony_Component_Routing_Generator_UrlGenerator implements Symfony_Compon
         '%21' => '!',
         '%2A' => '*',
         '%7C' => '|',
+        // the ~ character must not be encoded to comply with RFC 3986 until PHP 5.3.0
+        '%7E' => '~',
     );
 
     /**

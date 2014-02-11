@@ -365,7 +365,18 @@ class Symfony_Component_Routing_RouteCollection implements IteratorAggregate, Co
      */
     public function getResources()
     {
-        return array_unique($this->resources);
+        $seen = array();
+        $uniqueResources = array();
+
+        foreach ($this->resources as $key => $resource) {
+            $marker = $resource->__toString();
+            if (!isset($seen[$marker])) {
+                $seen[$marker] = true;
+                $uniqueResources[$key] = $resource;
+            }
+        }
+
+        return $uniqueResources;
     }
 
     /**
