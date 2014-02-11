@@ -184,7 +184,7 @@ class Symfony_Component_HttpFoundation_Session_Flash_FlashBag implements Symfony
      */
     public function count()
     {
-        trigger_error(sprintf('%s() is deprecated since 2.2 and will be removed in 2.3', __METHOD__), E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error(sprintf('%s() is deprecated since 2.2 and will be removed in 2.3', __METHOD__), E_USER_DEPRECATED);
 
         return count($this->flashes);
     }

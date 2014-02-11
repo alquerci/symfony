@@ -249,7 +249,7 @@ class Symfony_Component_HttpFoundation_Session_Session implements Symfony_Compon
      */
     public function getFlashes()
     {
-        trigger_error('getFlashes() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getFlashes() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
 
         $all = $this->getBag($this->flashName)->all();
 
@@ -274,7 +274,7 @@ class Symfony_Component_HttpFoundation_Session_Session implements Symfony_Compon
      */
     public function setFlashes($values)
     {
-        trigger_error('setFlashes() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('setFlashes() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
 
         foreach ($values as $name => $value) {
             $this->getBag($this->flashName)->set($name, $value);
@@ -291,7 +291,7 @@ class Symfony_Component_HttpFoundation_Session_Session implements Symfony_Compon
      */
     public function getFlash($name, $default = null)
     {
-        trigger_error('getFlash() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getFlash() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
 
         $return = $this->getBag($this->flashName)->get($name);
 
@@ -306,7 +306,7 @@ class Symfony_Component_HttpFoundation_Session_Session implements Symfony_Compon
      */
     public function setFlash($name, $value)
     {
-        trigger_error('setFlash() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('setFlash() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
 
         $this->getBag($this->flashName)->set($name, $value);
     }
@@ -320,7 +320,7 @@ class Symfony_Component_HttpFoundation_Session_Session implements Symfony_Compon
      */
     public function hasFlash($name)
     {
-        trigger_error('hasFlash() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('hasFlash() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
 
         return $this->getBag($this->flashName)->has($name);
     }
@@ -332,7 +332,7 @@ class Symfony_Component_HttpFoundation_Session_Session implements Symfony_Compon
      */
     public function removeFlash($name)
     {
-        trigger_error('removeFlash() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('removeFlash() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
 
         $this->getBag($this->flashName)->get($name);
     }
@@ -344,7 +344,7 @@ class Symfony_Component_HttpFoundation_Session_Session implements Symfony_Compon
      */
     public function clearFlashes()
     {
-        trigger_error('clearFlashes() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('clearFlashes() is deprecated since version 2.1 and will be removed in 2.3. Use the FlashBag instead.', E_USER_DEPRECATED);
 
         return $this->getBag($this->flashName)->clear();
     }

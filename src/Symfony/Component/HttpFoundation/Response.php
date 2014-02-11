@@ -178,7 +178,7 @@ class Symfony_Component_HttpFoundation_Response
     {
         return
             sprintf('HTTP/%s %s %s', $this->version, $this->statusCode, $this->statusText)."\r\n".
-            $this->headers."\r\n".
+            $this->headers->__toString()."\r\n".
             $this->getContent();
     }
 

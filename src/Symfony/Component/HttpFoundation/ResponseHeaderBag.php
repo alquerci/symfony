@@ -62,7 +62,7 @@ class Symfony_Component_HttpFoundation_ResponseHeaderBag extends Symfony_Compone
     {
         $cookies = '';
         foreach ($this->getCookies() as $cookie) {
-            $cookies .= 'Set-Cookie: '.$cookie."\r\n";
+            $cookies .= 'Set-Cookie: '.$cookie->__toString()."\r\n";
         }
 
         ksort($this->headerNames);

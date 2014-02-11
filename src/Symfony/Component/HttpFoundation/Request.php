@@ -232,9 +232,13 @@ class Symfony_Component_HttpFoundation_Request
      *
      * @api
      */
-    public static function createFromGlobals()
+    public static function createFromGlobals($class = null)
     {
-        $request = new /* static */ self($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
+        if (null === $class) {
+            $class = __CLASS__;
+        }
+
+        $request = new /* static */ $class($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('PUT', 'DELETE', 'PATCH'))
@@ -424,7 +428,7 @@ class Symfony_Component_HttpFoundation_Request
     {
         return
             sprintf('%s %s %s', $this->getMethod(), $this->getRequestUri(), $this->server->get('SERVER_PROTOCOL'))."\r\n".
-            $this->headers."\r\n".
+            $this->headers->__toString()."\r\n".
             $this->getContent();
     }
 
@@ -470,7 +474,7 @@ class Symfony_Component_HttpFoundation_Request
      */
     public static function trustProxyData()
     {
-        trigger_error('trustProxyData() is deprecated since version 2.0 and will be removed in 2.3. Use setTrustedProxies() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('trustProxyData() is deprecated since version 2.0 and will be removed in 2.3. Use setTrustedProxies() instead.', E_USER_DEPRECATED);
 
         self::$trustProxy = true;
     }
@@ -1461,7 +1465,7 @@ class Symfony_Component_HttpFoundation_Request
      */
     public function splitHttpAcceptHeader($header)
     {
-        trigger_error('splitHttpAcceptHeader() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('splitHttpAcceptHeader() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         $headers = array();
         foreach (Symfony_Component_HttpFoundation_AcceptHeader::fromString($header)->all() as $item) {

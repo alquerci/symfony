@@ -72,7 +72,12 @@ class Symfony_Component_HttpFoundation_AcceptHeader
      */
     public function __toString()
     {
-        return implode(',', $this->items);
+        $strItems = array();
+        foreach ($this->items as $item) {
+            $strItems[] = $item->__toString();
+        }
+
+        return implode(',', $strItems);
     }
 
     /**
