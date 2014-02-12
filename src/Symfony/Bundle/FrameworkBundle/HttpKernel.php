@@ -32,7 +32,7 @@ class Symfony_Bundle_FrameworkBundle_HttpKernel extends Symfony_Component_HttpKe
      */
     public function forward($controller, array $attributes = array(), array $query = array())
     {
-        trigger_error('forward() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('forward() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         $attributes['_controller'] = $controller;
         $subRequest = $this->container->get('request')->duplicate($query, null, $attributes);
@@ -65,7 +65,7 @@ class Symfony_Bundle_FrameworkBundle_HttpKernel extends Symfony_Component_HttpKe
      */
     public function render($uri, array $options = array())
     {
-        trigger_error('render() is deprecated since version 2.2 and will be removed in 2.3. Use Symfony\Component\HttpKernel\Fragment\FragmentHandler::render() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('render() is deprecated since version 2.2 and will be removed in 2.3. Use Symfony\Component\HttpKernel\Fragment\FragmentHandler::render() instead.', E_USER_DEPRECATED);
 
         $options = $this->renderer->fixOptions($options);
 
