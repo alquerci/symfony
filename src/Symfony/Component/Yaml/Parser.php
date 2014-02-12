@@ -216,24 +216,28 @@ class Symfony_Component_Yaml_Parser
                     return $value;
                 }
 
-                switch (preg_last_error()) {
-                    case PREG_INTERNAL_ERROR:
-                        $error = 'Internal PCRE error.';
-                        break;
-                    case PREG_BACKTRACK_LIMIT_ERROR:
-                        $error = 'pcre.backtrack_limit reached.';
-                        break;
-                    case PREG_RECURSION_LIMIT_ERROR:
-                        $error = 'pcre.recursion_limit reached.';
-                        break;
-                    case PREG_BAD_UTF8_ERROR:
-                        $error = 'Malformed UTF-8 data.';
-                        break;
-                    case PREG_BAD_UTF8_OFFSET_ERROR:
-                        $error = 'Offset doesn\'t correspond to the begin of a valid UTF-8 code point.';
-                        break;
-                    default:
-                        $error = 'Unable to parse.';
+                if (function_exists('preg_last_error')) {
+                    switch (preg_last_error()) {
+                        case PREG_INTERNAL_ERROR:
+                            $error = 'Internal PCRE error.';
+                            break;
+                        case PREG_BACKTRACK_LIMIT_ERROR:
+                            $error = 'pcre.backtrack_limit reached.';
+                            break;
+                        case PREG_RECURSION_LIMIT_ERROR:
+                            $error = 'pcre.recursion_limit reached.';
+                            break;
+                        case PREG_BAD_UTF8_ERROR:
+                            $error = 'Malformed UTF-8 data.';
+                            break;
+                        case PREG_BAD_UTF8_OFFSET_ERROR:
+                            $error = 'Offset doesn\'t correspond to the begin of a valid UTF-8 code point.';
+                            break;
+                        default:
+                            $error = 'Unable to parse.';
+                    }
+                } else {
+                    $error = 'Unable to parse.';
                 }
 
                 throw new Symfony_Component_Yaml_Exception_ParseException($error, $this->getRealCurrentLineNb() + 1, $this->currentLine);

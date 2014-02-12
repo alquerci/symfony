@@ -113,22 +113,22 @@ class Symfony_Component_Yaml_Inline
                 return 'false';
             case ctype_digit($value):
                 return is_string($value) ? "'$value'" : (int) $value;
-            case is_numeric($value):
+            case is_numeric($value) || preg_match(self::getExponentialNumericsRegex(), $value):
                 $locale = setlocale(LC_NUMERIC, 0);
                 if (false !== $locale) {
                     setlocale(LC_NUMERIC, 'C');
                 }
-                $repr = is_string($value) ? "'$value'" : (is_infinite($value) ? str_ireplace('INF', '.Inf', strval($value)) : strval($value));
+                $repr = is_string($value) ? "'$value'" : (is_infinite($value) ? str_ireplace(array('INF', '1.#'), array('.Inf', ''), strval($value)) : strval($value));
 
                 if (false !== $locale) {
                     setlocale(LC_NUMERIC, $locale);
                 }
 
                 return $repr;
-            case Escaper::requiresDoubleQuoting($value):
-                return Escaper::escapeWithDoubleQuotes($value);
-            case Escaper::requiresSingleQuoting($value):
-                return Escaper::escapeWithSingleQuotes($value);
+            case Symfony_Component_Yaml_Escaper::requiresDoubleQuoting($value):
+                return Symfony_Component_Yaml_Escaper::escapeWithDoubleQuotes($value);
+            case Symfony_Component_Yaml_Escaper::requiresSingleQuoting($value):
+                return Symfony_Component_Yaml_Escaper::escapeWithSingleQuotes($value);
             case '' == $value:
                 return "''";
             case preg_match(self::getTimestampRegex(), $value):
@@ -416,6 +416,8 @@ class Symfony_Component_Yaml_Inline
                 return false;
             case is_numeric($scalar):
                 return '0x' == $scalar[0].$scalar[1] ? hexdec($scalar) : floatval($scalar);
+            case preg_match(self::getExponentialNumericsRegex(), $scalar):
+                return floatval($scalar);
             case 0 == strcasecmp($scalar, '.inf'):
             case 0 == strcasecmp($scalar, '.NaN'):
                 return -log(0);
@@ -452,6 +454,30 @@ class Symfony_Component_Yaml_Inline
         (?:[ \t]*(?P<tz>Z|(?P<tz_sign>[-+])(?P<tz_hour>[0-9][0-9]?)
         (?::(?P<tz_minute>[0-9][0-9]))?))?)?
         $~x
+EOF;
+    }
+
+    /**
+     * Gets a regex that matches a PHP floating point numbers.
+     *
+     * @return string The regular expression
+     *
+     * @see http://php.net/manual/language.types.float.php#language.types.float
+     */
+    private static function getExponentialNumericsRegex()
+    {
+        return <<<EOF
+        /^
+        [+-]?
+        (?:
+            (?:
+                [0-9]+
+                |(?:[0-9]*[\.][0-9]+)
+                |(?:[0-9]+[\.][0-9]*)
+            )
+            [eE][+-]? [0-9]+
+        )
+        $/x
 EOF;
     }
 }
