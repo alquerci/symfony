@@ -568,7 +568,7 @@ class Symfony_Component_Templating_PhpEngine implements Symfony_Component_Templa
         $storage = $this->loader->load($template);
 
         if (false === $storage) {
-            throw new InvalidArgumentException(sprintf('The template "%s" does not exist.', $template));
+            throw new InvalidArgumentException(sprintf('The template "%s" does not exist.', $template->getLogicalName()));
         }
 
         return $this->cache[$key] = $storage;
