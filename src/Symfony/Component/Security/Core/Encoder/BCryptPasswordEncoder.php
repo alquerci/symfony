@@ -37,13 +37,17 @@ class Symfony_Component_Security_Core_Encoder_BCryptPasswordEncoder extends Symf
      */
     public function __construct(Symfony_Component_Security_Core_Util_SecureRandomInterface $secureRandom, $cost)
     {
+        if (!function_exists('password_hash') && !CRYPT_BLOWFISH) {
+            throw new RuntimeException('To use the BCrypt encoder, you need to upgrade to PHP 5.5 or install the "ircmaxell/password-compat" via Composer.');
+        }
+
         $this->secureRandom = $secureRandom;
 
         $cost = (int) $cost;
         if ($cost < 4 || $cost > 31) {
             throw new InvalidArgumentException('Cost must be in the range of 4-31.');
         }
-        $this->cost = sprintf('%02d', $cost);
+        $this->cost = $cost;
 
         if (!self::$prefix) {
             self::$prefix = '$'.(version_compare(phpversion(), '5.3.7', '>=') ? '2y' : '2a').'$';
@@ -56,10 +60,16 @@ class Symfony_Component_Security_Core_Encoder_BCryptPasswordEncoder extends Symf
     public function encodePassword($raw, $salt)
     {
         if (function_exists('password_hash')) {
-            return password_hash($raw, PASSWORD_BCRYPT, array('cost' => $this->cost));
+            $options = array('cost' => $this->cost);
+
+            if ($salt) {
+                $options['salt'] = $salt;
+            }
+
+            return password_hash($raw, PASSWORD_BCRYPT, $options);
         }
 
-        $salt = self::$prefix.$this->cost.'$'.$this->encodeSalt($this->getRawSalt());
+        $salt = self::$prefix.sprintf('%02d', $this->cost).'$'.$this->encodeSalt($this->getRawSalt());
         $encoded = crypt($raw, $salt);
         if (!is_string($encoded) || strlen($encoded) <= 13) {
             return false;
@@ -132,7 +142,13 @@ class Symfony_Component_Security_Core_Encoder_BCryptPasswordEncoder extends Symf
         $rawSalt = false;
         $numBytes = 16;
         if (function_exists('mcrypt_create_iv')) {
-            $rawSalt = mcrypt_create_iv($numBytes, MCRYPT_DEV_URANDOM);
+            if ('\\' === DIRECTORY_SEPARATOR && version_compare(PHP_VERSION, '5.3.0', '<')) {
+                $source = MCRYPT_RAND;
+            } else {
+                $source = MCRYPT_DEV_URANDOM;
+            }
+
+            $rawSalt = mcrypt_create_iv($numBytes, $source);
         }
         if (!$rawSalt) {
             $rawSalt = $this->secureRandom->nextBytes($numBytes);
