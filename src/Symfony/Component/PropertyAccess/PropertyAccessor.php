@@ -368,7 +368,7 @@ class Symfony_Component_PropertyAccess_PropertyAccessor implements Symfony_Compo
      */
     private function camelize($string)
     {
-        return preg_replace_callback('/(^|_|\.)+(.)/', function ($match) { return ('.' === $match[1] ? '_' : '').strtoupper($match[2]); }, $string);
+        return preg_replace_callback('/(^|_|\.)+(.)/', create_function('$match', 'return ("." === $match[1] ? "_" : "").strtoupper($match[2]);'), $string);
     }
 
     /**
