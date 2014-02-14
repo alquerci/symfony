@@ -104,16 +104,20 @@ class Symfony_Component_OptionsResolver_Options implements ArrayAccess, Iterator
      * other options through the passed {@link Symfony_Component_OptionsResolver_Options} instance.
      *
      * @param string   $option     The name of the option.
-     * @param Closure $normalizer The normalizer.
+     * @param callable $normalizer The normalizer.
      *
      * @throws Symfony_Component_OptionsResolver_Exception_OptionDefinitionException If options have already been read.
      *                                   Once options are read, the container
      *                                   becomes immutable.
      */
-    public function setNormalizer($option, Closure $normalizer)
+    public function setNormalizer($option, $normalizer)
     {
         if ($this->reading) {
             throw new Symfony_Component_OptionsResolver_Exception_OptionDefinitionException('Normalizers cannot be added anymore once options have been read.');
+        }
+
+        if (false === is_callable($normalizer)) {
+            throw new Symfony_Component_OptionsResolver_Exception_OptionDefinitionException('Normalizers must be PHP callable.');
         }
 
         $this->normalizers[$option] = $normalizer;
@@ -175,8 +179,7 @@ class Symfony_Component_OptionsResolver_Options implements ArrayAccess, Iterator
 
         // If an option is a closure that should be evaluated lazily, store it
         // in the "lazy" property.
-        if ($value instanceof Closure) {
-            $reflClosure = new ReflectionFunction($value);
+        if (is_callable($value) && $reflClosure = $this->getReflectionClosure($value)) {
             $params = $reflClosure->getParameters();
 
             if (isset($params[0]) && null !== ($class = $params[0]->getClass()) && __CLASS__ === $class->name) {
@@ -460,7 +463,7 @@ class Symfony_Component_OptionsResolver_Options implements ArrayAccess, Iterator
 
         $this->lock[$option] = true;
         foreach ($this->lazy[$option] as $closure) {
-            $this->options[$option] = $closure($this, $this->options[$option]);
+            $this->options[$option] = call_user_func($closure, $this, $this->options[$option]);
         }
         unset($this->lock[$option]);
 
@@ -500,10 +503,35 @@ class Symfony_Component_OptionsResolver_Options implements ArrayAccess, Iterator
         $normalizer = $this->normalizers[$option];
 
         $this->lock[$option] = true;
-        $this->options[$option] = $normalizer($this, array_key_exists($option, $this->options) ? $this->options[$option] : null);
+        $this->options[$option] = call_user_func($normalizer, $this, array_key_exists($option, $this->options) ? $this->options[$option] : null);
         unset($this->lock[$option]);
 
         // The option is now normalized
         unset($this->normalizers[$option]);
+    }
+
+    /**
+     * Gets a ReflectionFunctionAbstract for a callable
+     *
+     * @param callable $callable
+     *
+     * @return ReflectionFunctionAbstract|FALSE The resolved PHP callable, FALSE overwize
+     */
+    private function getReflectionClosure($callable)
+    {
+        if ($callable instanceof Closure) {
+            return new ReflectionFunction($callable);
+        }
+
+        if (is_array($callable)) {
+            return new ReflectionMethod($callable[0], $callable[1]);
+        }
+
+        // create_function()
+        if (1 === strpos($callable, 'lambda_')) {
+            return new ReflectionFunction($callable);
+        }
+
+        return false;
     }
 }

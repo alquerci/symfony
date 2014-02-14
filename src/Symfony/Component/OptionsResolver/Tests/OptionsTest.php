@@ -82,16 +82,16 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     {
         $this->options->set('foo', 'bar');
         $this->options->get('foo');
-        $this->options->setNormalizer('foo', function () {});
+        $this->options->setNormalizer('foo', create_function('', ''));
     }
 
     public function testSetLazyOption()
     {
         $test = $this;
 
-        $this->options->set('foo', function (Symfony_Component_OptionsResolver_Options $options) use ($test) {
-           return 'dynamic';
-        });
+        $this->options->set('foo', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "dynamic";
+        '));
 
         $this->assertEquals('dynamic', $this->options->get('foo'));
     }
@@ -104,12 +104,11 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
         $this->options->set('foo', 'bar');
 
         // defined by subclass
-        $this->options->set('foo', function (Symfony_Component_OptionsResolver_Options $options, $previousValue) use ($test) {
-            /* @var PHPUnit_Framework_TestCase $test */
-            $test->assertNull($previousValue);
+        $this->options->set('foo', create_function('Symfony_Component_OptionsResolver_Options $options, $previousValue', '
+            PHPUnit_Framework_TestCase::assertNull($previousValue);
 
-            return 'dynamic';
-        });
+            return "dynamic";
+        '));
 
         $this->assertEquals('dynamic', $this->options->get('foo'));
     }
@@ -122,12 +121,11 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
         $this->options->set('foo', 'bar');
 
         // defined by subclass
-        $this->options->overload('foo', function (Symfony_Component_OptionsResolver_Options $options, $previousValue) use ($test) {
-            /* @var PHPUnit_Framework_TestCase $test */
-            $test->assertEquals('bar', $previousValue);
+        $this->options->overload('foo', create_function('Symfony_Component_OptionsResolver_Options $options, $previousValue', '
+            PHPUnit_Framework_TestCase::assertEquals("bar", $previousValue);
 
-            return 'dynamic';
-        });
+            return "dynamic";
+        '));
 
         $this->assertEquals('dynamic', $this->options->get('foo'));
     }
@@ -137,17 +135,16 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
         $test = $this;
 
         // defined by superclass
-        $this->options->set('foo', function (Symfony_Component_OptionsResolver_Options $options) {
-            return 'bar';
-        });
+        $this->options->set('foo', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "bar";
+        '));
 
         // defined by subclass
-        $this->options->overload('foo', function (Symfony_Component_OptionsResolver_Options $options, $previousValue) use ($test) {
-            /* @var PHPUnit_Framework_TestCase $test */
-            $test->assertEquals('bar', $previousValue);
+        $this->options->overload('foo', create_function('Symfony_Component_OptionsResolver_Options $options, $previousValue', '
+            PHPUnit_Framework_TestCase::assertEquals("bar", $previousValue);
 
-            return 'dynamic';
-        });
+            return "dynamic";
+        '));
 
         $this->assertEquals('dynamic', $this->options->get('foo'));
     }
@@ -157,14 +154,14 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
         $test = $this;
 
         // defined by superclass
-        $this->options->set('foo', function (Symfony_Component_OptionsResolver_Options $options) use ($test) {
-            $test->fail('Should not be called');
-        });
+        $this->options->set('foo', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            PHPUnit_Framework_TestCase::fail("Should not be called");
+        '));
 
         // defined by subclass, no $previousValue argument defined!
-        $this->options->overload('foo', function (Symfony_Component_OptionsResolver_Options $options) use ($test) {
-            return 'dynamic';
-        });
+        $this->options->overload('foo', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "dynamic";
+        '));
 
         $this->assertEquals('dynamic', $this->options->get('foo'));
     }
@@ -175,12 +172,11 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
 
         $this->options->set('foo', 'bar');
 
-        $this->options->set('bam', function (Symfony_Component_OptionsResolver_Options $options) use ($test) {
-            /* @var PHPUnit_Framework_TestCase $test */
-            $test->assertEquals('bar', $options->get('foo'));
+        $this->options->set('bam', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            PHPUnit_Framework_TestCase::assertEquals("bar", $options->get("foo"));
 
-            return 'dynamic';
-        });
+            return "dynamic";
+        '));
 
         $this->assertEquals('bar', $this->options->get('foo'));
         $this->assertEquals('dynamic', $this->options->get('bam'));
@@ -190,16 +186,15 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     {
         $test = $this;
 
-        $this->options->set('foo', function (Symfony_Component_OptionsResolver_Options $options) {
-            return 'bar';
-        });
+        $this->options->set('foo', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "bar";
+        '));
 
-        $this->options->set('bam', function (Symfony_Component_OptionsResolver_Options $options) use ($test) {
-            /* @var PHPUnit_Framework_TestCase $test */
-            $test->assertEquals('bar', $options->get('foo'));
+        $this->options->set('bam', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            PHPUnit_Framework_TestCase::assertEquals("bar", $options->get("foo"));
 
-            return 'dynamic';
-        });
+            return "dynamic";
+        '));
 
         $this->assertEquals('bar', $this->options->get('foo'));
         $this->assertEquals('dynamic', $this->options->get('bam'));
@@ -209,9 +204,9 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     {
         $this->options->set('foo', 'bar');
 
-        $this->options->setNormalizer('foo', function () {
-            return 'normalized';
-        });
+        $this->options->setNormalizer('foo', create_function('', '
+            return "normalized";
+        '));
 
         $this->assertEquals('normalized', $this->options->get('foo'));
     }
@@ -220,9 +215,9 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     {
         $this->options->set('foo', 'bar');
 
-        $this->options->setNormalizer('foo', function (Symfony_Component_OptionsResolver_Options $options, $value) {
-            return 'normalized[' . $value . ']';
-        });
+        $this->options->setNormalizer('foo', create_function('Symfony_Component_OptionsResolver_Options $options, $value', '
+            return "normalized[" . $value . "]";
+        '));
 
         $this->assertEquals('normalized[bar]', $this->options->get('foo'));
     }
@@ -234,12 +229,11 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
         $this->options->set('foo', 'bar');
         $this->options->set('bam', 'baz');
 
-        $this->options->setNormalizer('bam', function (Symfony_Component_OptionsResolver_Options $options) use ($test) {
-            /* @var PHPUnit_Framework_TestCase $test */
-            $test->assertEquals('bar', $options->get('foo'));
+        $this->options->setNormalizer('bam', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            PHPUnit_Framework_TestCase::assertEquals("bar", $options->get("foo"));
 
-            return 'normalized';
-        });
+            return "normalized";
+        '));
 
         $this->assertEquals('bar', $this->options->get('foo'));
         $this->assertEquals('normalized', $this->options->get('bam'));
@@ -249,17 +243,16 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     {
         $test = $this;
 
-        $this->options->set('foo', function (Symfony_Component_OptionsResolver_Options $options) {
-            return 'bar';
-        });
+        $this->options->set('foo', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "bar";
+        '));
         $this->options->set('bam', 'baz');
 
-        $this->options->setNormalizer('bam', function (Symfony_Component_OptionsResolver_Options $options) use ($test) {
-            /* @var PHPUnit_Framework_TestCase $test */
-            $test->assertEquals('bar', $options->get('foo'));
+        $this->options->setNormalizer('bam', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            PHPUnit_Framework_TestCase::assertEquals("bar", $options->get("foo"));
 
-            return 'normalized';
-        });
+            return "normalized";
+        '));
 
         $this->assertEquals('bar', $this->options->get('foo'));
         $this->assertEquals('normalized', $this->options->get('bam'));
@@ -270,13 +263,13 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
      */
     public function testFailForCyclicDependencies()
     {
-        $this->options->set('foo', function (Symfony_Component_OptionsResolver_Options $options) {
-            $options->get('bam');
-        });
+        $this->options->set('foo', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            $options->get("bam");
+        '));
 
-        $this->options->set('bam', function (Symfony_Component_OptionsResolver_Options $options) {
-            $options->get('foo');
-        });
+        $this->options->set('bam', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            $options->get("foo");
+        '));
 
         $this->options->get('foo');
     }
@@ -289,13 +282,13 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
         $this->options->set('foo', 'bar');
         $this->options->set('bam', 'baz');
 
-        $this->options->setNormalizer('foo', function (Symfony_Component_OptionsResolver_Options $options) {
-            $options->get('bam');
-        });
+        $this->options->setNormalizer('foo', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            $options->get("bam");
+        '));
 
-        $this->options->setNormalizer('bam', function (Symfony_Component_OptionsResolver_Options $options) {
-            $options->get('foo');
-        });
+        $this->options->setNormalizer('bam', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            $options->get("foo");
+        '));
 
         $this->options->get('foo');
     }
@@ -305,14 +298,14 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
      */
     public function testFailForCyclicDependenciesBetweenNormalizerAndLazyOption()
     {
-        $this->options->set('foo', function (Symfony_Component_OptionsResolver_Options $options) {
-            $options->get('bam');
-        });
+        $this->options->set('foo', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            $options->get("bam");
+        '));
         $this->options->set('bam', 'baz');
 
-        $this->options->setNormalizer('bam', function (Symfony_Component_OptionsResolver_Options $options) {
-            $options->get('foo');
-        });
+        $this->options->setNormalizer('bam', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            $options->get("foo");
+        '));
 
         $this->options->get('foo');
     }
@@ -322,17 +315,14 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
         $test = $this;
         $i = 1;
 
-        $this->options->set('foo', function (Symfony_Component_OptionsResolver_Options $options) use ($test, &$i) {
-            $test->assertSame(1, $i);
-            ++$i;
-
-            // Implicitly invoke lazy option for "bam"
-            $options->get('bam');
-        });
-        $this->options->set('bam', function (Symfony_Component_OptionsResolver_Options $options) use ($test, &$i) {
-            $test->assertSame(2, $i);
-            ++$i;
-        });
+        $this->options->set('foo', array(
+            new Symfony_Component_OptionsResolver_Tests_Fixtures_CounterClosure($this, $i),
+            'closureForFoo'
+        ));
+        $this->options->set('bam', array(
+            new Symfony_Component_OptionsResolver_Tests_Fixtures_CounterClosure($this, $i),
+            'closureForBam'
+        ));
 
         $this->options->all();
     }
@@ -345,17 +335,14 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
         $this->options->set('foo', 'bar');
         $this->options->set('bam', 'baz');
 
-        $this->options->setNormalizer('foo', function (Symfony_Component_OptionsResolver_Options $options) use ($test, &$i) {
-            $test->assertSame(1, $i);
-            ++$i;
-
-            // Implicitly invoke normalizer for "bam"
-            $options->get('bam');
-        });
-        $this->options->setNormalizer('bam', function (Symfony_Component_OptionsResolver_Options $options) use ($test, &$i) {
-            $test->assertSame(2, $i);
-            ++$i;
-        });
+        $this->options->setNormalizer('foo', array(
+            new Symfony_Component_OptionsResolver_Tests_Fixtures_CounterClosure($this, $i),
+            'normalizerForFoo'
+        ));
+        $this->options->setNormalizer('bam', array(
+            new Symfony_Component_OptionsResolver_Tests_Fixtures_CounterClosure($this, $i),
+            'normalizerForBam'
+        ));
 
         $this->options->all();
     }
@@ -366,9 +353,9 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
 
         $this->options->replace(array(
             'two' => '2',
-            'three' => function (Symfony_Component_OptionsResolver_Options $options) {
-                return '2' === $options['two'] ? '3' : 'foo';
-            }
+            'three' => create_function('Symfony_Component_OptionsResolver_Options $options', '
+                return "2" === $options["two"] ? "3" : "foo";
+            ')
         ));
 
         $this->assertEquals(array(
@@ -430,9 +417,9 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     {
         $this->options->set('foo', 'bar');
 
-        $this->options->overload('foo', function () {
-            return 'test';
-        });
+        $this->options->overload('foo', create_function('', '
+            return "test";
+        '));
 
         $this->assertNotEquals('test', $this->options->get('foo'));
         $this->assertTrue(is_callable($this->options->get('foo')));
@@ -442,9 +429,9 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     {
         $this->options->set('foo', 'bar');
 
-        $this->options->overload('foo', function ($object) {
-            return 'test';
-        });
+        $this->options->overload('foo', create_function('$object', '
+            return "test";
+        '));
 
         $this->assertNotEquals('test', $this->options->get('foo'));
         $this->assertTrue(is_callable($this->options->get('foo')));
@@ -456,7 +443,7 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
         $this->options->set('foo1', 'bar1');
         $expectedResult = array('foo' => 'bar', 'foo1' => 'bar1');
 
-        $this->assertEquals($expectedResult, iterator_to_array($this->options, true));
+        $this->assertEquals($expectedResult, iterator_to_array($this->options));
     }
 
     public function testHasWithNullValue()
@@ -469,13 +456,13 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     public function testRemoveOptionAndNormalizer()
     {
         $this->options->set('foo1', 'bar');
-        $this->options->setNormalizer('foo1', function (Symfony_Component_OptionsResolver_Options $options) {
-            return '';
-        });
+        $this->options->setNormalizer('foo1', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "";
+        '));
         $this->options->set('foo2', 'bar');
-        $this->options->setNormalizer('foo2', function (Symfony_Component_OptionsResolver_Options $options) {
-            return '';
-        });
+        $this->options->setNormalizer('foo2', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "";
+        '));
 
         $this->options->remove('foo2');
         $this->assertEquals(array('foo1' => ''), $this->options->all());
@@ -484,13 +471,13 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     public function testReplaceOptionAndNormalizer()
     {
         $this->options->set('foo1', 'bar');
-        $this->options->setNormalizer('foo1', function (Symfony_Component_OptionsResolver_Options $options) {
-            return '';
-        });
+        $this->options->setNormalizer('foo1', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "";
+        '));
         $this->options->set('foo2', 'bar');
-        $this->options->setNormalizer('foo2', function (Symfony_Component_OptionsResolver_Options $options) {
-            return '';
-        });
+        $this->options->setNormalizer('foo2', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "";
+        '));
 
         $this->options->replace(array('foo1' => 'new'));
         $this->assertEquals(array('foo1' => 'new'), $this->options->all());
@@ -499,13 +486,13 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     public function testClearOptionAndNormalizer()
     {
         $this->options->set('foo1', 'bar');
-        $this->options->setNormalizer('foo1', function (Symfony_Component_OptionsResolver_Options $options) {
-            return '';
-        });
+        $this->options->setNormalizer('foo1', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "";
+        '));
         $this->options->set('foo2', 'bar');
-        $this->options->setNormalizer('foo2', function (Symfony_Component_OptionsResolver_Options $options) {
-            return '';
-        });
+        $this->options->setNormalizer('foo2', create_function('Symfony_Component_OptionsResolver_Options $options', '
+            return "";
+        '));
 
         $this->options->clear();
         $this->assertEmpty($this->options->all());
@@ -515,11 +502,11 @@ class Symfony_Component_OptionsResolver_Tests_OptionsTest extends PHPUnit_Framew
     {
         $test = $this;
 
-        $this->options->setNormalizer('foo', function (Symfony_Component_OptionsResolver_Options $options, $previousValue) use ($test) {
-            $test->assertNull($previousValue);
+        $this->options->setNormalizer('foo', create_function('Symfony_Component_OptionsResolver_Options $options, $previousValue', '
+            PHPUnit_Framework_Assert::assertNull($previousValue);
 
-            return '';
-        });
+            return "";
+        '));
         $this->assertEquals(array('foo' => ''), $this->options->all());
     }
 }

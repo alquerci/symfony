@@ -42,9 +42,9 @@ class Symfony_Component_OptionsResolver_Tests_OptionsResolverTest extends PHPUni
     {
         $this->resolver->setDefaults(array(
             'one' => '1',
-            'two' => function (Symfony_Component_OptionsResolver_Options $options) {
-                return '20';
-            },
+            'two' => create_function('Symfony_Component_OptionsResolver_Options $options', '
+                return "20";
+            '),
         ));
 
         $this->assertEquals(array(
@@ -57,9 +57,9 @@ class Symfony_Component_OptionsResolver_Tests_OptionsResolverTest extends PHPUni
     {
         $this->resolver->setDefaults(array(
             'one' => '1',
-            'two' => function (Symfony_Component_OptionsResolver_Options $options) {
-                return $options['one'] . '2';
-            },
+            'two' => create_function('Symfony_Component_OptionsResolver_Options $options', '
+                return $options["one"] . "2";
+            '),
         ));
 
         $options = array(
@@ -81,12 +81,11 @@ class Symfony_Component_OptionsResolver_Tests_OptionsResolverTest extends PHPUni
         ));
 
         $this->resolver->setDefaults(array(
-            'two' => function (Symfony_Component_OptionsResolver_Options $options) use ($test) {
-                /* @var PHPUnit_Framework_TestCase $test */
-                $test->assertFalse(isset($options['one']));
+            'two' => create_function('Symfony_Component_OptionsResolver_Options $options', '
+                PHPUnit_Framework_Assert::assertFalse(isset($options["one"]));
 
-                return '2';
-            },
+                return "2";
+            '),
         ));
 
         $options = array(
@@ -106,12 +105,11 @@ class Symfony_Component_OptionsResolver_Tests_OptionsResolverTest extends PHPUni
         ));
 
         $this->resolver->setDefaults(array(
-            'two' => function (Symfony_Component_OptionsResolver_Options $options) use ($test) {
-                /* @var PHPUnit_Framework_TestCase $test */
-                $test->assertTrue(isset($options['one']));
+            'two' => create_function('Symfony_Component_OptionsResolver_Options $options', '
+                PHPUnit_Framework_Assert::assertTrue(isset($options["one"]));
 
-                return $options['one'] . '2';
-            },
+                return $options["one"] . "2";
+            '),
         ));
 
         $options = array(
@@ -130,9 +128,9 @@ class Symfony_Component_OptionsResolver_Tests_OptionsResolverTest extends PHPUni
             'one',
         ));
         $this->resolver->setDefaults(array(
-            'two' => function (Symfony_Component_OptionsResolver_Options $options) {
-                return $options['one'] . '2';
-            },
+            'two' => create_function('Symfony_Component_OptionsResolver_Options $options', '
+                return $options["one"] . "2";
+            '),
         ));
 
         $options = array(
@@ -150,16 +148,15 @@ class Symfony_Component_OptionsResolver_Tests_OptionsResolverTest extends PHPUni
         $test = $this;
 
         $this->resolver->setDefaults(array(
-            'one' => function (Symfony_Component_OptionsResolver_Options $options) use ($test) {
-                /* @var PHPUnit_Framework_TestCase $test */
-                $test->fail('Previous closure should not be executed');
-            },
+            'one' => create_function('Symfony_Component_OptionsResolver_Options $options', '
+                PHPUnit_Framework_Assert::fail("Previous closure should not be executed");
+            '),
         ));
 
         $this->resolver->replaceDefaults(array(
-            'one' => function (Symfony_Component_OptionsResolver_Options $options, $previousValue) {
-                return '1';
-            },
+            'one' => create_function('Symfony_Component_OptionsResolver_Options $options, $previousValue', '
+                return "1";
+            '),
         ));
 
         $this->assertEquals(array(
@@ -585,9 +582,9 @@ class Symfony_Component_OptionsResolver_Tests_OptionsResolverTest extends PHPUni
             'bam' => 'baz',
         ));
         $this->resolver->setNormalizers(array(
-            'foo' => function (Symfony_Component_OptionsResolver_Options $options, $value) {
-                return $options['bam'] . '[' . $value . ']';
-            },
+            'foo' => create_function('Symfony_Component_OptionsResolver_Options $options, $value', '
+                return $options["bam"] . "[" . $value . "]";
+            '),
         ));
 
         $expected = array(
