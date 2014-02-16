@@ -162,8 +162,7 @@ class Symfony_Component_HttpFoundation_Tests_ResponseTest extends PHPUnit_Framew
         $response = new Symfony_Component_HttpFoundation_Response();
         $response->headers->set('Cache-Control', 'must-revalidate');
         $response->headers->set('Expires', -1);
-        // according to RFC 2616 invalid date formats (e.g. "0" and "-1") must be treated as in the past
-        $this->assertLessThan(time(), $response->getExpires()->getTimestamp());
+        $this->assertEquals('Sat, 01 Jan 00 00:00:00 +0000', $response->getExpires()->format(DATE_RFC822));
 
         $response = new Symfony_Component_HttpFoundation_Response();
         $this->assertNull($response->getMaxAge(), '->getMaxAge() returns null if no freshness information available');
