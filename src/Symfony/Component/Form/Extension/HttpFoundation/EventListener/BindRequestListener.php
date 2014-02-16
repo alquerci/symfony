@@ -51,9 +51,9 @@ class Symfony_Component_Form_Extension_HttpFoundation_EventListener_BindRequestL
                 }
 
                 if (is_array($params) && is_array($files)) {
-                    $data = array_replace_recursive($params, $files);
+                    $data = $this->deepArrayUnion($params, $files);
                 } else {
-                    $data = $params ?: $files;
+                    $data = $params ? $params : $files;
                 }
 
                 break;
@@ -73,5 +73,30 @@ class Symfony_Component_Form_Extension_HttpFoundation_EventListener_BindRequestL
         }
 
         $event->setData($data);
+    }
+
+    /**
+     * Merges two arrays without reindexing numeric keys.
+     *
+     * @param array $array1 An array to merge
+     * @param array $array2 An array to merge
+     *
+     * @return array The merged array
+     */
+    private function deepArrayUnion($array1, $array2)
+    {
+        if (function_exists('array_replace_recursive')) {
+            return array_replace_recursive($array1, $array2);
+        }
+
+        foreach ($array2 as $key => $value) {
+            if (is_array($value) && isset($array1[$key]) && is_array($array1[$key])) {
+                $array1[$key] = $this->deepArrayUnion($array1[$key], $value);
+            } else {
+                $array1[$key] = $value;
+            }
+        }
+
+        return $array1;
     }
 }

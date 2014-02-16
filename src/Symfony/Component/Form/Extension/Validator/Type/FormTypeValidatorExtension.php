@@ -44,27 +44,22 @@ class Symfony_Component_Form_Extension_Validator_Type_FormTypeValidatorExtension
     public function setDefaultOptions(Symfony_Component_OptionsResolver_OptionsResolverInterface $resolver)
     {
         // BC clause
-        $constraints = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['validation_constraint'];
-        };
+        $constraints = array(
+            new Symfony_Component_Form_Extension_Validator_Type_FormTypeValidatorExtensionClosures(),
+            'setDefaultOptionsConstraints'
+        );
 
         // Make sure that validation groups end up as null, closure or array
-        $validationGroupsNormalizer = function (Symfony_Component_OptionsResolver_Options $options, $groups) {
-            if (empty($groups)) {
-                return null;
-            }
-
-            if (is_callable($groups)) {
-                return $groups;
-            }
-
-            return (array) $groups;
-        };
+        $validationGroupsNormalizer = array(
+            new Symfony_Component_Form_Extension_Validator_Type_FormTypeValidatorExtensionClosures(),
+            'setDefaultOptionsValidationGroupsNormalizer'
+        );
 
         // Constraint should always be converted to an array
-        $constraintsNormalizer = function (Symfony_Component_OptionsResolver_Options $options, $constraints) {
-            return is_object($constraints) ? array($constraints) : (array) $constraints;
-        };
+        $constraintsNormalizer = array(
+            new Symfony_Component_Form_Extension_Validator_Type_FormTypeValidatorExtensionClosures(),
+            'setDefaultOptionsConstraintsNormalizer'
+        );
 
         $resolver->setDefaults(array(
             'error_mapping'              => array(),
@@ -91,5 +86,31 @@ class Symfony_Component_Form_Extension_Validator_Type_FormTypeValidatorExtension
     public function getExtendedType()
     {
         return 'form';
+    }
+}
+
+class Symfony_Component_Form_Extension_Validator_Type_FormTypeValidatorExtensionClosures
+{
+    public function setDefaultOptionsConstraints(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['validation_constraint'];
+    }
+
+    public function setDefaultOptionsValidationGroupsNormalizer(Symfony_Component_OptionsResolver_Options $options, $groups)
+    {
+        if (empty($groups)) {
+            return null;
+        }
+
+        if (is_callable($groups)) {
+            return $groups;
+        }
+
+        return (array) $groups;
+    }
+
+    public function setDefaultOptionsConstraintsNormalizer(Symfony_Component_OptionsResolver_Options $options, $constraints)
+    {
+        return is_object($constraints) ? array($constraints) : (array) $constraints;
     }
 }

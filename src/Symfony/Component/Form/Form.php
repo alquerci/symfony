@@ -201,7 +201,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function getTypes()
     {
-        trigger_error('getTypes() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and FormConfigInterface::getType() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getTypes() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and FormConfigInterface::getType() instead.', E_USER_DEPRECATED);
 
         $types = array();
 
@@ -272,7 +272,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function hasParent()
     {
-        trigger_error('hasParent() is deprecated since version 2.1 and will be removed in 2.3. Use getParent() or inverse isRoot() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('hasParent() is deprecated since version 2.1 and will be removed in 2.3. Use getParent() or inverse isRoot() instead.', E_USER_DEPRECATED);
 
         return null !== $this->parent;
     }
@@ -305,7 +305,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function hasAttribute($name)
     {
-        trigger_error('hasAttribute() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and FormConfigInterface::hasAttribute() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('hasAttribute() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and FormConfigInterface::hasAttribute() instead.', E_USER_DEPRECATED);
 
         return $this->config->hasAttribute($name);
     }
@@ -322,7 +322,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function getAttribute($name)
     {
-        trigger_error('getAttribute() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and FormConfigInterface::getAttribute() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getAttribute() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and FormConfigInterface::getAttribute() instead.', E_USER_DEPRECATED);
 
         return $this->config->getAttribute($name);
     }
@@ -361,7 +361,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
             $dispatcher->dispatch(Symfony_Component_Form_FormEvents::PRE_SET_DATA, $event);
             // BC until 2.3
             if ($dispatcher->hasListeners(Symfony_Component_Form_FormEvents::SET_DATA)) {
-                trigger_error('The Symfony_Component_Form_FormEvents::SET_DATA event is deprecated since 2.1 and will be removed in 2.3. Use the Symfony_Component_Form_FormEvents::PRE_SET_DATA event instead.', E_USER_DEPRECATED);
+                version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('The Symfony_Component_Form_FormEvents::SET_DATA event is deprecated since 2.1 and will be removed in 2.3. Use the Symfony_Component_Form_FormEvents::PRE_SET_DATA event instead.', E_USER_DEPRECATED);
             }
             $dispatcher->dispatch(Symfony_Component_Form_FormEvents::SET_DATA, $event);
             $modelData = $event->getData();
@@ -472,7 +472,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function getClientData()
     {
-        trigger_error('getClientData() is deprecated since version 2.1 and will be removed in 2.3. Use getViewData() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getClientData() is deprecated since version 2.1 and will be removed in 2.3. Use getViewData() instead.', E_USER_DEPRECATED);
 
         return $this->getViewData();
     }
@@ -527,7 +527,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
             $dispatcher->dispatch(Symfony_Component_Form_FormEvents::PRE_BIND, $event);
             // BC until 2.3
             if ($dispatcher->hasListeners(Symfony_Component_Form_FormEvents::BIND_CLIENT_DATA)) {
-                trigger_error('The FormEvents::BIND_CLIENT_DATA event is deprecated since 2.1 and will be removed in 2.3. Use the Symfony_Component_Form_FormEvents::PRE_BIND event instead.', E_USER_DEPRECATED);
+                version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('The FormEvents::BIND_CLIENT_DATA event is deprecated since 2.1 and will be removed in 2.3. Use the Symfony_Component_Form_FormEvents::PRE_BIND event instead.', E_USER_DEPRECATED);
             }
             $dispatcher->dispatch(Symfony_Component_Form_FormEvents::BIND_CLIENT_DATA, $event);
             $submittedData = $event->getData();
@@ -561,9 +561,8 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
         if (Symfony_Component_Form_Util_FormUtil::isEmpty($viewData)) {
             $emptyData = $this->config->getEmptyData();
 
-            if ($emptyData instanceof Closure) {
-                /* @var Closure $emptyData */
-                $emptyData = $emptyData($this, $viewData);
+            if (is_callable($emptyData)) {
+                $emptyData = call_user_func($emptyData, $this, $viewData);
             }
 
             $viewData = $emptyData;
@@ -590,7 +589,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
                 $dispatcher->dispatch(Symfony_Component_Form_FormEvents::BIND, $event);
                 // BC until 2.3
                 if ($dispatcher->hasListeners(Symfony_Component_Form_FormEvents::BIND_NORM_DATA)) {
-                    trigger_error('The Symfony_Component_Form_FormEvents::BIND_NORM_DATA event is deprecated since 2.1 and will be removed in 2.3. Use the Symfony_Component_Form_FormEvents::BIND event instead.', E_USER_DEPRECATED);
+                    version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('The Symfony_Component_Form_FormEvents::BIND_NORM_DATA event is deprecated since 2.1 and will be removed in 2.3. Use the Symfony_Component_Form_FormEvents::BIND event instead.', E_USER_DEPRECATED);
                 }
                 $dispatcher->dispatch(Symfony_Component_Form_FormEvents::BIND_NORM_DATA, $event);
                 $normData = $event->getData();
@@ -618,7 +617,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
         restore_error_handler();
 
         foreach ($validators as $validator) {
-            trigger_error(sprintf('Symfony_Component_Form_FormConfigInterface::getValidators() is deprecated since 2.1 and will be removed in 2.3. Convert your %s class to a listener on the Symfony_Component_Form_FormEvents::POST_BIND event.', get_class($validator)), E_USER_DEPRECATED);
+            version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error(sprintf('Symfony_Component_Form_FormConfigInterface::getValidators() is deprecated since 2.1 and will be removed in 2.3. Convert your %s class to a listener on the Symfony_Component_Form_FormEvents::POST_BIND event.', get_class($validator)), E_USER_DEPRECATED);
 
             $validator->validate($this);
         }
@@ -643,7 +642,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function bindRequest(Symfony_Component_HttpFoundation_Request $request)
     {
-        trigger_error('bindRequest() is deprecated since version 2.1 and will be removed in 2.3. Use Symfony_Component_Form_FormConfigInterface::bind() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('bindRequest() is deprecated since version 2.1 and will be removed in 2.3. Use Symfony_Component_Form_FormConfigInterface::bind() instead.', E_USER_DEPRECATED);
 
         return $this->bind($request);
     }
@@ -672,7 +671,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function getErrorBubbling()
     {
-        trigger_error('getErrorBubbling() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and Symfony_Component_Form_FormConfigInterface::getErrorBubbling() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getErrorBubbling() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and Symfony_Component_Form_FormConfigInterface::getErrorBubbling() instead.', E_USER_DEPRECATED);
 
         return $this->config->getErrorBubbling();
     }
@@ -745,7 +744,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function hasErrors()
     {
-        trigger_error('hasErrors() is deprecated since version 2.1 and will be removed in 2.3. Count getErrors() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('hasErrors() is deprecated since version 2.1 and will be removed in 2.3. Count getErrors() instead.', E_USER_DEPRECATED);
 
         return count($this->errors) > 0;
     }
@@ -796,7 +795,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function getNormTransformers()
     {
-        trigger_error('getNormTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and Symfony_Component_Form_FormConfigInterface::getModelTransformers() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getNormTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and Symfony_Component_Form_FormConfigInterface::getModelTransformers() instead.', E_USER_DEPRECATED);
 
         return $this->config->getModelTransformers();
     }
@@ -811,7 +810,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function getClientTransformers()
     {
-        trigger_error('getClientTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and Symfony_Component_Form_FormConfigInterface::getViewTransformers() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getClientTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and Symfony_Component_Form_FormConfigInterface::getViewTransformers() instead.', E_USER_DEPRECATED);
 
         return $this->config->getViewTransformers();
     }
@@ -834,7 +833,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function getChildren()
     {
-        trigger_error('getChildren() is deprecated since version 2.1 and will be removed in 2.3. Use all() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getChildren() is deprecated since version 2.1 and will be removed in 2.3. Use all() instead.', E_USER_DEPRECATED);
 
         return $this->all();
     }
@@ -849,7 +848,7 @@ class Symfony_Component_Form_Form implements IteratorAggregate, Symfony_Componen
      */
     public function hasChildren()
     {
-        trigger_error('hasChildren() is deprecated since version 2.1 and will be removed in 2.3. Use count() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('hasChildren() is deprecated since version 2.1 and will be removed in 2.3. Use count() instead.', E_USER_DEPRECATED);
 
         return count($this->children) > 0;
     }

@@ -37,7 +37,7 @@ abstract class Symfony_Component_Form_Tests_Extension_Core_EventListener_MergeCo
 
     protected function getForm($name = 'name', $propertyPath = null)
     {
-        $propertyPath = $propertyPath ?: $name;
+        $propertyPath = $propertyPath ? $propertyPath : $name;
 
         return $this->getBuilder($name)->setAttribute('property_path', $propertyPath)->getForm();
     }

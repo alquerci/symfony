@@ -47,6 +47,10 @@ abstract class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_Local
         }
 
         if (!$this->isIntlExtensionLoaded()) {
+            if (class_exists('Symfony_Component_Locale_Locale')) {
+                return self::$icuVersion = Symfony_Component_Locale_Locale::ICU_DATA_VERSION;
+            }
+
             throw new RuntimeException('The intl extension is not available');
         }
 

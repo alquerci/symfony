@@ -63,6 +63,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_ChoiceTypeTest extends Sy
 
     /**
      * @expectedException PHPUnit_Framework_Error
+     * @requires PHP 5.2.0
      */
     public function testChoicesOptionExpectsArray()
     {

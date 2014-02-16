@@ -242,18 +242,10 @@ class Symfony_Component_Form_Tests_FormBuilderTest extends PHPUnit_Framework_Tes
         $builder->add(new Symfony_Component_Form_FormBuilder('child', null, $this->dispatcher, $this->factory));
 
         $config = $builder->getFormConfig();
-        $reflClass = new ReflectionClass($config);
-        $parent = $reflClass->getProperty('parent');
-        $children = $reflClass->getProperty('children');
-        $unresolvedChildren = $reflClass->getProperty('unresolvedChildren');
 
-        $parent->setAccessible(true);
-        $children->setAccessible(true);
-        $unresolvedChildren->setAccessible(true);
-
-        $this->assertNull($parent->getValue($config));
-        $this->assertEmpty($children->getValue($config));
-        $this->assertEmpty($unresolvedChildren->getValue($config));
+        $this->assertNull($this->readAttribute($config, 'parent'));
+        $this->assertEmpty($this->readAttribute($config, 'children'));
+        $this->assertEmpty($this->readAttribute($config, 'unresolvedChildren'));
     }
 
     private function getFormBuilder($name = 'name')

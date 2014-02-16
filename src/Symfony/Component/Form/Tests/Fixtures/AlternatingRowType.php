@@ -6,15 +6,31 @@ class Symfony_Component_Form_Tests_Fixtures_AlternatingRowType extends Symfony_C
     {
         $formFactory = $builder->getFormFactory();
 
-        $builder->addEventListener(Symfony_Component_Form_FormEvents::PRE_SET_DATA, function (Symfony_Component_Form_FormEvent $event) use ($formFactory) {
-            $form = $event->getForm();
-            $type = $form->getName() % 2 === 0 ? 'text' : 'textarea';
-            $form->add($formFactory->createNamed('title', $type));
-        });
+        $builder->addEventListener(Symfony_Component_Form_FormEvents::PRE_SET_DATA, array(
+            new Symfony_Component_Form_Tests_Fixtures_AlternatingRowTypeClosures($formFactory),
+            'onPreSetdate'
+        ));
     }
 
     public function getName()
     {
         return 'alternating_row';
+    }
+}
+
+class Symfony_Component_Form_Tests_Fixtures_AlternatingRowTypeClosures
+{
+    private $formFactory;
+
+    public function __construct($formFactory)
+    {
+        $this->formFactory = $formFactory;
+    }
+
+    public function onPreSetdate(Symfony_Component_Form_FormEvent $event)
+    {
+        $form = $event->getForm();
+        $type = $form->getName() % 2 === 0 ? 'text' : 'textarea';
+        $form->add($this->formFactory->createNamed('title', $type));
     }
 }

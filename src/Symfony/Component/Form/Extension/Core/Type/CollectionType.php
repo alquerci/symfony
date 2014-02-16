@@ -63,11 +63,10 @@ class Symfony_Component_Form_Extension_Core_Type_CollectionType extends Symfony_
      */
     public function setDefaultOptions(Symfony_Component_OptionsResolver_OptionsResolverInterface $resolver)
     {
-        $optionsNormalizer = function (Symfony_Component_OptionsResolver_Options $options, $value) {
-            $value['block_name'] = 'entry';
-
-            return $value;
-        };
+        $optionsNormalizer = array(
+            new Symfony_Component_Form_Extension_Core_Type_CollectionTypeClosures(),
+            'setDefaultOptionsOptionsNormalizer'
+        );
 
         $resolver->setDefaults(array(
             'allow_add'      => false,
@@ -89,5 +88,15 @@ class Symfony_Component_Form_Extension_Core_Type_CollectionType extends Symfony_
     public function getName()
     {
         return 'collection';
+    }
+}
+
+class Symfony_Component_Form_Extension_Core_Type_CollectionTypeClosures
+{
+    public function setDefaultOptionsOptionsNormalizer(Symfony_Component_OptionsResolver_Options $options, $value)
+    {
+        $value['block_name'] = 'entry';
+
+        return $value;
     }
 }

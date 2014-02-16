@@ -108,12 +108,12 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_CheckboxTypeTest extends 
     {
         // present a binary status field as a checkbox
         $transformer = new Symfony_Component_Form_CallbackTransformer(
-            function ($value) {
-                return 'expedited' == $value;
-            },
-            function ($value) {
-                return $value ? 'expedited' : 'standard';
-            }
+            create_function('$value', '
+                return "expedited" == $value;
+            '),
+            create_function('$value', '
+                return $value ? "expedited" : "standard";
+            ')
         );
 
         $form = $this->builder

@@ -294,7 +294,7 @@ class Symfony_Component_Form_FormBuilder extends Symfony_Component_Form_FormConf
      */
     public function getTypes()
     {
-        trigger_error('getTypes() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and Symfony_Component_Form_FormConfigInterface::getType() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getTypes() is deprecated since version 2.1 and will be removed in 2.3. Use getConfig() and Symfony_Component_Form_FormConfigInterface::getType() instead.', E_USER_DEPRECATED);
 
         if ($this->locked) {
             throw new Symfony_Component_Form_Exception_BadMethodCallException('FormBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');

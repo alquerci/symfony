@@ -37,9 +37,7 @@ class Symfony_Component_Form_Extension_Core_Type_CheckboxType extends Symfony_Co
      */
     public function setDefaultOptions(Symfony_Component_OptionsResolver_OptionsResolverInterface $resolver)
     {
-        $emptyData = function (Symfony_Component_Form_FormInterface $form, $clientData) {
-            return $clientData;
-        };
+        $emptyData = array($this, 'setDefaultOptionsClosure');
 
         $resolver->setDefaults(array(
             'value'      => '1',
@@ -62,5 +60,10 @@ class Symfony_Component_Form_Extension_Core_Type_CheckboxType extends Symfony_Co
     public function getName()
     {
         return 'checkbox';
+    }
+
+    public function setDefaultOptionsClosure(Symfony_Component_Form_FormInterface $form, $clientData)
+    {
+        return $clientData;
     }
 }

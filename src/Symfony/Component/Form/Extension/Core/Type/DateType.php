@@ -145,44 +145,37 @@ class Symfony_Component_Form_Extension_Core_Type_DateType extends Symfony_Compon
      */
     public function setDefaultOptions(Symfony_Component_OptionsResolver_OptionsResolverInterface $resolver)
     {
-        $compound = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['widget'] !== 'single_text';
-        };
+        $compound = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTypeClosures,
+            'setDefaultOptionsCompound'
+        );
 
-        $emptyValue = $emptyValueDefault = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['required'] ? null : '';
-        };
+        $emptyValue = $emptyValueDefault = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTypeClosures,
+            'setDefaultOptionsEmptyValueDefault'
+        );
 
-        $emptyValueNormalizer = function (Symfony_Component_OptionsResolver_Options $options, $emptyValue) use ($emptyValueDefault) {
-            if (is_array($emptyValue)) {
-                $default = $emptyValueDefault($options);
+        $emptyValueNormalizer = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTypeClosures,
+            'setDefaultOptionsEmptyValueNormalizer'
+        );
 
-                return array_merge(
-                    array('year' => $default, 'month' => $default, 'day' => $default),
-                    $emptyValue
-                );
-            }
-
-            return array(
-                'year' => $emptyValue,
-                'month' => $emptyValue,
-                'day' => $emptyValue
-            );
-        };
-
-        $format = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['widget'] === 'single_text' ? Symfony_Component_Form_Extension_Core_Type_DateType::HTML5_FORMAT : Symfony_Component_Form_Extension_Core_Type_DateType::DEFAULT_FORMAT;
-        };
+        $format = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTypeClosures,
+            'setDefaultOptionsformat'
+        );
 
         // BC until Symfony 2.3
-        $modelTimezone = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['data_timezone'];
-        };
+        $modelTimezone = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTypeClosures,
+            'setDefaultOptionsModelTimezone'
+        );
 
         // BC until Symfony 2.3
-        $viewTimezone = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['user_timezone'];
-        };
+        $viewTimezone = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTypeClosures,
+            'setDefaultOptionsViewTimezone'
+        );
 
         $resolver->setDefaults(array(
             'years'          => range(date('Y') - 5, date('Y') + 5),
@@ -311,5 +304,51 @@ class Symfony_Component_Form_Extension_Core_Type_DateType extends Symfony_Compon
         }
 
         return $result;
+    }
+}
+
+class Symfony_Component_Form_Extension_Core_Type_DateTypeClosures
+{
+    public function setDefaultOptionsCompound(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['widget'] !== 'single_text';
+    }
+
+    public function setDefaultOptionsEmptyValueDefault(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['required'] ? null : '';
+    }
+
+    public function setDefaultOptionsEmptyValueNormalizer(Symfony_Component_OptionsResolver_Options $options, $emptyValue)
+    {
+        if (is_array($emptyValue)) {
+            $default = $this->setDefaultOptionsEmptyValueDefault($options);
+
+            return array_merge(
+                array('year' => $default, 'month' => $default, 'day' => $default),
+                $emptyValue
+            );
+        }
+
+        return array(
+            'year' => $emptyValue,
+            'month' => $emptyValue,
+            'day' => $emptyValue
+        );
+    }
+
+    public function setDefaultOptionsformat(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['widget'] === 'single_text' ? Symfony_Component_Form_Extension_Core_Type_DateType::HTML5_FORMAT : Symfony_Component_Form_Extension_Core_Type_DateType::DEFAULT_FORMAT;
+    }
+
+    public function setDefaultOptionsModelTimezone(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['data_timezone'];
+    }
+
+    public function setDefaultOptionsViewTimezone(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['user_timezone'];
     }
 }

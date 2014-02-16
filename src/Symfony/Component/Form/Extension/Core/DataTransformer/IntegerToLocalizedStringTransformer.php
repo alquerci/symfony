@@ -37,7 +37,7 @@ class Symfony_Component_Form_Extension_Core_DataTransformer_IntegerToLocalizedSt
         $formatter = $this->getNumberFormatter();
         $value = $formatter->parse(
             $value,
-            PHP_INT_SIZE == 8 ? $formatter::TYPE_INT64 : $formatter::TYPE_INT32
+            PHP_INT_SIZE == 8 ? constant(get_class($formatter).'::TYPE_INT64') : constant(get_class($formatter).'::TYPE_INT32')
         );
 
         if (intl_is_failure($formatter->getErrorCode())) {

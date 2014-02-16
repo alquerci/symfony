@@ -41,7 +41,7 @@ abstract class Symfony_Component_Form_Extension_Core_DataTransformer_BaseDateTim
             throw new Symfony_Component_Form_Exception_UnexpectedTypeException($outputTimezone, 'string');
         }
 
-        $this->inputTimezone = $inputTimezone ?: date_default_timezone_get();
-        $this->outputTimezone = $outputTimezone ?: date_default_timezone_get();
+        $this->inputTimezone = $inputTimezone ? $inputTimezone : date_default_timezone_get();
+        $this->outputTimezone = $outputTimezone ? $outputTimezone : date_default_timezone_get();
     }
 }

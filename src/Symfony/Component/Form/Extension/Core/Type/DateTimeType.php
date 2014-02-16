@@ -175,29 +175,34 @@ class Symfony_Component_Form_Extension_Core_Type_DateTimeType extends Symfony_Co
      */
     public function setDefaultOptions(Symfony_Component_OptionsResolver_OptionsResolverInterface $resolver)
     {
-        $compound = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['widget'] !== 'single_text';
-        };
+        $compound = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTimeTypeClosures,
+            'setDefaultOptionsCompound'
+        );
 
         // Defaults to the value of "widget"
-        $dateWidget = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['widget'];
-        };
+        $dateWidget = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTimeTypeClosures,
+            'setDefaultOptionsDateWidget'
+        );
 
         // Defaults to the value of "widget"
-        $timeWidget = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['widget'];
-        };
+        $timeWidget = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTimeTypeClosures,
+            'setDefaultOptionsTimeWidget'
+        );
 
         // BC until Symfony 2.3
-        $modelTimezone = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['data_timezone'];
-        };
+        $modelTimezone = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTimeTypeClosures,
+            'setDefaultOptionsModelTimezone'
+        );
 
         // BC until Symfony 2.3
-        $viewTimezone = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['user_timezone'];
-        };
+        $viewTimezone = array(
+            new Symfony_Component_Form_Extension_Core_Type_DateTimeTypeClosures,
+            'setDefaultOptionsViewTimezone'
+        );
 
         $resolver->setDefaults(array(
             'input'          => 'datetime',
@@ -280,5 +285,33 @@ class Symfony_Component_Form_Extension_Core_Type_DateTimeType extends Symfony_Co
     public function getName()
     {
         return 'datetime';
+    }
+}
+
+class Symfony_Component_Form_Extension_Core_Type_DateTimeTypeClosures
+{
+    public function setDefaultOptionsCompound(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['widget'] !== 'single_text';
+    }
+
+    public function setDefaultOptionsDateWidget(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['widget'];
+    }
+
+    public function setDefaultOptionsTimeWidget(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['widget'];
+    }
+
+    public function setDefaultOptionsModelTimezone(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['data_timezone'];
+    }
+
+    public function setDefaultOptionsViewTimezone(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['user_timezone'];
     }
 }

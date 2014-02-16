@@ -44,13 +44,13 @@ abstract class Symfony_Component_Form_AbstractTypeExtension implements Symfony_C
         $allowedTypes = $this->getAllowedOptionValues(array());
 
         if (!empty($defaults)) {
-            trigger_error('getDefaultOptions() is deprecated since version 2.1 and will be removed in 2.3. Use setDefaultOptions() instead.', E_USER_DEPRECATED);
+            version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getDefaultOptions() is deprecated since version 2.1 and will be removed in 2.3. Use setDefaultOptions() instead.', E_USER_DEPRECATED);
 
             $resolver->setDefaults($defaults);
         }
 
         if (!empty($allowedTypes)) {
-            trigger_error('getAllowedOptionValues() is deprecated since version 2.1 and will be removed in 2.3. Use setDefaultOptions() instead.', E_USER_DEPRECATED);
+            version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getAllowedOptionValues() is deprecated since version 2.1 and will be removed in 2.3. Use setDefaultOptions() instead.', E_USER_DEPRECATED);
 
             $resolver->addAllowedValues($allowedTypes);
         }

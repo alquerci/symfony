@@ -25,7 +25,7 @@ class Symfony_Component_Form_CallbackValidator implements Symfony_Component_Form
      */
     public function __construct($callback)
     {
-        trigger_error('CallbackValidator is deprecated since version 2.1 and will be removed in 2.3. Use the FormEvents::POST_BIND event instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('CallbackValidator is deprecated since version 2.1 and will be removed in 2.3. Use the FormEvents::POST_BIND event instead.', E_USER_DEPRECATED);
 
         $this->callback = $callback;
     }
@@ -35,7 +35,7 @@ class Symfony_Component_Form_CallbackValidator implements Symfony_Component_Form
      */
     public function validate(FormInterface $form)
     {
-        trigger_error('validate() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('validate() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         return call_user_func($this->callback, $form);
     }

@@ -28,7 +28,7 @@ class Symfony_Component_Form_Extension_Core_DataMapper_PropertyPathMapper implem
      */
     public function __construct(Symfony_Component_PropertyAccess_PropertyAccessorInterface $propertyAccessor = null)
     {
-        $this->propertyAccessor = $propertyAccessor ?: Symfony_Component_PropertyAccess_PropertyAccess::getPropertyAccessor();
+        $this->propertyAccessor = $propertyAccessor ? $propertyAccessor : Symfony_Component_PropertyAccess_PropertyAccess::getPropertyAccessor();
     }
 
     /**

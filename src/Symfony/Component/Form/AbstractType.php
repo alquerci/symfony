@@ -51,13 +51,13 @@ abstract class Symfony_Component_Form_AbstractType implements Symfony_Component_
         $allowedTypes = $this->getAllowedOptionValues(array());
 
         if (!empty($defaults)) {
-            trigger_error('getDefaultOptions() is deprecated since version 2.1 and will be removed in 2.3. Use setDefaultOptions() instead.', E_USER_DEPRECATED);
+            version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getDefaultOptions() is deprecated since version 2.1 and will be removed in 2.3. Use setDefaultOptions() instead.', E_USER_DEPRECATED);
 
             $resolver->setDefaults($defaults);
         }
 
         if (!empty($allowedTypes)) {
-            trigger_error('getAllowedOptionValues() is deprecated since version 2.1 and will be removed in 2.3. Use setDefaultOptions() instead.', E_USER_DEPRECATED);
+            version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getAllowedOptionValues() is deprecated since version 2.1 and will be removed in 2.3. Use setDefaultOptions() instead.', E_USER_DEPRECATED);
 
             $resolver->addAllowedValues($allowedTypes);
         }
@@ -112,7 +112,7 @@ abstract class Symfony_Component_Form_AbstractType implements Symfony_Component_
      */
     public function setExtensions(array $extensions)
     {
-        trigger_error('setExtensions() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('setExtensions() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         $this->extensions = $extensions;
     }
@@ -127,7 +127,7 @@ abstract class Symfony_Component_Form_AbstractType implements Symfony_Component_
      */
     public function getExtensions()
     {
-        trigger_error('getExtensions() is deprecated since version 2.1 and will be removed in 2.3. Use Symfony_Component_Form_ResolvedFormTypeInterface::getTypeExtensions instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getExtensions() is deprecated since version 2.1 and will be removed in 2.3. Use Symfony_Component_Form_ResolvedFormTypeInterface::getTypeExtensions instead.', E_USER_DEPRECATED);
 
         return $this->extensions;
     }

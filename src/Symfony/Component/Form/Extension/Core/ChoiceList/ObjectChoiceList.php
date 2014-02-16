@@ -78,7 +78,7 @@ class Symfony_Component_Form_Extension_Core_ChoiceList_ObjectChoiceList extends 
      */
     public function __construct($choices, $labelPath = null, array $preferredChoices = array(), $groupPath = null, $valuePath = null, Symfony_Component_PropertyAccess_PropertyAccessorInterface $propertyAccessor = null)
     {
-        $this->propertyAccessor = $propertyAccessor ?: Symfony_Component_PropertyAccess_PropertyAccess::getPropertyAccessor();
+        $this->propertyAccessor = $propertyAccessor ? $propertyAccessor : Symfony_Component_PropertyAccess_PropertyAccess::getPropertyAccessor();
         $this->labelPath = null !== $labelPath ? new Symfony_Component_PropertyAccess_PropertyPath($labelPath) : null;
         $this->groupPath = null !== $groupPath ? new Symfony_Component_PropertyAccess_PropertyPath($groupPath) : null;
         $this->valuePath = null !== $valuePath ? new Symfony_Component_PropertyAccess_PropertyPath($valuePath) : null;
@@ -166,7 +166,7 @@ class Symfony_Component_Form_Extension_Core_ChoiceList_ObjectChoiceList extends 
             } elseif ($this->labelPath) {
                 $labels[$i] = $this->propertyAccessor->getValue($choice, $this->labelPath);
             } elseif (method_exists($choice, '__toString')) {
-                $labels[$i] = (string) $choice;
+                $labels[$i] = (string) $choice->__toString();
             } else {
                 throw new Symfony_Component_Form_Exception_StringCastException('A "__toString()" method was not found on the objects of type "' . get_class($choice) . '" passed to the choice field. To read a custom getter instead, set the argument $labelPath to the desired property path.');
             }

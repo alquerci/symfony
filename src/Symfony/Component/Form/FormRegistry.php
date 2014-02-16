@@ -63,7 +63,7 @@ class Symfony_Component_Form_FormRegistry implements Symfony_Component_Form_Form
      */
     public function addType(Symfony_Component_Form_ResolvedFormTypeInterface $type)
     {
-        trigger_error('addType() is deprecated since version 2.1 and will be removed in 2.3. Use form extensions or type registration in the Dependency Injection Container instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('addType() is deprecated since version 2.1 and will be removed in 2.3. Use form extensions or type registration in the Dependency Injection Container instead.', E_USER_DEPRECATED);
 
         $this->types[$type->getName()] = $type;
     }

@@ -27,7 +27,7 @@ class Symfony_Component_Form_Extension_Validator_Constraints_FormValidator exten
      */
     public function __construct(Symfony_Component_Form_Extension_Validator_Util_ServerParams $params = null)
     {
-        $this->serverParams = $params ?: new Symfony_Component_Form_Extension_Validator_Util_ServerParams();
+        $this->serverParams = $params ? $params : new Symfony_Component_Form_Extension_Validator_Util_ServerParams();
     }
 
     /**

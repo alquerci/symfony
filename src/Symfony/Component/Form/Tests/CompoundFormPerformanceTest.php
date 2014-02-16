@@ -37,7 +37,8 @@ class Symfony_Component_Form_Tests_CompoundFormPerformanceTest extends Symfony_C
                     // simulate 300 different cities
                     'choices' => range(1, 300),
                 ))
-                ->getForm();
+                ->getForm()
+            ;
 
             // load the form into a view
             $form->createView();

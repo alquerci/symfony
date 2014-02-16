@@ -61,43 +61,34 @@ class Symfony_Component_Form_Tests_ResolvedFormTypeTest extends PHPUnit_Framewor
         $test = $this;
         $i = 0;
 
-        $assertIndex = function ($index) use (&$i, $test) {
-            return function () use (&$i, $test, $index) {
-                /* @var PHPUnit_Framework_TestCase $test */
-                $test->assertEquals($index, $i, 'Executed at index ' . $index);
+        $assertIndex = array(
+            new Symfony_Component_Form_Tests_ResolvedFormTypeTestAssertIndexClosure($i, $test),
+            'build'
+        );
 
-                ++$i;
-            };
-        };
-
-        $assertIndexAndAddOption = function ($index, $option, $default) use ($assertIndex) {
-            $assertIndex = $assertIndex($index);
-
-            return function (Symfony_Component_OptionsResolver_OptionsResolverInterface $resolver) use ($assertIndex, $index, $option, $default) {
-                $assertIndex();
-
-                $resolver->setDefaults(array($option => $default));
-            };
-        };
+        $assertIndexAndAddOption = array(
+            new Symfony_Component_Form_Tests_ResolvedFormTypeTestAssertIndexClosure($assertIndex),
+            'build'
+        );
 
         // First the default options are generated for the super type
         $parentType->expects($this->once())
             ->method('setDefaultOptions')
-            ->will($this->returnCallback($assertIndexAndAddOption(0, 'a', 'a_default')));
+            ->will($this->returnCallback(call_user_func($assertIndexAndAddOption, 0, 'a', 'a_default')));
 
         // The form type itself
         $type->expects($this->once())
             ->method('setDefaultOptions')
-            ->will($this->returnCallback($assertIndexAndAddOption(1, 'b', 'b_default')));
+            ->will($this->returnCallback(call_user_func($assertIndexAndAddOption, 1, 'b', 'b_default')));
 
         // And its extensions
         $extension1->expects($this->once())
             ->method('setDefaultOptions')
-            ->will($this->returnCallback($assertIndexAndAddOption(2, 'c', 'c_default')));
+            ->will($this->returnCallback(call_user_func($assertIndexAndAddOption, 2, 'c', 'c_default')));
 
         $extension2->expects($this->once())
             ->method('setDefaultOptions')
-            ->will($this->returnCallback($assertIndexAndAddOption(3, 'd', 'd_default')));
+            ->will($this->returnCallback(call_user_func($assertIndexAndAddOption, 3, 'd', 'd_default')));
 
         $givenOptions = array('a' => 'a_custom', 'c' => 'c_custom');
         $resolvedOptions = array('a' => 'a_custom', 'b' => 'b_default', 'c' => 'c_custom', 'd' => 'd_default');
@@ -106,24 +97,24 @@ class Symfony_Component_Form_Tests_ResolvedFormTypeTest extends PHPUnit_Framewor
         $parentType->expects($this->once())
             ->method('buildForm')
             ->with($this->anything(), $resolvedOptions)
-            ->will($this->returnCallback($assertIndex(4)));
+            ->will($this->returnCallback(call_user_func($assertIndex, 4)));
 
         // Then the type itself
         $type->expects($this->once())
             ->method('buildForm')
             ->with($this->anything(), $resolvedOptions)
-            ->will($this->returnCallback($assertIndex(5)));
+            ->will($this->returnCallback(call_user_func($assertIndex, 5)));
 
         // Then its extensions
         $extension1->expects($this->once())
             ->method('buildForm')
             ->with($this->anything(), $resolvedOptions)
-            ->will($this->returnCallback($assertIndex(6)));
+            ->will($this->returnCallback(call_user_func($assertIndex, 6)));
 
         $extension2->expects($this->once())
             ->method('buildForm')
             ->with($this->anything(), $resolvedOptions)
-            ->will($this->returnCallback($assertIndex(7)));
+            ->will($this->returnCallback(call_user_func($assertIndex, 7)));
 
         $factory = $this->getMockFormFactory();
         $parentBuilder = $this->getBuilder('parent');
@@ -159,77 +150,72 @@ class Symfony_Component_Form_Tests_ResolvedFormTypeTest extends PHPUnit_Framewor
         $test = $this;
         $i = 0;
 
-        $assertIndexAndNbOfChildViews = function ($index, $nbOfChildViews) use (&$i, $test) {
-            return function (Symfony_Component_Form_FormView $view) use (&$i, $test, $index, $nbOfChildViews) {
-                /* @var PHPUnit_Framework_TestCase $test */
-                $test->assertEquals($index, $i, 'Executed at index ' . $index);
-                $test->assertCount($nbOfChildViews, $view);
-
-                ++$i;
-            };
-        };
+        $assertIndexAndNbOfChildViews = array(
+            new Symfony_Component_Form_Tests_ResolvedFormTypeTestAssertIndexAndNbOfChildViewsClosure($i, $test),
+            'build'
+        );
 
         // First the super type
         $parentType->expects($this->once())
             ->method('buildView')
             ->with($this->anything(), $form, $options)
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(0, 0)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 0, 0)));
 
         // Then the type itself
         $type->expects($this->once())
             ->method('buildView')
             ->with($this->anything(), $form, $options)
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(1, 0)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 1, 0)));
 
         // Then its extensions
         $extension1->expects($this->once())
             ->method('buildView')
             ->with($this->anything(), $form, $options)
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(2, 0)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 2, 0)));
 
         $extension2->expects($this->once())
             ->method('buildView')
             ->with($this->anything(), $form, $options)
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(3, 0)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 3, 0)));
 
         // Now the first child form
         $field1Type->expects($this->once())
             ->method('buildView')
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(4, 0)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 4, 0)));
         $field1Type->expects($this->once())
             ->method('finishView')
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(5, 0)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 5, 0)));
 
         // And the second child form
         $field2Type->expects($this->once())
             ->method('buildView')
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(6, 0)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 6, 0)));
         $field2Type->expects($this->once())
             ->method('finishView')
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(7, 0)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 7, 0)));
 
         // Again first the parent
         $parentType->expects($this->once())
             ->method('finishView')
             ->with($this->anything(), $form, $options)
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(8, 2)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 8, 2)));
 
         // Then the type itself
         $type->expects($this->once())
             ->method('finishView')
             ->with($this->anything(), $form, $options)
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(9, 2)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 9, 2)));
 
         // Then its extensions
         $extension1->expects($this->once())
             ->method('finishView')
             ->with($this->anything(), $form, $options)
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(10, 2)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 10, 2)));
 
         $extension2->expects($this->once())
             ->method('finishView')
             ->with($this->anything(), $form, $options)
-            ->will($this->returnCallback($assertIndexAndNbOfChildViews(11, 2)));
+            ->will($this->returnCallback(call_user_func($assertIndexAndNbOfChildViews, 11, 2)));
 
         $parentView = new Symfony_Component_Form_FormView();
         $view = $resolvedType->createView($form, $parentView);
@@ -270,5 +256,105 @@ class Symfony_Component_Form_Tests_ResolvedFormTypeTest extends PHPUnit_Framewor
     protected function getBuilder($name = 'name', array $options = array())
     {
         return new Symfony_Component_Form_FormBuilder($name, null, $this->dispatcher, $this->factory, $options);
+    }
+}
+
+class Symfony_Component_Form_Tests_ResolvedFormTypeTestAssertIndexClosure
+{
+    private $i;
+    private $index;
+
+    /**
+     * @var PHPUnit_Framework_TestCase
+     */
+    private $test;
+
+    public function __construct(&$i, PHPUnit_Framework_TestCase $test, $index = null)
+    {
+        $this->i = &$i;
+        $this->test = $test;
+        $this->index = $index;
+    }
+
+    public function build($index)
+    {
+        return array(new self($this->i, $this->test, $index), 'assertIndex');
+    }
+
+    public function assertIndex()
+    {
+        /* @var PHPUnit_Framework_TestCase $test */
+        $this->test->assertEquals($this->index, $this->i, 'Executed at index ' . $this->index);
+
+        ++$this->i;
+    }
+}
+
+class Symfony_Component_Form_Tests_ResolvedFormTypeTestAssertIndexAndAddOptionClosure
+{
+    private $assertIndex;
+    private $index;
+    private $option;
+    private $default;
+
+    public function __construct($assertIndex, $index = null, $option = null, $default = null)
+    {
+        $this->assertIndex = $assertIndex;
+        $this->index = $index;
+        $this->option = $option;
+        $this->default = $default;
+    }
+
+    public function build($index, $option, $default)
+    {
+        $assertIndex = call_user_func($this->assertIndex, $index);
+
+        return array(
+            new self($assertIndex, $index, $option, $default),
+            'assertIndexAndAddOption'
+        );
+    }
+
+    public function assertIndexAndAddOption(Symfony_Component_OptionsResolver_OptionsResolverInterface $resolver)
+    {
+        call_user_func($this->assertIndex);
+
+        $resolver->setDefaults(array($this->option => $this->default));
+    }
+}
+
+class Symfony_Component_Form_Tests_ResolvedFormTypeTestAssertIndexAndNbOfChildViewsClosure
+{
+    private $i;
+    private $index;
+    private $nbOfChildViews;
+
+    /**
+     * @var PHPUnit_Framework_TestCase
+     */
+    private $test;
+
+    public function __construct(&$i, PHPUnit_Framework_TestCase $test, $index = null, $nbOfChildViews = null)
+    {
+        $this->i = &$i;
+        $this->test = $test;
+        $this->index = $index;
+        $this->nbOfChildViews = $nbOfChildViews;
+    }
+
+    public function build($index, $nbOfChildViews)
+    {
+        return array(
+            new self($this->i, $this->test, $index, $nbOfChildViews),
+            'assertIndexAndNbOfChildViews'
+        );
+    }
+
+    public function assertIndexAndNbOfChildViews(Symfony_Component_Form_FormView $view)
+    {
+        $this->test->assertEquals($this->index, $this->i, 'Executed at index ' . $this->index);
+        $this->test->assertCount($this->nbOfChildViews, $view);
+
+        ++$this->i;
     }
 }

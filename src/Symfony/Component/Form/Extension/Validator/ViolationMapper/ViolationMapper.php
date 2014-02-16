@@ -187,7 +187,8 @@ class Symfony_Component_Form_Extension_Validator_ViolationMapper_ViolationMapper
             if (null === $foundChild) {
                 foreach ($childIterator as $child) {
                     /* @var FormInterface $child */
-                    $childPath = (string) $child->getPropertyPath();
+                    $childPath = $child->getPropertyPath();
+                    $childPath = (string) ((is_object($childPath) && method_exists($childPath, '__toString')) ? $childPath->__toString() : $childPath);
 
                     // Child found, mark as return value
                     if ($chunk === $childPath) {

@@ -152,7 +152,7 @@ class Symfony_Component_Form_FormFactoryBuilder implements Symfony_Component_For
             $extensions[] = new Symfony_Component_Form_PreloadedExtension($this->types, $this->typeExtensions, $typeGuesser);
         }
 
-        $resolvedTypeFactory = $this->resolvedTypeFactory ?: new Symfony_Component_Form_ResolvedFormTypeFactory();
+        $resolvedTypeFactory = $this->resolvedTypeFactory ? $this->resolvedTypeFactory : new Symfony_Component_Form_ResolvedFormTypeFactory();
         $registry = new Symfony_Component_Form_FormRegistry($extensions, $resolvedTypeFactory);
 
         return new Symfony_Component_Form_FormFactory($registry, $resolvedTypeFactory);

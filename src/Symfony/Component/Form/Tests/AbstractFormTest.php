@@ -60,7 +60,7 @@ abstract class Symfony_Component_Form_Tests_AbstractFormTest extends PHPUnit_Fra
      */
     protected function getBuilder($name = 'name', Symfony_Component_EventDispatcher_EventDispatcherInterface $dispatcher = null, $dataClass = null)
     {
-        return new Symfony_Component_Form_FormBuilder($name, $dataClass, $dispatcher ?: $this->dispatcher, $this->factory);
+        return new Symfony_Component_Form_FormBuilder($name, $dataClass, $dispatcher ? $dispatcher : $this->dispatcher, $this->factory);
     }
 
     /**

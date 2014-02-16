@@ -40,9 +40,10 @@ class Symfony_Component_Form_FormTypeGuesserChain implements Symfony_Component_F
      */
     public function guessType($class, $property)
     {
-        return $this->guess(function ($guesser) use ($class, $property) {
-            return $guesser->guessType($class, $property);
-        });
+        return $this->guess(array(
+            new Symfony_Component_Form_FormTypeGuesserChainClosures($class, $property),
+            'guessType'
+        ));
     }
 
     /**
@@ -50,9 +51,10 @@ class Symfony_Component_Form_FormTypeGuesserChain implements Symfony_Component_F
      */
     public function guessRequired($class, $property)
     {
-        return $this->guess(function ($guesser) use ($class, $property) {
-            return $guesser->guessRequired($class, $property);
-        });
+        return $this->guess(array(
+            new Symfony_Component_Form_FormTypeGuesserChainClosures($class, $property),
+            'guessRequired'
+        ));
     }
 
     /**
@@ -60,9 +62,10 @@ class Symfony_Component_Form_FormTypeGuesserChain implements Symfony_Component_F
      */
     public function guessMaxLength($class, $property)
     {
-        return $this->guess(function ($guesser) use ($class, $property) {
-            return $guesser->guessMaxLength($class, $property);
-        });
+        return $this->guess(array(
+            new Symfony_Component_Form_FormTypeGuesserChainClosures($class, $property),
+            'guessMaxLength'
+        ));
     }
 
     /**
@@ -70,11 +73,12 @@ class Symfony_Component_Form_FormTypeGuesserChain implements Symfony_Component_F
      */
     public function guessMinLength($class, $property)
     {
-        trigger_error('guessMinLength() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('guessMinLength() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
 
-        return $this->guess(function ($guesser) use ($class, $property) {
-            return $guesser->guessMinLength($class, $property);
-        });
+        return $this->guess(array(
+            new Symfony_Component_Form_FormTypeGuesserChainClosures($class, $property),
+            'guessMinLength'
+        ));
     }
 
     /**
@@ -82,30 +86,68 @@ class Symfony_Component_Form_FormTypeGuesserChain implements Symfony_Component_F
      */
     public function guessPattern($class, $property)
     {
-        return $this->guess(function ($guesser) use ($class, $property) {
-            return $guesser->guessPattern($class, $property);
-        });
+        return $this->guess(array(
+            new Symfony_Component_Form_FormTypeGuesserChainClosures($class, $property),
+            'guessPattern'
+        ));
     }
 
     /**
      * Executes a closure for each guesser and returns the best guess from the
      * return values
      *
-     * @param Closure $closure The closure to execute. Accepts a guesser
+     * @param callable $closure The closure to execute. Accepts a guesser
      *                            as argument and should return a Symfony_Component_Form_Guess_Guess instance
      *
      * @return Symfony_Component_Form_Guess_Guess The guess with the highest confidence
      */
-    private function guess(Closure $closure)
+    private function guess($closure)
     {
         $guesses = array();
 
         foreach ($this->guessers as $guesser) {
-            if ($guess = $closure($guesser)) {
+            if ($guess = call_user_func($closure, $guesser)) {
                 $guesses[] = $guess;
             }
         }
 
         return Symfony_Component_Form_Guess_Guess::getBestGuess($guesses);
+    }
+}
+
+class Symfony_Component_Form_FormTypeGuesserChainClosures
+{
+    private $class;
+    private $property;
+
+    public function __construct($class, $property)
+    {
+        $this->class = $class;
+        $this->property = $property;
+    }
+
+    public function guessType($guesser)
+    {
+        return $guesser->guessType($this->class, $this->property);
+    }
+
+    public function guessRequired($guesser)
+    {
+        return $guesser->guessRequired($this->class, $this->property);
+    }
+
+    public function guessMaxLength($guesser)
+    {
+        return $guesser->guessMaxLength($this->class, $this->property);
+    }
+
+    public function guessMinLength($guesser)
+    {
+        return $guesser->guessMinLength($this->class, $this->property);
+    }
+
+    public function guessPattern($guesser)
+    {
+        return $guesser->guessPattern($this->class, $this->property);
     }
 }

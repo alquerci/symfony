@@ -13,23 +13,23 @@ class Symfony_Component_Form_CallbackTransformer implements Symfony_Component_Fo
 {
     /**
      * The callback used for forward transform
-     * @var Closure
+     * @var callable
      */
     private $transform;
 
     /**
      * The callback used for reverse transform
-     * @var Closure
+     * @var callable
      */
     private $reverseTransform;
 
     /**
      * Constructor.
      *
-     * @param Closure $transform        The forward transform callback
-     * @param Closure $reverseTransform The reverse transform callback
+     * @param callable $transform        The forward transform callback
+     * @param callable $reverseTransform The reverse transform callback
      */
-    public function __construct(Closure $transform, Closure $reverseTransform)
+    public function __construct($transform, $reverseTransform)
     {
         $this->transform = $transform;
         $this->reverseTransform = $reverseTransform;

@@ -17,10 +17,6 @@ class Symfony_Component_Form_Tests_FormFactoryBuilderTest extends PHPUnit_Framew
 
     protected function setUp()
     {
-        $factory = new ReflectionClass('Symfony_Component_Form_FormFactory');
-        $this->registry = $factory->getProperty('registry');
-        $this->registry->setAccessible(true);
-
         $this->guesser = $this->getMock('Symfony_Component_Form_FormTypeGuesserInterface');
         $this->type = new Symfony_Component_Form_Tests_Fixtures_FooType;
     }
@@ -31,7 +27,7 @@ class Symfony_Component_Form_Tests_FormFactoryBuilderTest extends PHPUnit_Framew
         $factoryBuilder->addType($this->type);
 
         $factory = $factoryBuilder->getFormFactory();
-        $registry = $this->registry->getValue($factory);
+        $registry = $this->readAttribute($factory, 'registry');
         $extensions = $registry->getExtensions();
 
         $this->assertCount(1, $extensions);
@@ -45,7 +41,7 @@ class Symfony_Component_Form_Tests_FormFactoryBuilderTest extends PHPUnit_Framew
         $factoryBuilder->addTypeGuesser($this->guesser);
 
         $factory = $factoryBuilder->getFormFactory();
-        $registry = $this->registry->getValue($factory);
+        $registry = $this->readAttribute($factory, 'registry');
         $extensions = $registry->getExtensions();
 
         $this->assertCount(1, $extensions);

@@ -333,10 +333,10 @@ class Symfony_Component_Form_Tests_CompoundFormTest extends Symfony_Component_Fo
         $mapper->expects($this->once())
             ->method('mapFormsToData')
             ->with(array('firstName' => $child1, 'lastName' => $child2), 'bar')
-            ->will($this->returnCallback(function ($children, $bar) use ($test) {
-                $test->assertEquals('Bernhard', $children['firstName']->getData());
-                $test->assertEquals('Schussek', $children['lastName']->getData());
-            }));
+            ->will($this->returnCallback(create_function('$children, $bar', '
+                PHPUnit_Framework_Assert::assertEquals("Bernhard", $children["firstName"]->getData());
+                PHPUnit_Framework_Assert::assertEquals("Schussek", $children["lastName"]->getData());
+            ')));
 
         $form->bind(array(
             'firstName' => 'Bernhard',

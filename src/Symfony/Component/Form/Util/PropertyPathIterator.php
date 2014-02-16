@@ -27,6 +27,6 @@ class Symfony_Component_Form_Util_PropertyPathIterator extends Symfony_Component
     {
         parent::__construct($propertyPath);
 
-        trigger_error('Symfony_Component_Form_Util_PropertyPathIterator is deprecated since version 2.2 and will be removed in 2.3. Use Symfony_Component_PropertyAccess_PropertyPathIterator instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('Symfony_Component_Form_Util_PropertyPathIterator is deprecated since version 2.2 and will be removed in 2.3. Use Symfony_Component_PropertyAccess_PropertyPathIterator instead.', E_USER_DEPRECATED);
     }
 }

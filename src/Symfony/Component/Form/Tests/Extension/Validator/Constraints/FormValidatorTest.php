@@ -171,8 +171,8 @@ class Symfony_Component_Form_Tests_Extension_Validator_Constraints_FormValidator
             ))
             ->setData($object)
             ->addViewTransformer(new Symfony_Component_Form_CallbackTransformer(
-                function ($data) { return $data; },
-                function () { throw new Symfony_Component_Form_Exception_TransformationFailedException(); }
+                create_function('$data', 'return $data;'),
+                create_function('', 'throw new Symfony_Component_Form_Exception_TransformationFailedException();')
             ))
             ->getForm();
 
@@ -210,8 +210,8 @@ class Symfony_Component_Form_Tests_Extension_Validator_Constraints_FormValidator
         $form = $this->getBuilder('name', 'stdClass', $options)
             ->setData($object)
             ->addViewTransformer(new Symfony_Component_Form_CallbackTransformer(
-                function ($data) { return $data; },
-                function () { throw new Symfony_Component_Form_Exception_TransformationFailedException(); }
+                create_function('$data', 'return $data;'),
+                create_function('', 'throw new Symfony_Component_Form_Exception_TransformationFailedException();')
             ))
             ->getForm();
 
@@ -232,8 +232,8 @@ class Symfony_Component_Form_Tests_Extension_Validator_Constraints_FormValidator
         $object = $this->getMock('stdClass');
 
         $failingTransformer = new Symfony_Component_Form_CallbackTransformer(
-            function ($data) { return $data; },
-            function () { throw new Symfony_Component_Form_Exception_TransformationFailedException(); }
+            create_function('$data', 'return $data;'),
+            create_function('', 'throw new Symfony_Component_Form_Exception_TransformationFailedException();')
         );
 
         $form = $this->getBuilder('name', 'stdClass')
@@ -283,9 +283,9 @@ class Symfony_Component_Form_Tests_Extension_Validator_Constraints_FormValidator
     {
         $context = $this->getMockExecutionContext();
         $object = $this->getMock('stdClass');
-        $options = array('validation_groups' => function(Symfony_Component_Form_FormInterface $form){
-            return array('group1', 'group2');
-        });
+        $options = array('validation_groups' => create_function('Symfony_Component_Form_FormInterface $form', '
+            return array("group1", "group2");
+        '));
         $form = $this->getBuilder('name', 'stdClass', $options)
             ->setData($object)
             ->getForm();
@@ -362,9 +362,9 @@ class Symfony_Component_Form_Tests_Extension_Validator_Constraints_FormValidator
         $object = $this->getMock('stdClass');
 
         $parentOptions = array(
-            'validation_groups' => function(Symfony_Component_Form_FormInterface $form){
-                return array('group1', 'group2');
-            },
+            'validation_groups' => create_function('Symfony_Component_Form_FormInterface $form', '
+                return array("group1", "group2");
+            '),
             'cascade_validation' => true,
         );
         $parent = $this->getBuilder('parent', null, $parentOptions)

@@ -471,11 +471,11 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_FormTypeTest extends Symf
         $builder = $this->factory->createBuilder('form', $author);
         $builder->add('referenceCopy', 'form');
         $builder->get('referenceCopy')->addViewTransformer(new Symfony_Component_Form_CallbackTransformer(
-            function () {},
-            function ($value) { // reverseTransform
+            create_function('', ''),
+            create_function('$value', ' // reverseTransform
 
-                return 'foobar';
-            }
+                return "foobar";
+            ')
         ));
         $form = $builder->getForm();
 
@@ -497,11 +497,11 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_FormTypeTest extends Symf
         $builder->setData($author);
         $builder->add('referenceCopy', 'form');
         $builder->get('referenceCopy')->addViewTransformer(new Symfony_Component_Form_CallbackTransformer(
-            function () {},
-            function ($value) use ($ref2) { // reverseTransform
-
-                return $ref2;
-            }
+            create_function('', ''),
+            array( // reverseTransform
+                new Symfony_Component_Form_Tests_Extension_Core_Type_FormTest_AuthorWithoutRefSetterClosures($ref2),
+                'getRef2'
+            )
         ));
         $form = $builder->getForm();
 
@@ -664,5 +664,20 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_FormTypeTest extends Symf
             ->createView();
 
         $this->assertSame('0', $view->vars['label']);
+    }
+}
+
+class Symfony_Component_Form_Tests_Extension_Core_Type_FormTest_AuthorWithoutRefSetterClosures
+{
+    private $ref2;
+
+    public function __construct($ref2)
+    {
+        $this->ref2 = $ref2;
+    }
+
+    public function getRef2($value)
+    {
+        return $this->ref2;
     }
 }

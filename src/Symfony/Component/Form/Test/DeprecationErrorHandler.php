@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('E_USER_DEPRECATED')) {
+    define('E_USER_DEPRECATED', 16384);
+}
+
 class Symfony_Component_Form_Test_DeprecationErrorHandler
 {
     public static function handle($errorNumber, $message, $file, $line, $context)

@@ -75,13 +75,15 @@ class Symfony_Component_Form_Extension_Core_Type_ChoiceType extends Symfony_Comp
         // closure here that is optimized for the value of the form, to
         // avoid making the type check inside the closure.
         if ($options['multiple']) {
-            $view->vars['is_selected'] = function ($choice, array $values) {
-                return false !== array_search($choice, $values, true);
-            };
+            $view->vars['is_selected'] = array(
+                new Symfony_Component_Form_Extension_Core_Type_ChoiceTypeClosures,
+                'buildViewMultiple'
+            );
         } else {
-            $view->vars['is_selected'] = function ($choice, $value) {
-                return $choice === $value;
-            };
+            $view->vars['is_selected'] = array(
+                new Symfony_Component_Form_Extension_Core_Type_ChoiceTypeClosures,
+                'buildView'
+            );
         }
 
         // Check if the choices already contain the empty value
@@ -125,48 +127,30 @@ class Symfony_Component_Form_Extension_Core_Type_ChoiceType extends Symfony_Comp
     {
         $choiceListCache =& $this->choiceListCache;
 
-        $choiceList = function (Symfony_Component_OptionsResolver_Options $options) use (&$choiceListCache) {
-            // Harden against NULL values (like in EntityType and ModelType)
-            $choices = null !== $options['choices'] ? $options['choices'] : array();
+        $choiceList = array(
+            new Symfony_Component_Form_Extension_Core_Type_ChoiceTypeClosures($choiceListCache),
+            'setDefaultOptionsChoiceList'
+        );
 
-            // Reuse existing choice lists in order to increase performance
-            $hash = md5(json_encode(array($choices, $options['preferred_choices'])));
+        $emptyData = array(
+            new Symfony_Component_Form_Extension_Core_Type_ChoiceTypeClosures(),
+            'setDefaultOptionsEmptyData'
+        );
 
-            if (!isset($choiceListCache[$hash])) {
-                $choiceListCache[$hash] = new Symfony_Component_Form_Extension_Core_ChoiceList_SimpleChoiceList($choices, $options['preferred_choices']);
-            }
+        $emptyValue = array(
+            new Symfony_Component_Form_Extension_Core_Type_ChoiceTypeClosures(),
+            'setDefaultOptionsEmptyValue'
+        );
 
-            return $choiceListCache[$hash];
-        };
+        $emptyValueNormalizer = array(
+            new Symfony_Component_Form_Extension_Core_Type_ChoiceTypeClosures(),
+            'setDefaultOptionsEmptyValueNormalizer'
+        );
 
-        $emptyData = function (Symfony_Component_OptionsResolver_Options $options) {
-            if ($options['multiple'] || $options['expanded']) {
-                return array();
-            }
-
-            return '';
-        };
-
-        $emptyValue = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['required'] ? null : '';
-        };
-
-        $emptyValueNormalizer = function (Symfony_Component_OptionsResolver_Options $options, $emptyValue) {
-            if ($options['multiple'] || $options['expanded']) {
-                // never use an empty value for these cases
-                return null;
-            } elseif (false === $emptyValue) {
-                // an empty value should be added but the user decided otherwise
-                return null;
-            }
-
-            // empty value has been set explicitly
-            return $emptyValue;
-        };
-
-        $compound = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['expanded'];
-        };
+        $compound = array(
+            new Symfony_Component_Form_Extension_Core_Type_ChoiceTypeClosures(),
+            'setDefaultOptionsCompound'
+        );
 
         $resolver->setDefaults(array(
             'multiple'          => false,
@@ -241,5 +225,73 @@ class Symfony_Component_Form_Extension_Core_Type_ChoiceType extends Symfony_Comp
                 $builder->add($i, $choiceType, $choiceOpts);
             }
         }
+    }
+}
+
+class Symfony_Component_Form_Extension_Core_Type_ChoiceTypeClosures
+{
+    private $choiceListCache;
+
+    public function __construct(&$choiceListCache = null)
+    {
+        $this->choiceListCache = &$choiceListCache;
+    }
+
+    public function buildViewMultiple($choice, array $values)
+    {
+        return false !== array_search($choice, $values, true);
+    }
+
+    public function buildView($choice, $value)
+    {
+        return $choice === $value;
+    }
+
+    public function setDefaultOptionsChoiceList(Symfony_Component_OptionsResolver_Options $options)
+    {
+        // Harden against NULL values (like in EntityType and ModelType)
+        $choices = null !== $options['choices'] ? $options['choices'] : array();
+
+        // Reuse existing choice lists in order to increase performance
+        $hash = md5(json_encode(array($choices, $options['preferred_choices'])));
+
+        if (!isset($this->choiceListCache[$hash])) {
+            $this->choiceListCache[$hash] = new Symfony_Component_Form_Extension_Core_ChoiceList_SimpleChoiceList($choices, $options['preferred_choices']);
+        }
+
+        return $this->choiceListCache[$hash];
+    }
+
+    public function setDefaultOptionsEmptyData(Symfony_Component_OptionsResolver_Options $options)
+    {
+        if ($options['multiple'] || $options['expanded']) {
+            return array();
+        }
+
+        return '';
+    }
+
+    public function setDefaultOptionsEmptyValue(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['required'] ? null : '';
+    }
+
+    public function setDefaultOptionsEmptyValueNormalizer(Symfony_Component_OptionsResolver_Options $options, $emptyValue)
+    {
+        if ($options['multiple'] || $options['expanded']) {
+            // never use an empty value for these cases
+            return null;
+        } elseif (false === $emptyValue) {
+            // an empty value should be added but the user decided otherwise
+            return null;
+        }
+
+        // empty value has been set explicitly
+        return $emptyValue;
+    }
+
+    public function setDefaultOptionsCompound(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['expanded'];
     }
 }

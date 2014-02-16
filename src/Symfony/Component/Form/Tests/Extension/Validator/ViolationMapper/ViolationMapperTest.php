@@ -73,8 +73,8 @@ class Symfony_Component_Form_Tests_Extension_Validator_ViolationMapper_Violation
 
         if (!$synchronized) {
             $config->addViewTransformer(new Symfony_Component_Form_CallbackTransformer(
-                function ($normData) { return $normData; },
-                function () { throw new Symfony_Component_Form_Exception_TransformationFailedException(); }
+                create_function('$normData', 'return $normData;'),
+                create_function('', 'throw new Symfony_Component_Form_Exception_TransformationFailedException();')
             ));
         }
 

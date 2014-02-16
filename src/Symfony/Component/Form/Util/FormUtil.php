@@ -27,7 +27,7 @@ class Symfony_Component_Form_Util_FormUtil
      */
     public static function singularify($plural)
     {
-        trigger_error('Symfony_Component_Form_Util_FormUtil::singularify() is deprecated since version 2.2 and will be removed in 2.3. Use Symfony_Component_PropertyAccess_StringUtil::singularify() in the PropertyAccess component instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('Symfony_Component_Form_Util_FormUtil::singularify() is deprecated since version 2.2 and will be removed in 2.3. Use Symfony_Component_PropertyAccess_StringUtil::singularify() in the PropertyAccess component instead.', E_USER_DEPRECATED);
 
         return Symfony_Component_PropertyAccess_StringUtil::singularify($plural);
     }

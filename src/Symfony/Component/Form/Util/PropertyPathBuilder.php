@@ -27,6 +27,6 @@ class Symfony_Component_Form_Util_PropertyPathBuilder extends Symfony_Component_
     {
         parent::__construct($propertyPath);
 
-        trigger_error('Symfony_Component_Form_Util_PropertyPathBuilder is deprecated since version 2.2 and will be removed in 2.3. Use Symfony_Component_PropertyAccess_PropertyPathBuilder instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('Symfony_Component_Form_Util_PropertyPathBuilder is deprecated since version 2.2 and will be removed in 2.3. Use Symfony_Component_PropertyAccess_PropertyPathBuilder instead.', E_USER_DEPRECATED);
     }
 }

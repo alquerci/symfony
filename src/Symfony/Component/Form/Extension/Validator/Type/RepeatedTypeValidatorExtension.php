@@ -20,9 +20,10 @@ class Symfony_Component_Form_Extension_Validator_Type_RepeatedTypeValidatorExten
     public function setDefaultOptions(Symfony_Component_OptionsResolver_OptionsResolverInterface $resolver)
     {
         // Map errors to the first field
-        $errorMapping = function (Symfony_Component_OptionsResolver_Options $options) {
-            return array('.' => $options['first_name']);
-        };
+        $errorMapping = array(
+            new Symfony_Component_Form_Extension_Validator_Type_RepeatedTypeValidatorExtensionClosures(),
+            'setDefaultOptionsErrorMapping'
+        );
 
         $resolver->setDefaults(array(
             'error_mapping' => $errorMapping,
@@ -35,5 +36,13 @@ class Symfony_Component_Form_Extension_Validator_Type_RepeatedTypeValidatorExten
     public function getExtendedType()
     {
         return 'repeated';
+    }
+}
+
+class Symfony_Component_Form_Extension_Validator_Type_RepeatedTypeValidatorExtensionClosures
+{
+    public function setDefaultOptionsErrorMapping(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return array('.' => $options['first_name']);
     }
 }

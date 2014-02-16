@@ -55,8 +55,8 @@ class Symfony_Component_Form_Extension_Core_Type_TimezoneType extends Symfony_Co
      */
     public static function getTimezones()
     {
-        if (null === static::$timezones) {
-            static::$timezones = array();
+        if (null === self::$timezones) {
+            self::$timezones = array();
 
             foreach (DateTimeZone::listIdentifiers() as $timezone) {
                 $parts = explode('/', $timezone);
@@ -72,10 +72,10 @@ class Symfony_Component_Form_Extension_Core_Type_TimezoneType extends Symfony_Co
                     $name = $parts[0];
                 }
 
-                static::$timezones[$region][$timezone] = str_replace('_', ' ', $name);
+                self::$timezones[$region][$timezone] = str_replace('_', ' ', $name);
             }
         }
 
-        return static::$timezones;
+        return self::$timezones;
     }
 }

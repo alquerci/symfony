@@ -18,7 +18,7 @@ class Symfony_Component_Form_Extension_Core_Type_FormType extends Symfony_Compon
 
     public function __construct(Symfony_Component_PropertyAccess_PropertyAccessorInterface $propertyAccessor = null)
     {
-        $this->propertyAccessor = $propertyAccessor ?: Symfony_Component_PropertyAccess_PropertyAccess::getPropertyAccessor();
+        $this->propertyAccessor = $propertyAccessor ? $propertyAccessor : Symfony_Component_PropertyAccess_PropertyAccess::getPropertyAccessor();
     }
 
     /**
@@ -43,7 +43,7 @@ class Symfony_Component_Form_Extension_Core_Type_FormType extends Symfony_Compon
         ;
 
         if (false === $options['property_path']) {
-            trigger_error('Setting "property_path" to "false" is deprecated since version 2.1 and will be removed in 2.3. Set "mapped" to "false" instead.', E_USER_DEPRECATED);
+            version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('Setting "property_path" to "false" is deprecated since version 2.1 and will be removed in 2.3. Set "mapped" to "false" instead.', E_USER_DEPRECATED);
         }
 
         if ($options['trim']) {
@@ -57,7 +57,7 @@ class Symfony_Component_Form_Extension_Core_Type_FormType extends Symfony_Compon
     public function buildView(Symfony_Component_Form_FormView $view, Symfony_Component_Form_FormInterface $form, array $options)
     {
         $name = $form->getName();
-        $blockName = $options['block_name'] ?: $form->getName();
+        $blockName = $options['block_name'] ? $options['block_name'] : $form->getName();
         $readOnly = $options['read_only'];
         $translationDomain = $options['translation_domain'];
 
@@ -161,35 +161,29 @@ class Symfony_Component_Form_Extension_Core_Type_FormType extends Symfony_Compon
     public function setDefaultOptions(Symfony_Component_OptionsResolver_OptionsResolverInterface $resolver)
     {
         // Derive "data_class" option from passed "data" object
-        $dataClass = function (Symfony_Component_OptionsResolver_Options $options) {
-            return isset($options['data']) && is_object($options['data']) ? get_class($options['data']) : null;
-        };
+        $dataClass = array(
+            new Symfony_Component_Form_Extension_Core_Type_FormTypeClosures(),
+            'setDefaultOptionsDataClass'
+        );
 
         // Derive "empty_data" closure from "data_class" option
-        $emptyData = function (Symfony_Component_OptionsResolver_Options $options) {
-            $class = $options['data_class'];
-
-            if (null !== $class) {
-                return function (Symfony_Component_Form_FormInterface $form) use ($class) {
-                    return $form->isEmpty() && !$form->isRequired() ? null : new $class();
-                };
-            }
-
-            return function (Symfony_Component_Form_FormInterface $form) {
-                return $form->getConfig()->getCompound() ? array() : '';
-            };
-        };
+        $emptyData = array(
+            new Symfony_Component_Form_Extension_Core_Type_FormTypeClosures(),
+            'setDefaultOptionsEmptyData'
+        );
 
         // For any form that is not represented by a single HTML control,
         // errors should bubble up by default
-        $errorBubbling = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['compound'];
-        };
+        $errorBubbling = array(
+            new Symfony_Component_Form_Extension_Core_Type_FormTypeClosures(),
+            'setDefaultOptionsErrorBubbling'
+        );
 
         // BC clause: former property_path=false now equals mapped=false
-        $mapped = function (Symfony_Component_OptionsResolver_Options $options) {
-            return false !== $options['property_path'];
-        };
+        $mapped = array(
+            new Symfony_Component_Form_Extension_Core_Type_FormTypeClosures(),
+            'setDefaultOptionsMapped'
+        );
 
         // If data is given, the form is locked to that data
         // (independent of its value)
@@ -239,5 +233,59 @@ class Symfony_Component_Form_Extension_Core_Type_FormType extends Symfony_Compon
     public function getName()
     {
         return 'form';
+    }
+}
+
+class Symfony_Component_Form_Extension_Core_Type_FormTypeClosures
+{
+    private $class;
+
+    public function __construct($class = null)
+    {
+        $this->class = $class;
+    }
+
+    public function setDefaultOptionsDataClass(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return isset($options['data']) && is_object($options['data']) ? get_class($options['data']) : null;
+    }
+
+    public function setDefaultOptionsEmptyData(Symfony_Component_OptionsResolver_Options $options)
+    {
+        $class = $options['data_class'];
+
+        if (null !== $class) {
+            return array(
+                new self($class),
+                'setDefaultOptionsEmptyDataWithClass'
+            );
+        }
+
+        return array(
+            new self(),
+            'setDefaultOptionsEmptyDataWithoutClass'
+        );
+    }
+
+    public function setDefaultOptionsErrorBubbling(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['compound'];
+    }
+
+    public function setDefaultOptionsMapped(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return false !== $options['property_path'];
+    }
+
+    public function setDefaultOptionsEmptyDataWithClass(Symfony_Component_Form_FormInterface $form)
+    {
+        $class = $this->class;
+
+        return $form->isEmpty() && !$form->isRequired() ? null : new $class();
+    }
+
+    public function setDefaultOptionsEmptyDataWithoutClass(Symfony_Component_Form_FormInterface $form)
+    {
+        return $form->getConfig()->getCompound() ? array() : '';
     }
 }

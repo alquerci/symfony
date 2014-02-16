@@ -48,7 +48,7 @@ class Symfony_Component_Form_Tests_Extension_Validator_Type_FormTypeValidatorExt
     public function testValidationGroupsCanBeSetToClosure()
     {
         $form = $this->factory->create('form', null, array(
-            'validation_groups' => function(Symfony_Component_Form_FormInterface $form){ return null; },
+            'validation_groups' => create_function('Symfony_Component_Form_FormInterface $form', 'return null;'),
         ));
 
         $this->assertTrue(is_callable($form->getConfig()->getOption('validation_groups')));

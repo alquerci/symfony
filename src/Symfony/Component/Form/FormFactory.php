@@ -144,7 +144,7 @@ class Symfony_Component_Form_FormFactory implements Symfony_Component_Form_FormF
      */
     public function hasType($name)
     {
-        trigger_error('hasType() is deprecated since version 2.1 and will be removed in 2.3. Use Symfony_Component_Form_FormRegistryInterface::hasType() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('hasType() is deprecated since version 2.1 and will be removed in 2.3. Use Symfony_Component_Form_FormRegistryInterface::hasType() instead.', E_USER_DEPRECATED);
 
         return $this->registry->hasType($name);
     }
@@ -160,7 +160,7 @@ class Symfony_Component_Form_FormFactory implements Symfony_Component_Form_FormF
      */
     public function addType(Symfony_Component_Form_FormTypeInterface $type)
     {
-        trigger_error('addType() is deprecated since version 2.1 and will be removed in 2.3. Use form extensions or type registration in the Dependency Injection Container instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('addType() is deprecated since version 2.1 and will be removed in 2.3. Use form extensions or type registration in the Dependency Injection Container instead.', E_USER_DEPRECATED);
 
         $parentType = $type->getParent();
 
@@ -187,7 +187,7 @@ class Symfony_Component_Form_FormFactory implements Symfony_Component_Form_FormF
      */
     public function getType($name)
     {
-        trigger_error('getType() is deprecated since version 2.1 and will be removed in 2.3. Use Symfony_Component_Form_FormRegistryInterface::getType() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getType() is deprecated since version 2.1 and will be removed in 2.3. Use Symfony_Component_Form_FormRegistryInterface::getType() instead.', E_USER_DEPRECATED);
 
         return $this->registry->getType($name)->getInnerType();
     }

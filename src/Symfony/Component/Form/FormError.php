@@ -56,7 +56,7 @@ class Symfony_Component_Form_FormError
     public function __construct($message, $messageTemplate = null, array $messageParameters = array(), $messagePluralization = null)
     {
         $this->message = $message;
-        $this->messageTemplate = $messageTemplate ?: $message;
+        $this->messageTemplate = $messageTemplate ? $messageTemplate : $message;
         $this->messageParameters = $messageParameters;
         $this->messagePluralization = $messagePluralization;
     }

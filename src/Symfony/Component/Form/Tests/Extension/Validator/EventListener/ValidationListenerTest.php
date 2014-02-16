@@ -66,7 +66,7 @@ class Symfony_Component_Form_Tests_Extension_Validator_EventListener_ValidationL
     private function getBuilder($name = 'name', $propertyPath = null, $dataClass = null)
     {
         $builder = new Symfony_Component_Form_FormBuilder($name, $dataClass, $this->dispatcher, $this->factory);
-        $builder->setPropertyPath(new Symfony_Component_PropertyAccess_PropertyPath($propertyPath ?: $name));
+        $builder->setPropertyPath(new Symfony_Component_PropertyAccess_PropertyPath($propertyPath ? $propertyPath : $name));
         $builder->setAttribute('error_mapping', array());
         $builder->setErrorBubbling(false);
         $builder->setMapped(true);

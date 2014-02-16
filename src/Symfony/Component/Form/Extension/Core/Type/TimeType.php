@@ -134,40 +134,32 @@ class Symfony_Component_Form_Extension_Core_Type_TimeType extends Symfony_Compon
      */
     public function setDefaultOptions(Symfony_Component_OptionsResolver_OptionsResolverInterface $resolver)
     {
-        $compound = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['widget'] !== 'single_text';
-        };
+        $compound = array(
+            new Symfony_Component_Form_Extension_Core_Type_TimeTypeClosures,
+            'setDefaultOptionsCompound'
+        );
 
-        $emptyValue = $emptyValueDefault = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['required'] ? null : '';
-        };
+        $emptyValue = $emptyValueDefault = array(
+            new Symfony_Component_Form_Extension_Core_Type_TimeTypeClosures,
+            'setDefaultOptionsEmptyValueDefault'
+        );
 
-        $emptyValueNormalizer = function (Symfony_Component_OptionsResolver_Options $options, $emptyValue) use ($emptyValueDefault) {
-            if (is_array($emptyValue)) {
-                $default = $emptyValueDefault($options);
-
-                return array_merge(
-                    array('hour' => $default, 'minute' => $default, 'second' => $default),
-                    $emptyValue
-                );
-            }
-
-            return array(
-                'hour' => $emptyValue,
-                'minute' => $emptyValue,
-                'second' => $emptyValue
-            );
-        };
+        $emptyValueNormalizer = array(
+            new Symfony_Component_Form_Extension_Core_Type_TimeTypeClosures,
+            'setDefaultOptionsEmptyValueNormalizer'
+        );
 
         // BC until Symfony 2.3
-        $modelTimezone = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['data_timezone'];
-        };
+        $modelTimezone = array(
+            new Symfony_Component_Form_Extension_Core_Type_TimeTypeClosures,
+            'setDefaultOptionsModelTimezone'
+        );
 
         // BC until Symfony 2.3
-        $viewTimezone = function (Symfony_Component_OptionsResolver_Options $options) {
-            return $options['user_timezone'];
-        };
+        $viewTimezone = array(
+            new Symfony_Component_Form_Extension_Core_Type_TimeTypeClosures,
+            'setDefaultOptionsViewTimezone'
+        );
 
         $resolver->setDefaults(array(
             'hours'          => range(0, 23),
@@ -228,5 +220,46 @@ class Symfony_Component_Form_Extension_Core_Type_TimeType extends Symfony_Compon
     public function getName()
     {
         return 'time';
+    }
+}
+
+class Symfony_Component_Form_Extension_Core_Type_TimeTypeClosures
+{
+    public function setDefaultOptionsCompound(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['widget'] !== 'single_text';
+    }
+
+    public function setDefaultOptionsEmptyValueDefault(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['required'] ? null : '';
+    }
+
+    public function setDefaultOptionsEmptyValueNormalizer(Symfony_Component_OptionsResolver_Options $options, $emptyValue)
+    {
+        if (is_array($emptyValue)) {
+            $default = $this->setDefaultOptionsEmptyValueDefault($options);
+
+            return array_merge(
+                array('hour' => $default, 'minute' => $default, 'second' => $default),
+                $emptyValue
+            );
+        }
+
+        return array(
+            'hour' => $emptyValue,
+            'minute' => $emptyValue,
+            'second' => $emptyValue
+        );
+    }
+
+    public function setDefaultOptionsModelTimezone(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['data_timezone'];
+    }
+
+    public function setDefaultOptionsViewTimezone(Symfony_Component_OptionsResolver_Options $options)
+    {
+        return $options['user_timezone'];
     }
 }

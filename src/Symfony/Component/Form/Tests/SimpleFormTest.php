@@ -608,13 +608,13 @@ class Symfony_Component_Form_Tests_SimpleFormTest extends Symfony_Component_Form
     {
         $test = $this;
         $form = $this->getBuilder()
-            ->setEmptyData(function ($form) use ($test) {
+            ->setEmptyData(create_function('$form', '
             // the form instance is passed to the closure to allow use
             // of form data when creating the empty value
-            $test->assertInstanceOf('Symfony_Component_Form_FormInterface', $form);
+            PHPUnit_Framework_Assert::assertInstanceOf("Symfony_Component_Form_FormInterface", $form);
 
-            return 'foo';
-        })
+            return "foo";
+        '))
             ->addViewTransformer(new Symfony_Component_Form_Tests_Fixtures_FixedDataTransformer(array(
             '' => '',
             // direction is reversed!
@@ -639,9 +639,9 @@ class Symfony_Component_Form_Tests_SimpleFormTest extends Symfony_Component_Form
         $validator->expects($this->once())
             ->method('validate')
             ->with($form)
-            ->will($this->returnCallback(function ($form) use ($test) {
-            $test->assertEquals('foobar', $form->getData());
-        }));
+            ->will($this->returnCallback(create_function('$form', '
+            PHPUnit_Framework_Assert::assertEquals("foobar", $form->getData());
+        ')));
 
         $form->bind('foobar');
 
@@ -826,9 +826,9 @@ class Symfony_Component_Form_Tests_SimpleFormTest extends Symfony_Component_Form
     {
         // Cycle detection to prevent endless loops
         $config = new Symfony_Component_Form_FormConfigBuilder('name', 'stdClass', $this->dispatcher);
-        $config->addEventListener(Symfony_Component_Form_FormEvents::PRE_SET_DATA, function (Symfony_Component_Form_FormEvent $event) {
-            $event->getForm()->setData('bar');
-        });
+        $config->addEventListener(Symfony_Component_Form_FormEvents::PRE_SET_DATA, create_function('Symfony_Component_Form_FormEvent $event', '
+            $event->getForm()->setData("bar");
+        '));
         $form = new Symfony_Component_Form_Form($config);
 
         $form->setData('foo');
@@ -839,10 +839,10 @@ class Symfony_Component_Form_Tests_SimpleFormTest extends Symfony_Component_Form
         $test = $this;
 
         $child = $this->getBuilder('child', $this->dispatcher);
-        $child->addEventListener(Symfony_Component_Form_FormEvents::PRE_BIND, function (Symfony_Component_Form_FormEvent $event) use ($test) {
-            // child form doesn't receive the wrong data that is bound on parent
-            $test->assertNull($event->getData());
-        });
+        $child->addEventListener(Symfony_Component_Form_FormEvents::PRE_BIND, create_function('Symfony_Component_Form_FormEvent $event', '
+            // child form doesn\'t receive the wrong data that is bound on parent
+            PHPUnit_Framework_Assert::assertNull($event->getData());
+        '));
 
         $parent = $this->getBuilder('parent', new Symfony_Component_EventDispatcher_EventDispatcher())
             ->setCompound(true)

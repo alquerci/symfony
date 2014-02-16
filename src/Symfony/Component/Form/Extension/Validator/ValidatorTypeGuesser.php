@@ -25,9 +25,10 @@ class Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesser implements
     {
         $guesser = $this;
 
-        return $this->guess($class, $property, function (Symfony_Component_Validator_Constraint $constraint) use ($guesser) {
-            return $guesser->guessTypeForConstraint($constraint);
-        });
+        return $this->guess($class, $property, array(
+            new Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesserClosures($guesser),
+            'guessType'
+        ));
     }
 
     /**
@@ -37,11 +38,10 @@ class Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesser implements
     {
         $guesser = $this;
 
-        return $this->guess($class, $property, function (Symfony_Component_Validator_Constraint $constraint) use ($guesser) {
-            return $guesser->guessRequiredForConstraint($constraint);
-        // If we don't find any constraint telling otherwise, we can assume
-        // that a field is not required (with LOW_CONFIDENCE)
-        }, false);
+        return $this->guess($class, $property, array(
+            new Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesserClosures($guesser),
+            'guessRequired'
+        ), false);
     }
 
     /**
@@ -51,9 +51,10 @@ class Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesser implements
     {
         $guesser = $this;
 
-        return $this->guess($class, $property, function (Symfony_Component_Validator_Constraint $constraint) use ($guesser) {
-            return $guesser->guessMaxLengthForConstraint($constraint);
-        });
+        return $this->guess($class, $property, array(
+            new Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesserClosures($guesser),
+            'guessMaxLength'
+        ));
     }
 
     /**
@@ -61,7 +62,7 @@ class Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesser implements
      */
     public function guessMinLength($class, $property)
     {
-        trigger_error('guessMinLength() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('guessMinLength() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
     }
 
     /**
@@ -71,9 +72,10 @@ class Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesser implements
     {
         $guesser = $this;
 
-        return $this->guess($class, $property, function (Symfony_Component_Validator_Constraint $constraint) use ($guesser) {
-            return $guesser->guessPatternForConstraint($constraint);
-        });
+        return $this->guess($class, $property, array(
+            new Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesserClosures($guesser),
+            'guessPattern'
+        ));
     }
 
     /**
@@ -250,14 +252,14 @@ class Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesser implements
      *
      * @param string   $class        The class to read the constraints from
      * @param string   $property     The property for which to find constraints
-     * @param Closure $closure      The closure that returns a guess
+     * @param callable $closure      The closure that returns a guess
      *                               for a given constraint
      * @param mixed    $defaultValue The default value assumed if no other value
      *                               can be guessed.
      *
      * @return Symfony_Component_Form_Guess_Guess The guessed value with the highest confidence
      */
-    protected function guess($class, $property, Closure $closure, $defaultValue = null)
+    protected function guess($class, $property, $closure, $defaultValue = null)
     {
         $guesses = array();
         $classMetadata = $this->metadataFactory->getMetadataFor($class);
@@ -269,7 +271,7 @@ class Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesser implements
                 $constraints = $memberMetadata->getConstraints();
 
                 foreach ($constraints as $constraint) {
-                    if ($guess = $closure($constraint)) {
+                    if ($guess = call_user_func($closure, $constraint)) {
                         $guesses[] = $guess;
                     }
                 }
@@ -281,5 +283,37 @@ class Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesser implements
         }
 
         return Symfony_Component_Form_Guess_Guess::getBestGuess($guesses);
+    }
+}
+
+class Symfony_Component_Form_Extension_Validator_ValidatorTypeGuesserClosures
+{
+    private $guesser;
+
+    public function __construct($guesser)
+    {
+        $this->guesser = $guesser;
+    }
+
+    public function guessType(Symfony_Component_Validator_Constraint $constraint)
+    {
+        return $this->guesser->guessTypeForConstraint($constraint);
+    }
+
+    public function guessRequired(Symfony_Component_Validator_Constraint $constraint)
+    {
+        return $this->guesser->guessRequiredForConstraint($constraint);
+        // If we don't find any constraint telling otherwise, we can assume
+        // that a field is not required (with LOW_CONFIDENCE)
+    }
+
+    public function guessMaxLength(Symfony_Component_Validator_Constraint $constraint)
+    {
+        return $this->guesser->guessMaxLengthForConstraint($constraint);
+    }
+
+    public function guessPattern(Symfony_Component_Validator_Constraint $constraint)
+    {
+        return $this->guesser->guessPatternForConstraint($constraint);
     }
 }

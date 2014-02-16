@@ -19,7 +19,7 @@ class Symfony_Component_Form_Tests_Fixtures_CustomArrayObject implements ArrayAc
 
     public function __construct(array $array = null)
     {
-        $this->array = $array ?: array();
+        $this->array = $array ? $array : array();
     }
 
     public function offsetExists($offset)

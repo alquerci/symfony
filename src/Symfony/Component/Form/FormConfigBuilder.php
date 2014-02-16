@@ -189,7 +189,7 @@ class Symfony_Component_Form_FormConfigBuilder implements Symfony_Component_Form
      */
     public function addValidator(Symfony_Component_Form_FormValidatorInterface $validator)
     {
-        trigger_error('addValidator() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('addValidator() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         if ($this->locked) {
             throw new Symfony_Component_Form_Exception_BadMethodCallException('FormConfigBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
@@ -246,7 +246,7 @@ class Symfony_Component_Form_FormConfigBuilder implements Symfony_Component_Form
      */
     public function appendClientTransformer(Symfony_Component_Form_DataTransformerInterface $viewTransformer)
     {
-        trigger_error('appendClientTransformer() is deprecated since version 2.1 and will be removed in 2.3. Use addViewTransformer() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('appendClientTransformer() is deprecated since version 2.1 and will be removed in 2.3. Use addViewTransformer() instead.', E_USER_DEPRECATED);
 
         if ($this->locked) {
             throw new Symfony_Component_Form_Exception_BadMethodCallException('FormConfigBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
@@ -268,7 +268,7 @@ class Symfony_Component_Form_FormConfigBuilder implements Symfony_Component_Form
      */
     public function prependClientTransformer(Symfony_Component_Form_DataTransformerInterface $viewTransformer)
     {
-        trigger_error('prependClientTransformer() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('prependClientTransformer() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         if ($this->locked) {
             throw new Symfony_Component_Form_Exception_BadMethodCallException('FormConfigBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
@@ -289,7 +289,7 @@ class Symfony_Component_Form_FormConfigBuilder implements Symfony_Component_Form
      */
     public function resetClientTransformers()
     {
-        trigger_error('resetClientTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use resetViewTransformers() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('resetClientTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use resetViewTransformers() instead.', E_USER_DEPRECATED);
 
         if ($this->locked) {
             throw new Symfony_Component_Form_Exception_BadMethodCallException('FormConfigBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
@@ -343,7 +343,7 @@ class Symfony_Component_Form_FormConfigBuilder implements Symfony_Component_Form
      */
     public function appendNormTransformer(Symfony_Component_Form_DataTransformerInterface $modelTransformer)
     {
-        trigger_error('appendNormTransformer() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('appendNormTransformer() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         if ($this->locked) {
             throw new Symfony_Component_Form_Exception_BadMethodCallException('FormConfigBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
@@ -366,7 +366,7 @@ class Symfony_Component_Form_FormConfigBuilder implements Symfony_Component_Form
      */
     public function prependNormTransformer(Symfony_Component_Form_DataTransformerInterface $modelTransformer)
     {
-        trigger_error('prependNormTransformer() is deprecated since version 2.1 and will be removed in 2.3. Use addModelTransformer() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('prependNormTransformer() is deprecated since version 2.1 and will be removed in 2.3. Use addModelTransformer() instead.', E_USER_DEPRECATED);
 
         if ($this->locked) {
             throw new Symfony_Component_Form_Exception_BadMethodCallException('FormConfigBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
@@ -387,7 +387,7 @@ class Symfony_Component_Form_FormConfigBuilder implements Symfony_Component_Form
      */
     public function resetNormTransformers()
     {
-        trigger_error('resetNormTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use resetModelTransformers() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('resetNormTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use resetModelTransformers() instead.', E_USER_DEPRECATED);
 
         if ($this->locked) {
             throw new Symfony_Component_Form_Exception_BadMethodCallException('FormConfigBuilder methods cannot be accessed anymore once the builder is turned into a FormConfigInterface instance.');
@@ -478,7 +478,7 @@ class Symfony_Component_Form_FormConfigBuilder implements Symfony_Component_Form
      */
     public function getClientTransformers()
     {
-        trigger_error('getClientTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use getViewTransformers() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getClientTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use getViewTransformers() instead.', E_USER_DEPRECATED);
 
         return $this->getViewTransformers();
     }
@@ -501,7 +501,7 @@ class Symfony_Component_Form_FormConfigBuilder implements Symfony_Component_Form
      */
     public function getNormTransformers()
     {
-        trigger_error('getNormTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use getModelTransformers() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getNormTransformers() is deprecated since version 2.1 and will be removed in 2.3. Use getModelTransformers() instead.', E_USER_DEPRECATED);
 
         return $this->getModelTransformers();
     }
@@ -519,7 +519,7 @@ class Symfony_Component_Form_FormConfigBuilder implements Symfony_Component_Form
      */
     public function getValidators()
     {
-        trigger_error('getValidators() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getValidators() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         return $this->validators;
     }

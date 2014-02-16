@@ -29,7 +29,7 @@ class Symfony_Component_Form_Event_DataEvent extends Symfony_Component_EventDisp
     public function __construct(Symfony_Component_Form_FormInterface $form, $data)
     {
         if (!$this instanceof Symfony_Component_Form_FormEvent) {
-            trigger_error(sprintf('%s is deprecated since version 2.1 and will be removed in 2.3. Code against Symfony_Component_Form_FormEvent instead.', get_class($this)), E_USER_DEPRECATED);
+            version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error(sprintf('%s is deprecated since version 2.1 and will be removed in 2.3. Code against Symfony_Component_Form_FormEvent instead.', get_class($this)), E_USER_DEPRECATED);
         }
 
         $this->form = $form;
