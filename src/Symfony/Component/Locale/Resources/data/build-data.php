@@ -573,28 +573,28 @@ foreach ($bundle->get('Currencies') as $code => $data) {
 }
 
 // Countries.
-$countriesConstraint = function($code) {
+$countriesConstraint = create_function('$code', '
     // Global countries (f.i. "America") have numeric codes
     // Countries have alphabetic codes
     // "ZZ" is the code for unknown country
-    if (ctype_alpha($code) && 'ZZ' !== $code) {
+    if (ctype_alpha($code) && "ZZ" !== $code) {
         return true;
     }
 
     return false;
-};
+');
 
 $countries = get_data('Countries', $regionDir, $defaultLocale, $countriesConstraint);
 
 // Languages
-$languagesConstraint = function($code) {
+$languagesConstraint = create_function('$code', '
     // "mul" is the code for multiple languages
-    if ('mul' !== $code) {
+    if ("mul" !== $code) {
         return true;
     }
 
     return false;
-};
+');
 
 $languages = get_data('Languages', $langDir, $defaultLocale, $languagesConstraint);
 

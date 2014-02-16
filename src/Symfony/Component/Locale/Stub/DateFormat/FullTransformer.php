@@ -83,11 +83,10 @@ class Symfony_Component_Locale_Stub_DateFormat_FullTransformer
      */
     public function format(DateTime $dateTime)
     {
-        $that = $this;
-
-        $formatted = preg_replace_callback($this->regExp, function($matches) use ($that, $dateTime) {
-            return $that->formatReplace($matches[0], $dateTime);
-        }, $this->pattern);
+        $formatted = preg_replace_callback($this->regExp, array(
+            new Symfony_Component_Locale_Stub_DateFormat_FullTransformerClosures($this, $dateTime),
+            'format'
+        ), $this->pattern);
 
         return $formatted;
     }
@@ -171,31 +170,16 @@ class Symfony_Component_Locale_Stub_DateFormat_FullTransformer
      */
     public function getReverseMatchingRegExp($pattern)
     {
-        $that = $this;
-
         $escapedPattern = preg_quote($pattern, '/');
 
         // ICU 4.8 recognizes slash ("/") in a value to be parsed as a dash ("-") and vice-versa
         // when parsing a date/time value
         $escapedPattern = preg_replace('/\\\[\-|\/]/', '[\/\-]', $escapedPattern);
 
-        $reverseMatchingRegExp = preg_replace_callback($this->regExp, function($matches) use ($that) {
-            $length = strlen($matches[0]);
-            $transformerIndex = $matches[0][0];
-
-            $dateChars = $matches[0];
-            if ($that->isQuoteMatch($dateChars)) {
-                return $that->replaceQuoteMatch($dateChars);
-            }
-
-            $transformers = $that->getTransformers();
-            if (isset($transformers[$transformerIndex])) {
-                $transformer = $transformers[$transformerIndex];
-                $captureName = str_repeat($transformerIndex, $length);
-
-                return "(?P<$captureName>".$transformer->getReverseMatchingRegExp($length).')';
-            }
-        }, $escapedPattern);
+        $reverseMatchingRegExp = preg_replace_callback($this->regExp, array(
+            new Symfony_Component_Locale_Stub_DateFormat_FullTransformerClosures($this),
+            'getReverseMatchingRegExp'
+        ), $escapedPattern);
 
         return $reverseMatchingRegExp;
     }
@@ -239,9 +223,10 @@ class Symfony_Component_Locale_Stub_DateFormat_FullTransformer
     {
         $specialCharsArray = str_split($specialChars);
 
-        $specialCharsMatch = implode('|', array_map(function($char) {
-            return $char.'+';
-        }, $specialCharsArray));
+        $specialCharsMatch = implode('|', array_map(array(
+            new Symfony_Component_Locale_Stub_DateFormat_FullTransformerClosures(),
+            'buildCharsMatch'
+        ), $specialCharsArray));
 
         return $specialCharsMatch;
     }
@@ -346,5 +331,67 @@ class Symfony_Component_Locale_Stub_DateFormat_FullTransformer
             'marker'       => isset($options['marker']) ? $options['marker'] : null,
             'timezone'     => isset($options['timezone']) ? $options['timezone'] : null,
         );
+    }
+}
+
+class Symfony_Component_Locale_Stub_DateFormat_FullTransformerClosures
+{
+    /**
+     * @var Symfony_Component_Locale_Stub_DateFormat_FullTransformer
+     */
+    private $transformer;
+
+    /**
+     * @var DateTime
+     */
+    private $dateTime;
+
+    /**
+     * @param Symfony_Component_Locale_Stub_DateFormat_FullTransformer $transformer
+     * @param DateTime $dateTime
+     */
+    public function __construct(Symfony_Component_Locale_Stub_DateFormat_FullTransformer $transformer = null, DateTime $dateTime = null)
+    {
+        $this->transformer = $transformer;
+        $this->dateTime = $dateTime;
+    }
+
+    /**
+     * @param array $matches
+     *
+     * @return string
+     */
+    public function format($matches)
+    {
+        return $this->transformer->formatReplace($matches[0], $this->dateTime);
+    }
+
+    /**
+     * @param array $matches
+     *
+     * @return string
+     */
+    public function getReverseMatchingRegExp($matches)
+    {
+        $length = strlen($matches[0]);
+        $transformerIndex = $matches[0][0];
+
+        $dateChars = $matches[0];
+        if ($this->transformer->isQuoteMatch($dateChars)) {
+            return $this->transformer->replaceQuoteMatch($dateChars);
+        }
+
+        $transformers = $this->transformer->getTransformers();
+        if (isset($transformers[$transformerIndex])) {
+            $transformer = $transformers[$transformerIndex];
+            $captureName = str_repeat($transformerIndex, $length);
+
+            return "(?P<$captureName>".$transformer->getReverseMatchingRegExp($length).')';
+        }
+    }
+
+    public function buildCharsMatch($char)
+    {
+        return $char.'+';
     }
 }

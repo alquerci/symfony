@@ -1221,7 +1221,7 @@ class Symfony_Component_Locale_Tests_Stub_StubIntlDateFormatterTest extends Symf
         if ($this->isGreaterOrEqualThanPhpVersion('5.5.0-dev')) {
             $timeZone = date_default_timezone_get();
         } else {
-            $timeZone = getenv('TZ') ?: 'UTC';
+            $timeZone = getenv('TZ') ? getenv('TZ') : 'UTC';
         }
 
         $dateTime = new DateTime();

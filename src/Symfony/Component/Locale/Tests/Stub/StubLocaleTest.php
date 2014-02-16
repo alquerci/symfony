@@ -61,7 +61,11 @@ class Symfony_Component_Locale_Tests_Stub_StubLocaleTest extends Symfony_Compone
 
     public function testGetCurrenciesData()
     {
-        $symbol = $this->isSameAsIcuVersion('4.8') ? 'BR$' : 'R$';
+        if ($this->isIntlExtensionLoaded()) {
+            $symbol = $this->isSameAsIcuVersion('4.8') ? 'BR$' : 'R$';
+        } else {
+            $symbol = 'R$';
+        }
 
         $currencies = Symfony_Component_Locale_Stub_StubLocale::getCurrenciesData('en');
         $this->assertEquals($symbol, $currencies['BRL']['symbol']);

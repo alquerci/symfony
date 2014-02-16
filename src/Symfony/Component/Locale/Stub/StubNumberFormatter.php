@@ -9,6 +9,22 @@
  * file that was distributed with this source code.
  */
 
+if (!defined('PHP_ROUND_HALF_UP')) {
+    define('PHP_ROUND_HALF_UP', 1);
+}
+
+if (!defined('PHP_ROUND_HALF_DOWN')) {
+    define('PHP_ROUND_HALF_DOWN', 2);
+}
+
+if (!defined('PHP_ROUND_HALF_EVEN')) {
+    define('PHP_ROUND_HALF_EVEN', 3);
+}
+
+if (!defined('PHP_ROUND_HALF_ODD')) {
+    define('PHP_ROUND_HALF_ODD', 4);
+}
+
 /**
  * Provides a stub NumberFormatter for the 'en' locale.
  *
@@ -714,7 +730,60 @@ class Symfony_Component_Locale_Stub_StubNumberFormatter
         $precision = $this->getUnitializedPrecision($value, $precision);
 
         $roundingMode = self::$phpRoundingMap[$this->getAttribute(self::ROUNDING_MODE)];
-        $value = round($value, $precision, $roundingMode);
+        switch ($roundingMode) {
+            case PHP_ROUND_HALF_UP:
+                $value = round($value, $precision);
+                break;
+
+            default:
+                if (is_infinite($value)) {
+                    break;
+                }
+
+                $f1 = pow(10, abs($precision));
+
+                /* adjust the value */
+                if ($precision >= 0) {
+                    $tmp_value = $value * $f1;
+                } else {
+                    $tmp_value = $value / $f1;
+                }
+
+                /* This value is beyond our precision, so rounding it is pointless */
+                if (abs($tmp_value) >= 1e15) {
+                    break;
+                }
+
+                /* round the temp value */
+                if ($tmp_value >= 0.0) {
+                    $tmp_value2 = floor($tmp_value + 0.5);
+                    if (($roundingMode == PHP_ROUND_HALF_DOWN && $tmp_value == (-0.5 + $tmp_value2)) ||
+                        ($roundingMode == PHP_ROUND_HALF_EVEN && $tmp_value == (0.5 + 2 * floor($tmp_value2/2.0))) ||
+                        ($roundingMode == PHP_ROUND_HALF_ODD && $tmp_value == (0.5 + 2 * floor($tmp_value2/2.0) - 1.0)))
+                    {
+                        $tmp_value2 = $tmp_value2 - 1.0;
+                    }
+                } else {
+                    $tmp_value2 = ceil($tmp_value - 0.5);
+                    if (($roundingMode == PHP_ROUND_HALF_DOWN && $tmp_value == (0.5 + $tmp_value2)) ||
+                        ($roundingMode == PHP_ROUND_HALF_EVEN && $tmp_value == (-0.5 + 2 * ceil($tmp_value2/2.0))) ||
+                        ($roundingMode == PHP_ROUND_HALF_ODD && $tmp_value == (-0.5 + 2 * ceil($tmp_value2/2.0) + 1.0)))
+                    {
+                        $tmp_value2 = $tmp_value2 + 1.0;
+                    }
+                }
+                $tmp_value = $tmp_value2;
+
+                /* adjust the value */
+                if ($precision >= 0) {
+                    $value = $tmp_value / $f1;
+                } else {
+                    $value = $tmp_value * $f1;
+                }
+
+                break;
+        }
+
 
         return $value;
     }

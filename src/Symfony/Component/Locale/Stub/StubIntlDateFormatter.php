@@ -511,7 +511,10 @@ class Symfony_Component_Locale_Stub_StubIntlDateFormatter
                 // use ini's date.timezone when the time zone is not provided. As a not well tested workaround, uses UTC.
                 // See the first two items of the commit message for more information:
                 // https://github.com/php/php-src/commit/eb346ef0f419b90739aadfb6cc7b7436c5b521d9
-                $timeZoneId = getenv('TZ') ?: 'UTC';
+                $timeZoneId = getenv('TZ');
+                if (!$timeZoneId) {
+                    $timeZoneId = 'UTC';
+                }
             }
 
             $this->unitializedTimeZoneId = true;

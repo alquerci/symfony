@@ -58,9 +58,10 @@ class Symfony_Component_Locale_Stub_DateFormat_MonthTransformer extends Symfony_
     public function __construct()
     {
         if (0 === count(self::$shortMonths)) {
-            self::$shortMonths = array_map(function($month) {
-                return substr($month, 0, 3);
-            }, self::$months);
+            self::$shortMonths = array_map(array(
+                new Symfony_Component_Locale_Stub_DateFormat_MonthTransformerClosures(),
+                'construct'
+            ), self::$months);
 
             self::$flippedMonths = array_flip(self::$months);
             self::$flippedShortMonths = array_flip(self::$shortMonths);
@@ -137,5 +138,13 @@ class Symfony_Component_Locale_Stub_DateFormat_MonthTransformer extends Symfony_
         return array(
             'month' => $matched,
         );
+    }
+}
+
+class Symfony_Component_Locale_Stub_DateFormat_MonthTransformerClosures
+{
+    public function construct($month)
+    {
+        return substr($month, 0, 3);
     }
 }

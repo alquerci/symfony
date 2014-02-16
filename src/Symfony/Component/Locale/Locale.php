@@ -54,7 +54,10 @@ class Symfony_Component_Locale_Locale extends Locale
 
             $collator = new Collator($locale);
             $countries = array();
-            $bundleCountries = $bundle->get('Countries') ?: array();
+            $bundleCountries = $bundle->get('Countries');
+            if (!$bundleCountries) {
+                $bundleCountries = array();
+            }
 
             foreach ($bundleCountries as $code => $name) {
                 // Global countries (f.i. "America") have numeric codes
@@ -109,7 +112,10 @@ class Symfony_Component_Locale_Locale extends Locale
 
             $collator = new Collator($locale);
             $languages = array();
-            $bundleLanguages = $bundle->get('Languages') ?: array();
+            $bundleLanguages = $bundle->get('Languages');
+            if (!$bundleLanguages) {
+                $bundleLanguages = array();
+            }
 
             foreach ($bundleLanguages as $code => $name) {
                 // "mul" is the code for multiple languages
@@ -162,7 +168,10 @@ class Symfony_Component_Locale_Locale extends Locale
 
             $collator = new Collator($locale);
             $locales = array();
-            $bundleLocales = $bundle->get('Locales') ?: array();
+            $bundleLocales = $bundle->get('Locales');
+            if (!$bundleLocales) {
+                $bundleLocales = array();
+            }
 
             foreach ($bundleLocales as $code => $name) {
                 $locales[$code] = $name;
