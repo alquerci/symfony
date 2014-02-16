@@ -27,6 +27,6 @@ Root.property.path:
     Array
 EOF;
 
-        $this->assertSame($expected, (string) $violation);
+        $this->assertSame($expected, (string) $violation->__toString());
     }
 }

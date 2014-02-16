@@ -9,6 +9,10 @@
  * file that was distributed with this source code.
  */
 
+if (!defined('E_USER_DEPRECATED')) {
+    define('E_USER_DEPRECATED', 16384);
+}
+
 class Symfony_Component_Validator_Tests_GraphWalkerTest extends PHPUnit_Framework_TestCase
 {
     const CLASSNAME = 'Symfony_Component_Validator_Tests_Fixtures_Entity';

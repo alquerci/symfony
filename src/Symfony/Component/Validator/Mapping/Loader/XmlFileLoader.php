@@ -45,7 +45,7 @@ class Symfony_Component_Validator_Mapping_Loader_XmlFileLoader extends Symfony_C
 
             foreach ($xml->{'group-sequence'} as $groupSequence) {
                 if (count($groupSequence->value) > 0) {
-                    $metadata->setGroupSequence($this->parseValues($groupSequence[0]->value));
+                    $metadata->setGroupSequence($this->parseValues($groupSequence->value));
                 }
             }
 

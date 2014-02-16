@@ -24,7 +24,7 @@ class Symfony_Component_Validator_Mapping_ClassMetadataFactoryAdapter implements
 
     public function __construct(Symfony_Component_Validator_Mapping_ClassMetadataFactoryInterface $innerFactory)
     {
-        trigger_error(sprintf('ClassMetadataFactoryInterface is deprecated since version 2.1 and will be removed in 2.3. Implement MetadataFactoryInterface instead on %s.', get_class($innerFactory)), E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error(sprintf('ClassMetadataFactoryInterface is deprecated since version 2.1 and will be removed in 2.3. Implement MetadataFactoryInterface instead on %s.', get_class($innerFactory)), E_USER_DEPRECATED);
 
         $this->innerFactory = $innerFactory;
     }

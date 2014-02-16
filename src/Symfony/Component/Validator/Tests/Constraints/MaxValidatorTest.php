@@ -9,6 +9,10 @@
  * file that was distributed with this source code.
  */
 
+if (!defined('E_USER_DEPRECATED')) {
+    define('E_USER_DEPRECATED', 16384);
+}
+
 class Symfony_Component_Validator_Tests_Constraints_MaxValidatorTest extends PHPUnit_Framework_TestCase
 {
     protected $context;

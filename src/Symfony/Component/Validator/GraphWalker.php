@@ -60,7 +60,7 @@ class Symfony_Component_Validator_GraphWalker
      */
     public function __construct(Symfony_Component_Validator_ValidationVisitor $visitor, Symfony_Component_Validator_MetadataFactoryInterface $metadataFactory, Symfony_Component_Translation_TranslatorInterface $translator, $translationDomain = null, array &$validatedObjects = array())
     {
-        trigger_error('GraphWalker is deprecated since version 2.2 and will be removed in 2.3. This class has been replaced by ValidationVisitorInterface and MetadataInterface.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('GraphWalker is deprecated since version 2.2 and will be removed in 2.3. This class has been replaced by ValidationVisitorInterface and MetadataInterface.', E_USER_DEPRECATED);
 
         $this->visitor = $visitor;
         $this->metadataFactory = $metadataFactory;
@@ -76,7 +76,7 @@ class Symfony_Component_Validator_GraphWalker
      */
     public function getViolations()
     {
-        trigger_error('getViolations() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getViolations() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         return $this->visitor->getViolations();
     }
@@ -94,9 +94,9 @@ class Symfony_Component_Validator_GraphWalker
      */
     public function walkObject(Symfony_Component_Validator_Mapping_ClassMetadata $metadata, $object, $group, $propertyPath)
     {
-        trigger_error('walkObject() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('walkObject() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
 
-        $hash = spl_object_hash($object);
+        $hash = $this->visitor->getObjectHash($object);
 
         // Exit, if the object is already validated for the current group
         if (isset($this->validatedObjects[$hash][$group])) {
@@ -131,7 +131,7 @@ class Symfony_Component_Validator_GraphWalker
      */
     public function walkProperty(Symfony_Component_Validator_Mapping_ClassMetadata $metadata, $property, $object, $group, $propertyPath, $propagatedGroup = null)
     {
-        trigger_error('walkProperty() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('walkProperty() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         if (!is_object($object)) {
             throw new Symfony_Component_Validator_Exception_UnexpectedTypeException($object, 'object');
@@ -155,7 +155,7 @@ class Symfony_Component_Validator_GraphWalker
      */
     public function walkPropertyValue(Symfony_Component_Validator_Mapping_ClassMetadata $metadata, $property, $value, $group, $propertyPath)
     {
-        trigger_error('walkPropertyValue() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('walkPropertyValue() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         foreach ($metadata->getMemberMetadatas($property) as $member) {
             $member->accept($this->visitor, $value, $group, $propertyPath);
@@ -180,7 +180,7 @@ class Symfony_Component_Validator_GraphWalker
      */
     public function walkReference($value, $group, $propertyPath, $traverse, $deep = false)
     {
-        trigger_error('walkReference() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('walkReference() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         $this->visitor->validate($value, $group, $propertyPath, $traverse, $deep);
     }
@@ -199,7 +199,7 @@ class Symfony_Component_Validator_GraphWalker
      */
     public function walkConstraint(Symfony_Component_Validator_Constraint $constraint, $value, $group, $propertyPath, $currentClass = null, $currentProperty = null)
     {
-        trigger_error('walkConstraint() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('walkConstraint() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         $metadata = null;
 

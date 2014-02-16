@@ -111,7 +111,7 @@ class Symfony_Component_Validator_Mapping_ClassMetadataFactory implements Symfon
      */
     public function getClassMetadata($class)
     {
-        trigger_error('getClassMetadata() is deprecated since version 2.2 and will be removed in 2.3. Use getMetadataFor() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getClassMetadata() is deprecated since version 2.2 and will be removed in 2.3. Use getMetadataFor() instead.', E_USER_DEPRECATED);
 
         return $this->getMetadataFor($class);
     }

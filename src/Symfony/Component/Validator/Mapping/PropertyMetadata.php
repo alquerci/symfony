@@ -21,7 +21,7 @@ class Symfony_Component_Validator_Mapping_PropertyMetadata extends Symfony_Compo
      */
     public function __construct($class, $name)
     {
-        if (!property_exists($class, $name)) {
+        if (!Symfony_Component_Validator_Mapping_ReflectionProperty::propertyExists($class, $name)) {
             throw new Symfony_Component_Validator_Exception_ValidatorException(sprintf('Property %s does not exist in class %s', $name, $class));
         }
 
@@ -41,7 +41,7 @@ class Symfony_Component_Validator_Mapping_PropertyMetadata extends Symfony_Compo
      */
     protected function newReflectionMember()
     {
-        $member = new ReflectionProperty($this->getClassName(), $this->getName());
+        $member = new Symfony_Component_Validator_Mapping_ReflectionProperty($this->getClassName(), $this->getName());
         $member->setAccessible(true);
 
         return $member;

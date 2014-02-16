@@ -20,7 +20,7 @@ class Symfony_Component_Validator_Constraints_MaxValidator extends Symfony_Compo
 {
     public function __construct($options = null)
     {
-        trigger_error('MaxValidator is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('MaxValidator is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
     }
 
     /**

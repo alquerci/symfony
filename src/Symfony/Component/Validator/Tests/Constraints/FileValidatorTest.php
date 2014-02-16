@@ -9,6 +9,10 @@
  * file that was distributed with this source code.
  */
 
+if (!defined('UPLOAD_ERR_EXTENSION')) {
+    define('UPLOAD_ERR_EXTENSION', 8);
+}
+
 abstract class Symfony_Component_Validator_Tests_Constraints_FileValidatorTest extends PHPUnit_Framework_TestCase
 {
     protected $context;
@@ -31,7 +35,7 @@ abstract class Symfony_Component_Validator_Tests_Constraints_FileValidatorTest e
 
     protected function tearDown()
     {
-        fclose($this->file);
+        @fclose($this->file);
 
         $this->context = null;
         $this->validator = null;
@@ -83,6 +87,7 @@ abstract class Symfony_Component_Validator_Tests_Constraints_FileValidatorTest e
     public function testTooLargeBytes()
     {
         fwrite($this->file, str_repeat('0', 11));
+        fclose($this->file);
 
         $constraint = new Symfony_Component_Validator_Constraints_File(array(
             'maxSize'           => 10,
@@ -104,6 +109,7 @@ abstract class Symfony_Component_Validator_Tests_Constraints_FileValidatorTest e
     public function testTooLargeKiloBytes()
     {
         fwrite($this->file, str_repeat('0', 1400));
+        fclose($this->file);
 
         $constraint = new Symfony_Component_Validator_Constraints_File(array(
             'maxSize'           => '1k',
@@ -125,6 +131,7 @@ abstract class Symfony_Component_Validator_Tests_Constraints_FileValidatorTest e
     public function testTooLargeMegaBytes()
     {
         fwrite($this->file, str_repeat('0', 1400000));
+        fclose($this->file);
 
         $constraint = new Symfony_Component_Validator_Constraints_File(array(
             'maxSize'           => '1M',

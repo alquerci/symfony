@@ -43,7 +43,7 @@ class Symfony_Component_Validator_ConstraintViolationList implements IteratorAgg
         $string = '';
 
         foreach ($this->violations as $violation) {
-            $string .= $violation . "\n";
+            $string .= $violation->__toString() . "\n";
         }
 
         return $string;

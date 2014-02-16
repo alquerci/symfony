@@ -54,7 +54,7 @@ abstract class Symfony_Component_Validator_ConstraintValidator implements Symfon
      */
     public function getMessageTemplate()
     {
-        trigger_error('getMessageTemplate() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getMessageTemplate() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         return $this->messageTemplate;
     }
@@ -66,7 +66,7 @@ abstract class Symfony_Component_Validator_ConstraintValidator implements Symfon
      */
     public function getMessageParameters()
     {
-        trigger_error('getMessageParameters() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getMessageParameters() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         return $this->messageParameters;
     }
@@ -78,7 +78,7 @@ abstract class Symfony_Component_Validator_ConstraintValidator implements Symfon
      */
     protected function setMessage($template, array $parameters = array())
     {
-        trigger_error('setMessage() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('setMessage() is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         $this->messageTemplate = $template;
         $this->messageParameters = $parameters;
@@ -99,7 +99,7 @@ abstract class Symfony_Component_Validator_ConstraintValidator implements Symfon
      */
     public function validate($value, Symfony_Component_Validator_Constraint $constraint)
     {
-        trigger_error('isValid() is deprecated since version 2.1 and will be removed in 2.3. Implement validate() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('isValid() is deprecated since version 2.1 and will be removed in 2.3. Implement validate() instead.', E_USER_DEPRECATED);
 
         return $this->isValid($value, $constraint);
     }

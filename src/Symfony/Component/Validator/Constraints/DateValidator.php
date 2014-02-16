@@ -18,6 +18,8 @@ class Symfony_Component_Validator_Constraints_DateValidator extends Symfony_Comp
 {
     const PATTERN = '/^(\d{4})-(\d{2})-(\d{2})$/';
 
+    protected $pattern = self::PATTERN;
+
     /**
      * {@inheritDoc}
      */
@@ -33,7 +35,7 @@ class Symfony_Component_Validator_Constraints_DateValidator extends Symfony_Comp
 
         $value = (string) $value;
 
-        if (!preg_match(static::PATTERN, $value, $matches) || !checkdate($matches[2], $matches[3], $matches[1])) {
+        if (!preg_match($this->pattern, $value, $matches) || !checkdate($matches[2], $matches[3], $matches[1])) {
             $this->context->addViolation($constraint->message, array('{{ value }}' => $value));
         }
     }

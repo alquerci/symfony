@@ -20,7 +20,7 @@ class Symfony_Component_Validator_Constraints_MaxLengthValidator extends Symfony
 {
     public function __construct($options = null)
     {
-        trigger_error('MaxLengthValidator is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('MaxLengthValidator is deprecated since version 2.1 and will be removed in 2.3.', E_USER_DEPRECATED);
     }
 
     /**

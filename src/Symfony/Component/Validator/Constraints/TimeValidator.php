@@ -18,6 +18,8 @@ class Symfony_Component_Validator_Constraints_TimeValidator extends Symfony_Comp
 {
     const PATTERN = '/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/';
 
+    protected $pattern = self::PATTERN;
+
     /**
      * {@inheritDoc}
      */
@@ -33,7 +35,7 @@ class Symfony_Component_Validator_Constraints_TimeValidator extends Symfony_Comp
 
         $value = (string) $value;
 
-        if (!preg_match(static::PATTERN, $value)) {
+        if (!preg_match($this->pattern, $value)) {
             $this->context->addViolation($constraint->message, array('{{ value }}' => $value));
         }
     }

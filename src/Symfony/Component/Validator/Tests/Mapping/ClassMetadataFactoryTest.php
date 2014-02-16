@@ -9,6 +9,10 @@
  * file that was distributed with this source code.
  */
 
+if (!defined('E_USER_DEPRECATED')) {
+    define('E_USER_DEPRECATED', 16384);
+}
+
 class Symfony_Component_Validator_Tests_Mapping_ClassMetadataFactoryTest extends PHPUnit_Framework_TestCase
 {
     const CLASSNAME = 'Symfony_Component_Validator_Tests_Fixtures_Entity';
@@ -82,9 +86,7 @@ class Symfony_Component_Validator_Tests_Mapping_ClassMetadataFactoryTest extends
               ->will($this->returnValue(false));
         $cache->expects($this->once())
               ->method('write')
-              ->will($this->returnCallback(function($metadata) use ($tester, $constraints) {
-                  $tester->assertEquals($constraints, $metadata->getConstraints());
-              }));
+              ->will($this->returnCallback(array(new Symfony_Component_Validator_Tests_Mapping_ConstraintsEqualsClosure($this, $constraints), '__invoke')));
 
         set_error_handler(array($this, 'handle'));
         $metadata = $factory->getClassMetadata(self::PARENTCLASS);
@@ -124,5 +126,26 @@ class Symfony_Component_Validator_Tests_Mapping_TestLoader implements Symfony_Co
     public function loadClassMetadata(Symfony_Component_Validator_Mapping_ClassMetadata $metadata)
     {
         $metadata->addConstraint(new Symfony_Component_Validator_Tests_Fixtures_ConstraintA());
+    }
+}
+
+class Symfony_Component_Validator_Tests_Mapping_ConstraintsEqualsClosure
+{
+    private $tester;
+    private $constraints;
+
+    /**
+     * @param PHPUnit_Framework_TestCase               $tester
+     * @param Symfony_Component_Validator_Constraint[] $constraints
+     */
+    public function __construct(PHPUnit_Framework_TestCase $tester, array $constraints)
+    {
+        $this->tester = $tester;
+        $this->constraints = $constraints;
+    }
+
+    public function __invoke(Symfony_Component_Validator_Mapping_ClassMetadata $metadata)
+    {
+        $this->tester->assertEquals($this->constraints, $metadata->getConstraints());
     }
 }

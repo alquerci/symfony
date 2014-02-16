@@ -95,6 +95,8 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
             }
         }
 
+        $argc = func_num_args();
+
         $this->globalContext->getViolations()->add(new Symfony_Component_Validator_ConstraintViolation(
             $translatedMessage,
             $message,
@@ -102,7 +104,7 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
             $this->globalContext->getRoot(),
             $this->propertyPath,
             // check using func_num_args() to allow passing null values
-            func_num_args() >= 3 ? $invalidValue : $this->value,
+            $argc >= 3 ? $invalidValue : $this->value,
             $pluralization,
             $code
         ));
@@ -123,7 +125,9 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
      */
     public function addViolationAtPath($propertyPath, $message, array $params = array(), $invalidValue = null, $pluralization = null, $code = null)
     {
-        trigger_error('addViolationAtPath() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('addViolationAtPath() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+
+        $argc = func_num_args();
 
         $this->globalContext->getViolations()->add(new Symfony_Component_Validator_ConstraintViolation(
             null === $pluralization
@@ -134,7 +138,7 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
             $this->globalContext->getRoot(),
             $propertyPath,
             // check using func_num_args() to allow passing null values
-            func_num_args() >= 4 ? $invalidValue : $this->value,
+            $argc >= 4 ? $invalidValue : $this->value,
             $pluralization,
             $code
         ));
@@ -156,7 +160,7 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
      */
     public function addViolationAtSubPath($subPath, $message, array $params = array(), $invalidValue = null, $pluralization = null, $code = null)
     {
-        trigger_error('addViolationAtSubPath() is deprecated since version 2.2 and will be removed in 2.3. Use addViolationAt() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('addViolationAtSubPath() is deprecated since version 2.2 and will be removed in 2.3. Use addViolationAt() instead.', E_USER_DEPRECATED);
 
         if (func_num_args() >= 4) {
             $this->addViolationAt($subPath, $message, $params, $invalidValue, $pluralization, $code);
@@ -171,6 +175,8 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
      */
     public function addViolationAt($subPath, $message, array $params = array(), $invalidValue = null, $pluralization = null, $code = null)
     {
+        $argc = func_num_args();
+
         $this->globalContext->getViolations()->add(new Symfony_Component_Validator_ConstraintViolation(
             null === $pluralization
                 ? $this->translator->trans($message, $params, $this->translationDomain)
@@ -180,7 +186,7 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
             $this->globalContext->getRoot(),
             $this->getPropertyPath($subPath),
             // check using func_num_args() to allow passing null values
-            func_num_args() >= 4 ? $invalidValue : $this->value,
+            $argc >= 4 ? $invalidValue : $this->value,
             $pluralization,
             $code
         ));
@@ -321,7 +327,7 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
      */
     public function getCurrentClass()
     {
-        trigger_error('getCurrentClass() is deprecated since version 2.2 and will be removed in 2.3. Use getClassName() instead', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getCurrentClass() is deprecated since version 2.2 and will be removed in 2.3. Use getClassName() instead', E_USER_DEPRECATED);
 
         return $this->getClassName();
     }
@@ -339,7 +345,7 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
      */
     public function getCurrentProperty()
     {
-        trigger_error('getCurrentProperty() is deprecated since version 2.2 and will be removed in 2.3. Use getClassName() instead', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getCurrentProperty() is deprecated since version 2.2 and will be removed in 2.3. Use getClassName() instead', E_USER_DEPRECATED);
 
         return $this->getPropertyName();
     }
@@ -356,7 +362,7 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
      */
     public function getCurrentValue()
     {
-        trigger_error('getCurrentValue() is deprecated since version 2.2 and will be removed in 2.3. Use getValue() instead', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getCurrentValue() is deprecated since version 2.2 and will be removed in 2.3. Use getValue() instead', E_USER_DEPRECATED);
 
         return $this->value;
     }
@@ -371,7 +377,7 @@ class Symfony_Component_Validator_ExecutionContext implements Symfony_Component_
      */
     public function getGraphWalker()
     {
-        trigger_error('getGraphWalker() is deprecated since version 2.2 and will be removed in 2.3. Use validate() and validateValue() instead', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getGraphWalker() is deprecated since version 2.2 and will be removed in 2.3. Use validate() and validateValue() instead', E_USER_DEPRECATED);
 
         return $this->globalContext->getVisitor()->getGraphWalker();
     }

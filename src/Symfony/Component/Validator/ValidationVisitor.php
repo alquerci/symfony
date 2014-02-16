@@ -65,6 +65,11 @@ class Symfony_Component_Validator_ValidationVisitor implements Symfony_Component
     private $graphWalker;
 
     /**
+     * @var array
+     */
+    private $objects = array();
+
+    /**
      * Creates a new validation visitor.
      *
      * @param mixed                               $root               The value passed to the validator.
@@ -121,7 +126,7 @@ class Symfony_Component_Validator_ValidationVisitor implements Symfony_Component
         }
 
         if (is_object($value)) {
-            $hash = spl_object_hash($value);
+            $hash = $this->getObjectHash($value);
 
             // Exit, if the object is already validated for the current group
             if (isset($this->validatedObjects[$hash][$group])) {
@@ -169,7 +174,7 @@ class Symfony_Component_Validator_ValidationVisitor implements Symfony_Component
      */
     public function getGraphWalker()
     {
-        trigger_error('getGraphWalker() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getGraphWalker() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
 
         if (null === $this->graphWalker) {
             $this->graphWalker = new Symfony_Component_Validator_GraphWalker($this, $this->metadataFactory, $this->translator, $this->translationDomain, $this->validatedObjects);
@@ -216,5 +221,33 @@ class Symfony_Component_Validator_ValidationVisitor implements Symfony_Component
     public function getMetadataFactory()
     {
         return $this->metadataFactory;
+    }
+
+    /**
+     * Calculate a unique identifier for the specified object.
+     *
+     * @param object $object The object whose identifier is to be calculated
+     *
+     * @return string A string with the calculated identifier
+     */
+    public function getObjectHash($object)
+    {
+        if (function_exists('spl_object_hash')) {
+            return spl_object_hash($object);
+        }
+
+        // TODO optimize
+        foreach ($this->objects as $hash => $entity) {
+            if ($entity === $object) {
+                return $hash;
+            }
+        }
+
+        do {
+            $hash = sha1(uniqid(mt_rand(), true));
+        } while (isset($this->objects[$hash]));
+        $this->objects[$hash] = $object;
+
+        return $hash;
     }
 }

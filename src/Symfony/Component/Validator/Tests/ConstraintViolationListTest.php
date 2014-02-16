@@ -119,7 +119,7 @@ foo.bar:
 
 EOF;
 
-        $this->assertEquals($expected, (string) $this->list);
+        $this->assertEquals($expected, (string) $this->list->__toString());
     }
 
     protected function getViolation($message, $root = null, $propertyPath = null)

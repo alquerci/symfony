@@ -97,7 +97,7 @@ class Symfony_Component_Validator_ValidatorFactory implements Symfony_Component_
      */
     public static function buildDefault(array $mappingFiles = array(), $annotations = false, $staticMethod = null)
     {
-        trigger_error('buildDefault() is deprecated since version 2.1 and will be removed in 2.3. Use Validation::createValidatorBuilder() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('buildDefault() is deprecated since version 2.1 and will be removed in 2.3. Use Validation::createValidatorBuilder() instead.', E_USER_DEPRECATED);
 
         $xmlMappingFiles = array();
         $yamlMappingFiles = array();
@@ -147,7 +147,7 @@ class Symfony_Component_Validator_ValidatorFactory implements Symfony_Component_
         $context->setClassMetadataFactory(new Symfony_Component_Validator_Mapping_ClassMetadataFactory($loader));
         $context->setConstraintValidatorFactory(new Symfony_Component_Validator_ConstraintValidatorFactory());
 
-        return new static($context);
+        return new self($context);
     }
 
     /**
@@ -160,7 +160,7 @@ class Symfony_Component_Validator_ValidatorFactory implements Symfony_Component_
      */
     public function __construct(Symfony_Component_Validator_ValidatorContextInterface $defaultContext = null)
     {
-        trigger_error('ValidatorFactory is deprecated since version 2.1 and will be removed in 2.3. Use Validation::createValidatorBuilder() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('ValidatorFactory is deprecated since version 2.1 and will be removed in 2.3. Use Validation::createValidatorBuilder() instead.', E_USER_DEPRECATED);
 
         $this->defaultContext = null === $defaultContext ? new Symfony_Component_Validator_ValidatorContext() : $defaultContext;
     }
@@ -178,7 +178,7 @@ class Symfony_Component_Validator_ValidatorFactory implements Symfony_Component_
      */
     public function setClassMetadataFactory(Symfony_Component_Validator_Mapping_ClassMetadataFactoryInterface $metadataFactory)
     {
-        trigger_error('setClassMetadataFactory() is deprecated since version 2.1 and will be removed in 2.3. Use Validation::createValidatorBuilder() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('setClassMetadataFactory() is deprecated since version 2.1 and will be removed in 2.3. Use Validation::createValidatorBuilder() instead.', E_USER_DEPRECATED);
 
         $context = clone $this->defaultContext;
 
@@ -198,7 +198,7 @@ class Symfony_Component_Validator_ValidatorFactory implements Symfony_Component_
      */
     public function setConstraintValidatorFactory(Symfony_Component_Validator_ConstraintValidatorFactoryInterface $validatorFactory)
     {
-        trigger_error('setConstraintValidatorFactory() is deprecated since version 2.1 and will be removed in 2.3. Use Validation::createValidatorBuilder() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('setConstraintValidatorFactory() is deprecated since version 2.1 and will be removed in 2.3. Use Validation::createValidatorBuilder() instead.', E_USER_DEPRECATED);
 
         $context = clone $this->defaultContext;
 
@@ -215,7 +215,7 @@ class Symfony_Component_Validator_ValidatorFactory implements Symfony_Component_
      */
     public function getValidator()
     {
-        trigger_error('getValidator() is deprecated since version 2.1 and will be removed in 2.3. Use Validation::createValidator() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getValidator() is deprecated since version 2.1 and will be removed in 2.3. Use Validation::createValidator() instead.', E_USER_DEPRECATED);
 
         return $this->defaultContext->getValidator();
     }

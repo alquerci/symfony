@@ -24,7 +24,7 @@ class Symfony_Component_Validator_Constraints_MinLength extends Symfony_Componen
 
     public function __construct($options = null)
     {
-        trigger_error('MinLength is deprecated since version 2.1 and will be removed in 2.3. Use Length instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('MinLength is deprecated since version 2.1 and will be removed in 2.3. Use Length instead.', E_USER_DEPRECATED);
 
         parent::__construct($options);
     }

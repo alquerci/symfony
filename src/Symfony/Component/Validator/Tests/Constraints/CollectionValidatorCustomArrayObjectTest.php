@@ -19,7 +19,7 @@ class Symfony_Component_Validator_Tests_Constraints_CustomArrayObject implements
 
     public function __construct(array $array = null)
     {
-        $this->array = $array ?: array();
+        $this->array = $array ? $array : array();
     }
 
     public function offsetExists($offset)

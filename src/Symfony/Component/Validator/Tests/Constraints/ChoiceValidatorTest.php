@@ -100,9 +100,9 @@ class Symfony_Component_Validator_Tests_Constraints_ChoiceValidatorTest extends 
 
     public function testValidChoiceCallbackClosure()
     {
-        $constraint = new Symfony_Component_Validator_Constraints_Choice(array('callback' => function() {
-            return array('foo', 'bar');
-        }));
+        $constraint = new Symfony_Component_Validator_Constraints_Choice(array('callback' => create_function('', '
+            return array("foo", "bar");
+        ')));
 
         $this->context->expects($this->never())
             ->method('addViolation');

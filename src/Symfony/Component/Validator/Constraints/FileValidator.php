@@ -9,6 +9,10 @@
  * file that was distributed with this source code.
  */
 
+if (!defined('UPLOAD_ERR_EXTENSION')) {
+    define('UPLOAD_ERR_EXTENSION', 8);
+}
+
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  *
@@ -142,10 +146,13 @@ class Symfony_Component_Validator_Constraints_FileValidator extends Symfony_Comp
                     break;
                 }
 
-                if ($discrete = strstr($mimeType, '/*', true)) {
-                    if (strstr($mime, '/', true) === $discrete) {
-                        $valid = true;
-                        break;
+                if (false !== $pos = strpos($mimeType, '/*')) {
+                    $discrete = substr($mimeType, 0, $pos);
+                    if (false !== $pos = strpos($mime, '/')) {
+                        if (substr($mime, 0, $pos) === $discrete) {
+                            $valid = true;
+                            break;
+                        }
                     }
                 }
             }

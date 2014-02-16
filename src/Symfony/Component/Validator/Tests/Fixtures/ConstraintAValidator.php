@@ -22,7 +22,7 @@ class Symfony_Component_Validator_Tests_Fixtures_ConstraintAValidator extends Sy
 
     public function validate($value, Symfony_Component_Validator_Constraint $constraint)
     {
-        if ('VALID' != $value) {
+        if ('VALID' !== $value) {
             $this->context->addViolation('message', array('param' => 'value'));
 
             return;

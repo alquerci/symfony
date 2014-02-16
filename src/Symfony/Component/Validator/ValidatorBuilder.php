@@ -306,8 +306,8 @@ class Symfony_Component_Validator_ValidatorBuilder implements Symfony_Component_
             $metadataFactory = new Symfony_Component_Validator_Mapping_ClassMetadataFactory($loader, $this->metadataCache);
         }
 
-        $validatorFactory = $this->validatorFactory ?: new Symfony_Component_Validator_ConstraintValidatorFactory();
-        $translator = $this->translator ?: new Symfony_Component_Validator_DefaultTranslator();
+        $validatorFactory = $this->validatorFactory ? $this->validatorFactory : new Symfony_Component_Validator_ConstraintValidatorFactory();
+        $translator = $this->translator ? $this->translator : new Symfony_Component_Validator_DefaultTranslator();
 
         return new Symfony_Component_Validator_Validator($metadataFactory, $validatorFactory, $translator, $this->translationDomain, $this->initializers);
     }

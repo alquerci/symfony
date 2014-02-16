@@ -38,7 +38,7 @@ abstract class Symfony_Component_Validator_Mapping_MemberMetadata extends Symfon
         $visitor->visit($this, $value, $group, $propertyPath);
 
         if ($this->isCascaded()) {
-            $visitor->validate($value, $propagatedGroup ?: $group, $propertyPath, $this->isCollectionCascaded(), $this->isCollectionCascadedDeeply());
+            $visitor->validate($value, $propagatedGroup ? $propagatedGroup : $group, $propertyPath, $this->isCollectionCascaded(), $this->isCollectionCascadedDeeply());
         }
     }
 
@@ -185,7 +185,7 @@ abstract class Symfony_Component_Validator_Mapping_MemberMetadata extends Symfon
      */
     public function getValue($object)
     {
-        trigger_error('getValue() is deprecated since version 2.2 and will be removed in 2.3. Use getPropertyValue() instead.', E_USER_DEPRECATED);
+        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getValue() is deprecated since version 2.2 and will be removed in 2.3. Use getPropertyValue() instead.', E_USER_DEPRECATED);
 
         return $this->getPropertyValue($object);
     }

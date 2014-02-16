@@ -31,6 +31,8 @@ class Symfony_Component_Validator_Constraints_UrlValidator extends Symfony_Compo
             (/?|/\S+)                               # a /, nothing or a / with something
         $~ixu';
 
+    protected $pattern = self::PATTERN;
+
     /**
      * {@inheritDoc}
      */
@@ -46,7 +48,7 @@ class Symfony_Component_Validator_Constraints_UrlValidator extends Symfony_Compo
 
         $value = (string) $value;
 
-        $pattern = sprintf(static::PATTERN, implode('|', $constraint->protocols));
+        $pattern = sprintf($this->pattern, implode('|', $constraint->protocols));
 
         if (!preg_match($pattern, $value)) {
             $this->context->addViolation($constraint->message, array('{{ value }}' => $value));
