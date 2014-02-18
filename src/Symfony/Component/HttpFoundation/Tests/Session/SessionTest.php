@@ -9,6 +9,10 @@
  * file that was distributed with this source code.
  */
 
+if (!defined('E_USER_DEPRECATED')) {
+    define('E_USER_DEPRECATED', 16384);
+}
+
 /**
  * SessionTest
  *
