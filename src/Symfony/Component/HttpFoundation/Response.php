@@ -669,7 +669,7 @@ class Symfony_Component_HttpFoundation_Response
             return $this->headers->getDate('Expires');
         } catch (RuntimeException $e) {
             // according to RFC 2616 invalid date formats (e.g. "0" and "-1") must be treated as in the past
-            return DateTime::createFromFormat(DATE_RFC2822, 'Sat, 01 Jan 00 00:00:00 +0000');
+            return DateTime::createFromFormat(DateTime::RFC2822, 'Sat, 01 Jan 00 00:00:00 +0000');
         }
     }
 

@@ -132,8 +132,8 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     {
         $time = new DateTime();
 
-        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Last-Modified' => $time->format(DATE_RFC2822), 'Content-Type' => 'text/plain'), 'Hello World');
-        $this->request('GET', '/', array('HTTP_IF_MODIFIED_SINCE' => $time->format(DATE_RFC2822)));
+        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Last-Modified' => $time->format(DateTime::RFC2822), 'Content-Type' => 'text/plain'), 'Hello World');
+        $this->request('GET', '/', array('HTTP_IF_MODIFIED_SINCE' => $time->format(DateTime::RFC2822)));
 
         $this->assertHttpKernelIsCalled();
         $this->assertEquals(304, $this->response->getStatusCode());
@@ -165,17 +165,17 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
 
         // only ETag matches
         $t = DateTime::createFromFormat('U', time() - 3600);
-        $this->request('GET', '/', array('HTTP_IF_NONE_MATCH' => '12345', 'HTTP_IF_MODIFIED_SINCE' => $t->format(DATE_RFC2822)));
+        $this->request('GET', '/', array('HTTP_IF_NONE_MATCH' => '12345', 'HTTP_IF_MODIFIED_SINCE' => $t->format(DateTime::RFC2822)));
         $this->assertHttpKernelIsCalled();
         $this->assertEquals(200, $this->response->getStatusCode());
 
         // only Last-Modified matches
-        $this->request('GET', '/', array('HTTP_IF_NONE_MATCH' => '1234', 'HTTP_IF_MODIFIED_SINCE' => $time->format(DATE_RFC2822)));
+        $this->request('GET', '/', array('HTTP_IF_NONE_MATCH' => '1234', 'HTTP_IF_MODIFIED_SINCE' => $time->format(DateTime::RFC2822)));
         $this->assertHttpKernelIsCalled();
         $this->assertEquals(200, $this->response->getStatusCode());
 
         // Both matches
-        $this->request('GET', '/', array('HTTP_IF_NONE_MATCH' => '12345', 'HTTP_IF_MODIFIED_SINCE' => $time->format(DATE_RFC2822)));
+        $this->request('GET', '/', array('HTTP_IF_NONE_MATCH' => '12345', 'HTTP_IF_MODIFIED_SINCE' => $time->format(DateTime::RFC2822)));
         $this->assertHttpKernelIsCalled();
         $this->assertEquals(304, $this->response->getStatusCode());
     }
@@ -229,7 +229,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     {
         $time = DateTime::createFromFormat('U', time() + 5);
 
-        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Expires' => $time->format(DATE_RFC2822)));
+        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Expires' => $time->format(DateTime::RFC2822)));
         $this->request('GET', '/', array('HTTP_CACHE_CONTROL' => 'no-cache'));
 
         $this->assertHttpKernelIsCalled();
@@ -349,7 +349,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     public function testFetchesResponseFromBackendWhenCacheMisses()
     {
         $time = DateTime::createFromFormat('U', time() + 5);
-        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Expires' => $time->format(DATE_RFC2822)));
+        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Expires' => $time->format(DateTime::RFC2822)));
 
         $this->request('GET', '/');
         $this->assertEquals(200, $this->response->getStatusCode());
@@ -361,7 +361,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     {
         foreach (array_merge(range(201, 202), range(204, 206), range(303, 305), range(400, 403), range(405, 409), range(411, 417), range(500, 505)) as $code) {
             $time = DateTime::createFromFormat('U', time() + 5);
-            $this->setNextResponse($code, array('Expires' => $time->format(DATE_RFC2822)));
+            $this->setNextResponse($code, array('Expires' => $time->format(DateTime::RFC2822)));
 
             $this->request('GET', '/');
             $this->assertEquals($code, $this->response->getStatusCode());
@@ -373,7 +373,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     public function testDoesNotCacheResponsesWithExplicitNoStoreDirective()
     {
         $time = DateTime::createFromFormat('U', time() + 5);
-        $this->setNextResponse(200, array('Expires' => $time->format(DATE_RFC2822), 'Cache-Control' => 'no-store'));
+        $this->setNextResponse(200, array('Expires' => $time->format(DateTime::RFC2822), 'Cache-Control' => 'no-store'));
 
         $this->request('GET', '/');
         $this->assertTraceNotContains('store');
@@ -392,7 +392,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     public function testCachesResponsesWithExplicitNoCacheDirective()
     {
         $time = DateTime::createFromFormat('U', time() + 5);
-        $this->setNextResponse(200, array('Expires' => $time->format(DATE_RFC2822), 'Cache-Control' => 'public, no-cache'));
+        $this->setNextResponse(200, array('Expires' => $time->format(DateTime::RFC2822), 'Cache-Control' => 'public, no-cache'));
 
         $this->request('GET', '/');
         $this->assertTraceContains('store');
@@ -402,7 +402,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     public function testCachesResponsesWithAnExpirationHeader()
     {
         $time = DateTime::createFromFormat('U', time() + 5);
-        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Expires' => $time->format(DATE_RFC2822)));
+        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Expires' => $time->format(DateTime::RFC2822)));
 
         $this->request('GET', '/');
         $this->assertEquals(200, $this->response->getStatusCode());
@@ -451,7 +451,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     public function testCachesResponsesWithALastModifiedValidatorButNoFreshnessInformation()
     {
         $time = DateTime::createFromFormat('U', time());
-        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Last-Modified' => $time->format(DATE_RFC2822)));
+        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Last-Modified' => $time->format(DateTime::RFC2822)));
 
         $this->request('GET', '/');
         $this->assertEquals(200, $this->response->getStatusCode());
@@ -475,7 +475,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     {
         $time1 = DateTime::createFromFormat('U', time() - 5);
         $time2 = DateTime::createFromFormat('U', time() + 5);
-        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Date' => $time1->format(DATE_RFC2822), 'Expires' => $time2->format(DATE_RFC2822)));
+        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Date' => $time1->format(DateTime::RFC2822), 'Expires' => $time2->format(DateTime::RFC2822)));
 
         $this->request('GET', '/');
         $this->assertHttpKernelIsCalled();
@@ -499,7 +499,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     public function testHitsCachedResponseWithMaxAgeDirective()
     {
         $time = DateTime::createFromFormat('U', time() - 5);
-        $this->setNextResponse(200, array('Date' => $time->format(DATE_RFC2822), 'Cache-Control' => 'public, max-age=10'));
+        $this->setNextResponse(200, array('Date' => $time->format(DateTime::RFC2822), 'Cache-Control' => 'public, max-age=10'));
 
         $this->request('GET', '/');
         $this->assertHttpKernelIsCalled();
@@ -523,7 +523,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     public function testHitsCachedResponseWithSMaxAgeDirective()
     {
         $time = DateTime::createFromFormat('U', time() - 5);
-        $this->setNextResponse(200, array('Date' => $time->format(DATE_RFC2822), 'Cache-Control' => 's-maxage=10, max-age=0'));
+        $this->setNextResponse(200, array('Date' => $time->format(DateTime::RFC2822), 'Cache-Control' => 's-maxage=10, max-age=0'));
 
         $this->request('GET', '/');
         $this->assertHttpKernelIsCalled();
@@ -582,7 +582,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
     public function testFetchesFullResponseWhenCacheStaleAndNoValidatorsPresent()
     {
         $time = DateTime::createFromFormat('U', time() + 5);
-        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Expires' => $time->format(DATE_RFC2822)));
+        $this->setNextResponse(200, array('Cache-Control' => 'public', 'Expires' => $time->format(DateTime::RFC2822)));
 
         // build initial request
         $this->request('GET', '/');
@@ -604,7 +604,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
         $this->assertCount(1, $values);
         $tmp = unserialize($values[0]);
         $time = DateTime::createFromFormat('U', time());
-        $tmp[0][1]['expires'] = $time->format(DATE_RFC2822);
+        $tmp[0][1]['expires'] = $time->format(DateTime::RFC2822);
         $r = new ReflectionObject($this->store);
         $m = $r->getMethod('save');
         $m->setAccessible(true);
@@ -748,7 +748,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTest extends Symfony
         $this->assertHttpKernelIsCalled();
         $this->assertEquals('Hello World', $this->response->getContent());
 
-        $this->request('GET', '/', array('HTTP_IF_MODIFIED_SINCE' => $time->format(DATE_RFC2822)));
+        $this->request('GET', '/', array('HTTP_IF_MODIFIED_SINCE' => $time->format(DateTime::RFC2822)));
         $this->assertHttpKernelIsNotCalled();
         $this->assertEquals(304, $this->response->getStatusCode());
         $this->assertEquals('', $this->response->getContent());
@@ -1020,7 +1020,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTestClosure1
     {
         $response->setStatusCode(200);
         $response->headers->set('ETag', '12345');
-        $response->headers->set('Last-Modified', $this->time->format(DATE_RFC2822));
+        $response->headers->set('Last-Modified', $this->time->format(DateTime::RFC2822));
         $response->headers->set('Content-Type', 'text/plain');
         $response->setContent('Hello World');
     }
@@ -1072,8 +1072,8 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTestClosure4
     public function __invoke($request, $response)
     {
         $response->headers->set('Cache-Control', 'public');
-        $response->headers->set('Last-Modified', $this->time->format(DATE_RFC2822));
-        if ($this->time->format(DATE_RFC2822) == $request->headers->get('IF_MODIFIED_SINCE')) {
+        $response->headers->set('Last-Modified', $this->time->format(DateTime::RFC2822));
+        if ($this->time->format(DateTime::RFC2822) == $request->headers->get('IF_MODIFIED_SINCE')) {
             $response->setStatusCode(304);
             $response->setContent('');
         }
@@ -1093,7 +1093,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTestClosure5
 
     public function __invoke($request, $response)
     {
-        $response->headers->set('Last-Modified', $this->time->format(DATE_RFC2822));
+        $response->headers->set('Last-Modified', $this->time->format(DateTime::RFC2822));
         $response->headers->set('Cache-Control', 'public');
         ++$this->count;
         switch ($this->count) {
@@ -1160,7 +1160,7 @@ class Symfony_Component_HttpKernel_Tests_HttpCache_HttpCacheTestClosure8
     public function __invoke($request, $response)
     {
         $response->headers->set('Cache-Control', 'public, max-age=10');
-        $response->headers->set('Last-Modified', $this->time->format(DATE_RFC2822));
+        $response->headers->set('Last-Modified', $this->time->format(DateTime::RFC2822));
     }
 }
 

@@ -115,7 +115,7 @@ class Symfony_Component_HttpFoundation_Tests_ResponseTest extends PHPUnit_Framew
 
     public function testIsValidateable()
     {
-        $response = new Symfony_Component_HttpFoundation_Response('', 200, array('Last-Modified' => $this->createDateTimeOneHourAgo()->format(DATE_RFC2822)));
+        $response = new Symfony_Component_HttpFoundation_Response('', 200, array('Last-Modified' => $this->createDateTimeOneHourAgo()->format(DateTime::RFC2822)));
         $this->assertTrue($response->isValidateable(), '->isValidateable() returns true if Last-Modified is present');
 
         $response = new Symfony_Component_HttpFoundation_Response('', 200, array('ETag' => '"12345"'));
@@ -127,16 +127,16 @@ class Symfony_Component_HttpFoundation_Tests_ResponseTest extends PHPUnit_Framew
 
     public function testGetDate()
     {
-        $response = new Symfony_Component_HttpFoundation_Response('', 200, array('Date' => $this->createDateTimeOneHourAgo()->format(DATE_RFC2822)));
+        $response = new Symfony_Component_HttpFoundation_Response('', 200, array('Date' => $this->createDateTimeOneHourAgo()->format(DateTime::RFC2822)));
         $this->assertEquals(0, $this->createDateTimeOneHourAgo()->getTimestamp() - $response->getDate()->getTimestamp(), '->getDate() returns the Date header if present');
 
         $response = new Symfony_Component_HttpFoundation_Response();
         $date = $response->getDate();
         $this->assertLessThan(1, abs($this->createDateTimeNow()->getTimestamp() - $date->getTimestamp()), '->getDate() returns the current Date if no Date header present');
 
-        $response = new Symfony_Component_HttpFoundation_Response('', 200, array('Date' => $this->createDateTimeOneHourAgo()->format(DATE_RFC2822)));
+        $response = new Symfony_Component_HttpFoundation_Response('', 200, array('Date' => $this->createDateTimeOneHourAgo()->format(DateTime::RFC2822)));
         $now = $this->createDateTimeNow();
-        $response->headers->set('Date', $now->format(DATE_RFC2822));
+        $response->headers->set('Date', $now->format(DateTime::RFC2822));
         $this->assertEquals(0, $now->getTimestamp() - $response->getDate()->getTimestamp(), '->getDate() returns the date when the header has been modified');
 
         $response = new Symfony_Component_HttpFoundation_Response('', 200);
@@ -156,13 +156,13 @@ class Symfony_Component_HttpFoundation_Tests_ResponseTest extends PHPUnit_Framew
 
         $response = new Symfony_Component_HttpFoundation_Response();
         $response->headers->set('Cache-Control', 'must-revalidate');
-        $response->headers->set('Expires', $this->createDateTimeOneHourLater()->format(DATE_RFC2822));
+        $response->headers->set('Expires', $this->createDateTimeOneHourLater()->format(DateTime::RFC2822));
         $this->assertEquals(3600, $response->getMaxAge(), '->getMaxAge() falls back to Expires when no max-age or s-maxage directive present');
 
         $response = new Symfony_Component_HttpFoundation_Response();
         $response->headers->set('Cache-Control', 'must-revalidate');
         $response->headers->set('Expires', -1);
-        $this->assertEquals('Sat, 01 Jan 00 00:00:00 +0000', $response->getExpires()->format(DATE_RFC822));
+        $this->assertEquals('Sat, 01 Jan 00 00:00:00 +0000', $response->getExpires()->format(DateTime::RFC822));
 
         $response = new Symfony_Component_HttpFoundation_Response();
         $this->assertNull($response->getMaxAge(), '->getMaxAge() returns null if no freshness information available');
@@ -227,15 +227,15 @@ class Symfony_Component_HttpFoundation_Tests_ResponseTest extends PHPUnit_Framew
         $this->assertNull($response->getTtl(), '->getTtl() returns null when no Expires or Cache-Control headers are present');
 
         $response = new Symfony_Component_HttpFoundation_Response();
-        $response->headers->set('Expires', $this->createDateTimeOneHourLater()->format(DATE_RFC2822));
+        $response->headers->set('Expires', $this->createDateTimeOneHourLater()->format(DateTime::RFC2822));
         $this->assertLessThan(1, 3600 - $response->getTtl(), '->getTtl() uses the Expires header when no max-age is present');
 
         $response = new Symfony_Component_HttpFoundation_Response();
-        $response->headers->set('Expires', $this->createDateTimeOneHourAgo()->format(DATE_RFC2822));
+        $response->headers->set('Expires', $this->createDateTimeOneHourAgo()->format(DateTime::RFC2822));
         $this->assertLessThan(0, $response->getTtl(), '->getTtl() returns negative values when Expires is in past');
 
         $response = new Symfony_Component_HttpFoundation_Response();
-        $response->headers->set('Expires', $response->getDate()->format(DATE_RFC2822));
+        $response->headers->set('Expires', $response->getDate()->format(DateTime::RFC2822));
         $response->headers->set('Age', 0);
         $this->assertSame(0, $response->getTtl(), '->getTtl() correctly handles zero');
 
