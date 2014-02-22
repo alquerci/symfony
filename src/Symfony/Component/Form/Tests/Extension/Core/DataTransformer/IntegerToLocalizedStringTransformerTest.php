@@ -15,7 +15,7 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_IntegerToLocal
     {
         parent::setUp();
 
-        Locale::setDefault('de_AT');
+        Locale::setDefault('en');
     }
 
     public function testReverseTransform()
@@ -23,9 +23,9 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_IntegerToLocal
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_IntegerToLocalizedStringTransformer();
 
         $this->assertEquals(1, $transformer->reverseTransform('1'));
-        $this->assertEquals(1, $transformer->reverseTransform('1,5'));
-        $this->assertEquals(1234, $transformer->reverseTransform('1234,5'));
-        $this->assertEquals(12345, $transformer->reverseTransform('12345,912'));
+        $this->assertEquals(1, $transformer->reverseTransform('1.5'));
+        $this->assertEquals(1234, $transformer->reverseTransform('1234.5'));
+        $this->assertEquals(12345, $transformer->reverseTransform('12345.912'));
     }
 
     public function testReverseTransformEmpty()
@@ -39,10 +39,10 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_IntegerToLocal
     {
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_IntegerToLocalizedStringTransformer(null, true);
 
-        $this->assertEquals(1234, $transformer->reverseTransform('1.234,5'));
-        $this->assertEquals(12345, $transformer->reverseTransform('12.345,912'));
-        $this->assertEquals(1234, $transformer->reverseTransform('1234,5'));
-        $this->assertEquals(12345, $transformer->reverseTransform('12345,912'));
+        $this->assertEquals(1234, $transformer->reverseTransform('1,234.5'));
+        $this->assertEquals(12345, $transformer->reverseTransform('12,345.912'));
+        $this->assertEquals(1234, $transformer->reverseTransform('1234.5'));
+        $this->assertEquals(12345, $transformer->reverseTransform('12345.912'));
     }
 
     /**

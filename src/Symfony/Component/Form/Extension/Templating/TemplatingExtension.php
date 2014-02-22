@@ -19,7 +19,7 @@ class Symfony_Component_Form_Extension_Templating_TemplatingExtension extends Sy
     public function __construct(Symfony_Component_Templating_PhpEngine $engine, Symfony_Component_Form_Extension_Csrf_CsrfProvider_CsrfProviderInterface $csrfProvider = null, array $defaultThemes = array())
     {
         $engine->addHelpers(array(
-            new Symfony_Bundle_FrameworkBundle_Templating_Helper_FormHelper(new Symfony_Component_Form_FormRenderer(new TemplatingRendererEngine($engine, $defaultThemes), $csrfProvider))
+            new Symfony_Bundle_FrameworkBundle_Templating_Helper_FormHelper(new Symfony_Component_Form_FormRenderer(new Symfony_Component_Form_Extension_Templating_TemplatingRendererEngine($engine, $defaultThemes), $csrfProvider))
         ));
     }
 }

@@ -15,7 +15,7 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_PercentToLocal
     {
         parent::setUp();
 
-        Locale::setDefault('de_AT');
+        Locale::setDefault('en');
     }
 
     public function testTransform()
@@ -49,7 +49,7 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_PercentToLocal
     {
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_PercentToLocalizedStringTransformer(2);
 
-        $this->assertEquals('12,34', $transformer->transform(0.1234));
+        $this->assertEquals('12.34', $transformer->transform(0.1234));
     }
 
     public function testReverseTransform()
@@ -83,7 +83,7 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_PercentToLocal
     {
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_PercentToLocalizedStringTransformer(2);
 
-        $this->assertEquals(0.1234, $transformer->reverseTransform('12,34'));
+        $this->assertEquals(0.1234, $transformer->reverseTransform('12.34'));
     }
 
     public function testTransformExpectsNumeric()

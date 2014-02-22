@@ -15,7 +15,7 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_NumberToLocali
     {
         parent::setUp();
 
-        Locale::setDefault('de_AT');
+        Locale::setDefault('en');
     }
 
     public function testTransform()
@@ -23,9 +23,9 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_NumberToLocali
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer();
 
         $this->assertEquals('1', $transformer->transform(1));
-        $this->assertEquals('1,5', $transformer->transform(1.5));
-        $this->assertEquals('1234,5', $transformer->transform(1234.5));
-        $this->assertEquals('12345,912', $transformer->transform(12345.9123));
+        $this->assertEquals('1.5', $transformer->transform(1.5));
+        $this->assertEquals('1234.5', $transformer->transform(1234.5));
+        $this->assertEquals('12345.912', $transformer->transform(12345.9123));
     }
 
     public function testTransformEmpty()
@@ -39,25 +39,25 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_NumberToLocali
     {
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer(null, true);
 
-        $this->assertEquals('1.234,5', $transformer->transform(1234.5));
-        $this->assertEquals('12.345,912', $transformer->transform(12345.9123));
+        $this->assertEquals('1,234.5', $transformer->transform(1234.5));
+        $this->assertEquals('12,345.912', $transformer->transform(12345.9123));
     }
 
     public function testTransformWithPrecision()
     {
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer(2);
 
-        $this->assertEquals('1234,50', $transformer->transform(1234.5));
-        $this->assertEquals('678,92', $transformer->transform(678.916));
+        $this->assertEquals('1234.50', $transformer->transform(1234.5));
+        $this->assertEquals('678.92', $transformer->transform(678.916));
     }
 
     public function testTransformWithRoundingMode()
     {
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer(null, null, Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer::ROUND_DOWN);
-        $this->assertEquals('1234,547', $transformer->transform(1234.547), '->transform() only applies rounding mode if precision set');
+        $this->assertEquals('1234.547', $transformer->transform(1234.547), '->transform() only applies rounding mode if precision set');
 
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer(2, null, Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer::ROUND_DOWN);
-        $this->assertEquals('1234,54', $transformer->transform(1234.547), '->transform() rounding-mode works');
+        $this->assertEquals('1234.54', $transformer->transform(1234.547), '->transform() rounding-mode works');
 
     }
 
@@ -66,9 +66,9 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_NumberToLocali
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer();
 
         $this->assertEquals(1, $transformer->reverseTransform('1'));
-        $this->assertEquals(1.5, $transformer->reverseTransform('1,5'));
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
-        $this->assertEquals(12345.912, $transformer->reverseTransform('12345,912'));
+        $this->assertEquals(1.5, $transformer->reverseTransform('1.5'));
+        $this->assertEquals(1234.5, $transformer->reverseTransform('1234.5'));
+        $this->assertEquals(12345.912, $transformer->reverseTransform('12345.912'));
     }
 
     public function testReverseTransformEmpty()
@@ -83,11 +83,11 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_NumberToLocali
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer(null, true);
 
         // completely valid format
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1.234,5'));
-        $this->assertEquals(12345.912, $transformer->reverseTransform('12.345,912'));
+        $this->assertEquals(1234.5, $transformer->reverseTransform('1,234.5'));
+        $this->assertEquals(12345.912, $transformer->reverseTransform('12,345.912'));
         // omit group separator
-        $this->assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
-        $this->assertEquals(12345.912, $transformer->reverseTransform('12345,912'));
+        $this->assertEquals(1234.5, $transformer->reverseTransform('1234.5'));
+        $this->assertEquals(12345.912, $transformer->reverseTransform('12345.912'));
     }
 
     public function testDecimalSeparatorMayBeDotIfGroupingSeparatorIsNotDot()
@@ -96,7 +96,12 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_NumberToLocali
             $this->markTestSkipped('Please upgrade ICU version to 4.7+');
         }
 
-        Locale::setDefault('fr');
+        try {
+            Locale::setDefault('fr');
+        } catch (Exception $e) {
+            $this->markTestSkipped('The "intl" extension is not available');
+        }
+
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer(null, true);
 
         // completely valid format
@@ -117,6 +122,12 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_NumberToLocali
             $this->markTestSkipped('Please upgrade ICU version to 4.7+');
         }
 
+        try {
+            Locale::setDefault('de_AT');
+        } catch (Exception $e) {
+            $this->markTestSkipped('The "intl" extension is not available');
+        }
+
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer(null, true);
 
         $transformer->reverseTransform('1.234.5');
@@ -131,6 +142,12 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_NumberToLocali
             $this->markTestSkipped('Please upgrade ICU version to 4.7+');
         }
 
+        try {
+            Locale::setDefault('de_AT');
+        } catch (Exception $e) {
+            $this->markTestSkipped('The "intl" extension is not available');
+        }
+
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer(null, true);
 
         $transformer->reverseTransform('1234.5');
@@ -138,7 +155,12 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_NumberToLocali
 
     public function testDecimalSeparatorMayBeDotIfGroupingSeparatorIsDotButNoGroupingUsed()
     {
-        Locale::setDefault('fr');
+        try {
+            Locale::setDefault('fr');
+        } catch (Exception $e) {
+            $this->markTestSkipped('The "intl" extension is not available');
+        }
+
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer();
 
         $this->assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
@@ -151,7 +173,12 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_NumberToLocali
             $this->markTestSkipped('Please upgrade ICU version to 4.7+');
         }
 
-        Locale::setDefault('ak');
+        try {
+            Locale::setDefault('ak');
+        } catch (Exception $e) {
+            $this->markTestSkipped('The "intl" extension is not available');
+        }
+
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_NumberToLocalizedStringTransformer(null, true);
 
         // completely valid format

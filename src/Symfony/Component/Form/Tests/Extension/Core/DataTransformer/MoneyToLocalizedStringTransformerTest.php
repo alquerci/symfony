@@ -15,14 +15,14 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_MoneyToLocaliz
     {
         parent::setUp();
 
-        Locale::setDefault('de_AT');
+        Locale::setDefault('en');
     }
 
     public function testTransform()
     {
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_MoneyToLocalizedStringTransformer(null, null, null, 100);
 
-        $this->assertEquals('1,23', $transformer->transform(123));
+        $this->assertEquals('1.23', $transformer->transform(123));
     }
 
     public function testTransformExpectsNumeric()
@@ -45,7 +45,7 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_MoneyToLocaliz
     {
         $transformer = new Symfony_Component_Form_Extension_Core_DataTransformer_MoneyToLocalizedStringTransformer(null, null, null, 100);
 
-        $this->assertEquals(123, $transformer->reverseTransform('1,23'));
+        $this->assertEquals(123, $transformer->reverseTransform('1.23'));
     }
 
     public function testReverseTransformExpectsString()
