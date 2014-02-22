@@ -190,23 +190,13 @@ class Symfony_Component_Locale_Stub_StubNumberFormatter
      * @var array
      */
     private static $roundingModes = array(
+        'ROUND_CEILING'  => self::ROUND_CEILING,
+        'ROUND_FLOOR'    => self::ROUND_FLOOR,
+        'ROUND_DOWN'     => self::ROUND_DOWN,
+        'ROUND_UP'       => self::ROUND_UP,
         'ROUND_HALFEVEN' => self::ROUND_HALFEVEN,
         'ROUND_HALFDOWN' => self::ROUND_HALFDOWN,
         'ROUND_HALFUP'   => self::ROUND_HALFUP
-    );
-
-    /**
-     * The mapping between NumberFormatter rounding modes to the available
-     * modes in PHP's round() function.
-     *
-     * @see http://www.php.net/manual/en/function.round.php
-     *
-     * @var array
-     */
-    private static $phpRoundingMap = array(
-        self::ROUND_HALFDOWN => PHP_ROUND_HALF_DOWN,
-        self::ROUND_HALFEVEN => PHP_ROUND_HALF_EVEN,
-        self::ROUND_HALFUP   => PHP_ROUND_HALF_UP
     );
 
     /**
@@ -227,6 +217,16 @@ class Symfony_Component_Locale_Stub_StubNumberFormatter
     private static $int64Range = array(
         'positive' => 9223372036854775807,
         'negative' => -9223372036854775808
+    );
+
+    private static $enSymbols = array(
+        self::DECIMAL => array('.', ',', ';', '%', '0', '#', '-', '+', '¤', '¤¤', '.', 'E', '‰', '*', '∞', 'NaN', '@', ','),
+        self::CURRENCY => array('.', ',', ';', '%', '0', '#', '-', '+', '¤', '¤¤', '.', 'E', '‰', '*', '∞', 'NaN', '@', ','),
+    );
+
+    private static $enTextAttributes = array(
+        self::DECIMAL => array('', '', '-', '', '*', '', ''),
+        self::CURRENCY => array('¤', '', '(¤', ')', '*', ''),
     );
 
     /**
@@ -443,12 +443,10 @@ class Symfony_Component_Locale_Stub_StubNumberFormatter
      * @return Boolean|string        The symbol value or false on error
      *
      * @see    http://www.php.net/manual/en/numberformatter.getsymbol.php
-     *
-     * @throws Symfony_Component_Locale_Exception_MethodNotImplementedException
      */
     public function getSymbol($attr)
     {
-        throw new Symfony_Component_Locale_Exception_MethodNotImplementedException(__METHOD__);
+        return array_key_exists($this->style, self::$enSymbols) && array_key_exists($attr, self::$enSymbols[$this->style]) ? self::$enSymbols[$this->style][$attr] : false;
     }
 
     /**
@@ -459,12 +457,10 @@ class Symfony_Component_Locale_Stub_StubNumberFormatter
      * @return Boolean|string        The attribute value or false on error
      *
      * @see    http://www.php.net/manual/en/numberformatter.gettextattribute.php
-     *
-     * @throws Symfony_Component_Locale_Exception_MethodNotImplementedException
      */
     public function getTextAttribute($attr)
     {
-        throw new Symfony_Component_Locale_Exception_MethodNotImplementedException(__METHOD__);
+        return array_key_exists($this->style, self::$enTextAttributes) && array_key_exists($attr, self::$enTextAttributes[$this->style]) ? self::$enTextAttributes[$this->style][$attr] : false;
     }
 
     /**
@@ -495,10 +491,8 @@ class Symfony_Component_Locale_Stub_StubNumberFormatter
      * @return Boolean|string                               The parsed value of false on error
      *
      * @see    http://www.php.net/manual/en/numberformatter.parse.php
-     *
-     * @throws Symfony_Component_Locale_Exception_MethodArgumentNotImplementedException        When $position different than null, behavior not implemented
      */
-    public function parse($value, $type = self::TYPE_DOUBLE, &$position = null)
+    public function parse($value, $type = self::TYPE_DOUBLE, &$position = 0)
     {
         if ($type == self::TYPE_DEFAULT || $type == self::TYPE_CURRENCY) {
             trigger_error(__METHOD__.'(): Unsupported format type '.$type, E_USER_WARNING);
@@ -506,25 +500,32 @@ class Symfony_Component_Locale_Stub_StubNumberFormatter
             return false;
         }
 
-        // We don't calculate the position when parsing the value
-        if (null !== $position) {
-            throw new Symfony_Component_Locale_Exception_MethodArgumentNotImplementedException(__METHOD__, 'position');
-        }
-
-        preg_match('/^([^0-9\-]{0,})(.*)/', $value, $matches);
+        preg_match('/^([^0-9\-\.]{0,})(.*)/', $value, $matches);
 
         // Any string before the numeric value causes error in the parsing
         if (isset($matches[1]) && !empty($matches[1])) {
             Symfony_Component_Locale_Stub_StubIntl::setError(Symfony_Component_Locale_Stub_StubIntl::U_PARSE_ERROR, 'Number parsing failed');
             $this->errorCode = Symfony_Component_Locale_Stub_StubIntl::getErrorCode();
             $this->errorMessage = Symfony_Component_Locale_Stub_StubIntl::getErrorMessage();
+            $position = 0;
 
             return false;
         }
 
-        // Remove everything that is not number or dot (.)
-        $value = preg_replace('/[^0-9\.\-]/', '', $value);
+        preg_match('/^[0-9\-\.\,]*/', $value, $matches);
+
+        if (!preg_match('/^(?:[^,]*|\-?\d{1,3}(?:,\d{3})*(?:\..*)?)$/', $matches[0])) {
+            Symfony_Component_Locale_Stub_StubIntl::setError(Symfony_Component_Locale_Stub_StubIntl::U_PARSE_ERROR, 'Number parsing failed');
+            $this->errorCode = Symfony_Component_Locale_Stub_StubIntl::getErrorCode();
+            $this->errorMessage = Symfony_Component_Locale_Stub_StubIntl::getErrorMessage();
+            $position = 0;
+
+            return false;
+        }
+
+        $value = preg_replace('/[^0-9\.\-]/', '', $matches[0]);
         $value = $this->convertValueDataType($value, $type);
+        $position = strlen($matches[0]);
 
         // behave like the intl extension
         $this->resetError();
@@ -729,9 +730,10 @@ class Symfony_Component_Locale_Stub_StubNumberFormatter
     {
         $precision = $this->getUnitializedPrecision($value, $precision);
 
-        $roundingMode = self::$phpRoundingMap[$this->getAttribute(self::ROUNDING_MODE)];
+        $roundingMode = $this->getAttribute(self::ROUNDING_MODE);
+
         switch ($roundingMode) {
-            case PHP_ROUND_HALF_UP:
+            case self::ROUND_HALFUP:
                 $value = round($value, $precision);
                 break;
 
@@ -756,20 +758,50 @@ class Symfony_Component_Locale_Stub_StubNumberFormatter
 
                 /* round the temp value */
                 if ($tmp_value >= 0.0) {
-                    $tmp_value2 = floor($tmp_value + 0.5);
-                    if (($roundingMode == PHP_ROUND_HALF_DOWN && $tmp_value == (-0.5 + $tmp_value2)) ||
-                        ($roundingMode == PHP_ROUND_HALF_EVEN && $tmp_value == (0.5 + 2 * floor($tmp_value2/2.0))) ||
-                        ($roundingMode == PHP_ROUND_HALF_ODD && $tmp_value == (0.5 + 2 * floor($tmp_value2/2.0) - 1.0)))
-                    {
-                        $tmp_value2 = $tmp_value2 - 1.0;
+                    switch ($roundingMode) {
+                        case self::ROUND_DOWN:
+                            $tmp_value2 = floor($tmp_value);
+                            break;
+                        case self::ROUND_UP:
+                            $tmp_value2 = ceil($tmp_value);
+                            break;
+                        case self::ROUND_FLOOR:
+                            $tmp_value2 = floor($tmp_value);
+                            break;
+                        case self::ROUND_CEILING:
+                            $tmp_value2 = ceil($tmp_value);
+                            break;
+                        default:
+                            $tmp_value2 = floor($tmp_value + 0.5);
+                            if (($roundingMode == self::ROUND_HALFDOWN && $tmp_value == (-0.5 + $tmp_value2))
+                                || ($roundingMode == self::ROUND_HALFEVEN && $tmp_value == (0.5 + 2 * floor($tmp_value2/2.0)))
+                            ) {
+                                $tmp_value2 = $tmp_value2 - 1.0;
+                            }
+                            break;
                     }
                 } else {
-                    $tmp_value2 = ceil($tmp_value - 0.5);
-                    if (($roundingMode == PHP_ROUND_HALF_DOWN && $tmp_value == (0.5 + $tmp_value2)) ||
-                        ($roundingMode == PHP_ROUND_HALF_EVEN && $tmp_value == (-0.5 + 2 * ceil($tmp_value2/2.0))) ||
-                        ($roundingMode == PHP_ROUND_HALF_ODD && $tmp_value == (-0.5 + 2 * ceil($tmp_value2/2.0) + 1.0)))
-                    {
-                        $tmp_value2 = $tmp_value2 + 1.0;
+                    switch ($roundingMode) {
+                        case self::ROUND_DOWN:
+                            $tmp_value2 = ceil($tmp_value);
+                            break;
+                        case self::ROUND_UP:
+                            $tmp_value2 = floor($tmp_value);
+                            break;
+                        case self::ROUND_FLOOR:
+                            $tmp_value2 = floor($tmp_value);
+                            break;
+                        case self::ROUND_CEILING:
+                            $tmp_value2 = ceil($tmp_value);
+                            break;
+                        default:
+                            $tmp_value2 = ceil($tmp_value - 0.5);
+                            if (($roundingMode == self::ROUND_HALFDOWN && $tmp_value == (0.5 + $tmp_value2))
+                                || ($roundingMode == self::ROUND_HALFEVEN && $tmp_value == (-0.5 + 2 * ceil($tmp_value2/2.0)))
+                            ) {
+                                $tmp_value2 = $tmp_value2 + 1.0;
+                            }
+                            break;
                     }
                 }
                 $tmp_value = $tmp_value2;
@@ -821,6 +853,10 @@ class Symfony_Component_Locale_Stub_StubNumberFormatter
             preg_match('/.*\.(.*)/', (string) $value, $digits);
             if (isset($digits[1])) {
                 $precision = strlen($digits[1]);
+            }
+
+            if (3 < $precision) {
+                $precision = 3;
             }
         }
 

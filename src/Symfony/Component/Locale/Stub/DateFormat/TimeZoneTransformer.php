@@ -40,7 +40,7 @@ class Symfony_Component_Locale_Stub_DateFormat_TimeZoneTransformer extends Symfo
      */
     public function getReverseMatchingRegExp($length)
     {
-        return 'GMT[+-]\d{2}:?\d{2}';
+        return 'GMT(?:[+-]\d{2}:?\d{2})?';
     }
 
     /**
@@ -75,7 +75,11 @@ class Symfony_Component_Locale_Stub_DateFormat_TimeZoneTransformer extends Symfo
      */
     public static function getEtcTimeZoneId($formattedTimeZone)
     {
-        if (preg_match('/GMT(?P<signal>[+-])(?P<hours>\d{2}):?(?P<minutes>\d{2})/', $formattedTimeZone, $matches)) {
+        if ('GMT' === $formattedTimeZone) {
+            return 'Etc/GMT';
+        }
+
+        if (preg_match('/GMT(?P<signal>[+-])(?P<hours>\d{2}):?(?P<minutes>\d{2})$/', $formattedTimeZone, $matches)) {
             $hours   = (int) $matches['hours'];
             $minutes = (int) $matches['minutes'];
             $signal  = $matches['signal'] == '-' ? '+' : '-';
@@ -90,6 +94,6 @@ class Symfony_Component_Locale_Stub_DateFormat_TimeZoneTransformer extends Symfo
             return 'Etc/GMT'.($hours !== 0 ? $signal.$hours : '');
         }
 
-        throw new InvalidArgumentException('The GMT time zone \'%s\' does not match with the supported formats GMT[+-]HH:MM or GMT[+-]HHMM.');
+        throw new InvalidArgumentException(sprintf('The GMT time zone \'%s\' does not match with the supported formats GMT[+-]HH:MM or GMT[+-]HHMM or GMT.', $formattedTimeZone));
     }
 }

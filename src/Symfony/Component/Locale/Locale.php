@@ -46,15 +46,23 @@ class Symfony_Component_Locale_Locale extends Locale
     public static function getDisplayCountries($locale)
     {
         if (!isset(self::$countries[$locale])) {
-            $bundle = ResourceBundle::create($locale, self::getIcuDataDirectory().'/region');
+            $bundleCountries = array();
 
-            if (null === $bundle) {
-                throw new RuntimeException(sprintf('The country resource bundle could not be loaded for locale "%s"', $locale));
+            if (class_exists('ResourceBundle')) {
+                $bundle = ResourceBundle::create($locale, self::getIcuDataDirectory().'/region');
+
+                if (null === $bundle) {
+                    throw new RuntimeException(sprintf('The country resource bundle could not be loaded for locale "%s"', $locale));
+                }
+
+                $bundleCountries = $bundle->get('Countries');
+            } else {
+                $bundleCountries = @include self::getIcuDataDirectory().'/stub/region/'.$locale.'.php';
             }
 
             $collator = new Collator($locale);
             $countries = array();
-            $bundleCountries = $bundle->get('Countries');
+
             if (!$bundleCountries) {
                 $bundleCountries = array();
             }
@@ -104,15 +112,23 @@ class Symfony_Component_Locale_Locale extends Locale
     public static function getDisplayLanguages($locale)
     {
         if (!isset(self::$languages[$locale])) {
-            $bundle = ResourceBundle::create($locale, self::getIcuDataDirectory().'/lang');
+            $bundleLanguages = array();
 
-            if (null === $bundle) {
-                throw new RuntimeException(sprintf('The language resource bundle could not be loaded for locale "%s"', $locale));
+            if (class_exists('ResourceBundle')) {
+                $bundle = ResourceBundle::create($locale, self::getIcuDataDirectory().'/lang');
+
+                if (null === $bundle) {
+                    throw new RuntimeException(sprintf('The language resource bundle could not be loaded for locale "%s"', $locale));
+                }
+
+                $bundleLanguages = $bundle->get('Languages');
+            } else {
+                $bundleLanguages = @include self::getIcuDataDirectory().'/stub/lang/'.$locale.'.php';
             }
 
             $collator = new Collator($locale);
             $languages = array();
-            $bundleLanguages = $bundle->get('Languages');
+
             if (!$bundleLanguages) {
                 $bundleLanguages = array();
             }
@@ -160,15 +176,22 @@ class Symfony_Component_Locale_Locale extends Locale
     public static function getDisplayLocales($locale)
     {
         if (!isset(self::$locales[$locale])) {
-            $bundle = ResourceBundle::create($locale, self::getIcuDataDirectory().'/names');
+            $bundleLocales = array();
 
-            if (null === $bundle) {
-                throw new RuntimeException(sprintf('The locale resource bundle could not be loaded for locale "%s"', $locale));
+            if (class_exists('ResourceBundle')) {
+                $bundle = ResourceBundle::create($locale, self::getIcuDataDirectory().'/names');
+
+                if (null === $bundle) {
+                    throw new RuntimeException(sprintf('The locale resource bundle could not be loaded for locale "%s"', $locale));
+                }
+
+                $bundleLocales = $bundle->get('Locales');
+            } else {
+                $bundleLocales = @include self::getIcuDataDirectory().'/stub/names/'.$locale.'.php';
             }
 
             $collator = new Collator($locale);
             $locales = array();
-            $bundleLocales = $bundle->get('Locales');
             if (!$bundleLocales) {
                 $bundleLocales = array();
             }

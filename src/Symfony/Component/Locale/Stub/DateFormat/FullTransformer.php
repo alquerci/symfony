@@ -172,9 +172,14 @@ class Symfony_Component_Locale_Stub_DateFormat_FullTransformer
     {
         $escapedPattern = preg_quote($pattern, '/');
 
+        // The - character is quoted until PHP 5.3.0
+        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+            $escapedPattern = str_replace('-', '\-', $escapedPattern);
+        }
+
         // ICU 4.8 recognizes slash ("/") in a value to be parsed as a dash ("-") and vice-versa
         // when parsing a date/time value
-        $escapedPattern = preg_replace('/\\\[\-|\/]/', '[\/\-]', $escapedPattern);
+        $escapedPattern = preg_replace('/\\\[\-\/]/', '[\/\-]', $escapedPattern);
 
         $reverseMatchingRegExp = preg_replace_callback($this->regExp, array(
             new Symfony_Component_Locale_Stub_DateFormat_FullTransformerClosures($this),

@@ -508,10 +508,13 @@ class Symfony_Component_Locale_Tests_Stub_StubNumberFormatterTest extends Symfon
     public function formatFractionDigitsProvider()
     {
         return array(
+            array(1.1234, '1.123', null, 0),
             array(1.123, '1.123', null, 0),
             array(1.123, '1', 0, 0),
             array(1.123, '1.1', 1, 1),
             array(1.123, '1.12', 2, 2),
+            array(1.1234, '1.123', 3, 3),
+            array(1.1234, '1.1234', 4, 4),
             array(1.123, '1', -1, 0),
             array(1.123, '1', 'abc', 0)
         );
@@ -679,6 +682,102 @@ class Symfony_Component_Locale_Tests_Stub_StubNumberFormatterTest extends Symfon
         );
     }
 
+    /**
+     * @dataProvider formatRoundingModeRoundCeilingProvider
+     */
+    public function testFormatRoundingModeCeiling($value, $expected)
+    {
+        $formatter = $this->getStubFormatterWithDecimalStyle();
+        $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
+
+        $formatter->setAttribute(NumberFormatter::ROUNDING_MODE, NumberFormatter::ROUND_CEILING);
+        $this->assertSame($expected, $formatter->format($value), '->format() with ROUND_CEILING rounding mode.');
+    }
+
+    public function formatRoundingModeRoundCeilingProvider()
+    {
+        return array(
+            array(1.123, '1.13'),
+            array(1.125, '1.13'),
+            array(1.127, '1.13'),
+            array(-1.123, '-1.12'),
+            array(-1.125, '-1.12'),
+            array(-1.127, '-1.12'),
+        );
+    }
+
+    /**
+     * @dataProvider formatRoundingModeRoundFloorProvider
+     */
+    public function testFormatRoundingModeFloor($value, $expected)
+    {
+        $formatter = $this->getStubFormatterWithDecimalStyle();
+        $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
+
+        $formatter->setAttribute(NumberFormatter::ROUNDING_MODE, NumberFormatter::ROUND_FLOOR);
+        $this->assertSame($expected, $formatter->format($value), '->format() with ROUND_FLOOR rounding mode.');
+    }
+
+    public function formatRoundingModeRoundFloorProvider()
+    {
+        return array(
+            array(1.123, '1.12'),
+            array(1.125, '1.12'),
+            array(1.127, '1.12'),
+            array(-1.123, '-1.13'),
+            array(-1.125, '-1.13'),
+            array(-1.127, '-1.13'),
+        );
+    }
+
+    /**
+     * @dataProvider formatRoundingModeRoundDownProvider
+     */
+    public function testFormatRoundingModeDown($value, $expected)
+    {
+        $formatter = $this->getStubFormatterWithDecimalStyle();
+        $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
+
+        $formatter->setAttribute(NumberFormatter::ROUNDING_MODE, NumberFormatter::ROUND_DOWN);
+        $this->assertSame($expected, $formatter->format($value), '->format() with ROUND_DOWN rounding mode.');
+    }
+
+    public function formatRoundingModeRoundDownProvider()
+    {
+        return array(
+            array(1.123, '1.12'),
+            array(1.125, '1.12'),
+            array(1.127, '1.12'),
+            array(-1.123, '-1.12'),
+            array(-1.125, '-1.12'),
+            array(-1.127, '-1.12'),
+        );
+    }
+
+    /**
+     * @dataProvider formatRoundingModeRoundUpProvider
+     */
+    public function testFormatRoundingModeUp($value, $expected)
+    {
+        $formatter = $this->getStubFormatterWithDecimalStyle();
+        $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
+
+        $formatter->setAttribute(NumberFormatter::ROUNDING_MODE, NumberFormatter::ROUND_UP);
+        $this->assertSame($expected, $formatter->format($value), '->format() with ROUND_UP rounding mode.');
+    }
+
+    public function formatRoundingModeRoundUpProvider()
+    {
+        return array(
+            array(1.123, '1.13'),
+            array(1.125, '1.13'),
+            array(1.127, '1.13'),
+            array(-1.123, '-1.13'),
+            array(-1.125, '-1.13'),
+            array(-1.127, '-1.13'),
+        );
+    }
+
     public function testGetErrorCode()
     {
         $formatter = $this->getStubFormatterWithDecimalStyle();
@@ -700,22 +799,36 @@ class Symfony_Component_Locale_Tests_Stub_StubNumberFormatterTest extends Symfon
         $formatter->getPattern();
     }
 
-    /**
-     * @expectedException Symfony_Component_Locale_Exception_MethodNotImplementedException
-     */
     public function testGetSymbol()
     {
-        $formatter = $this->getStubFormatterWithDecimalStyle();
-        $formatter->getSymbol(null);
+        $this->skipIfIntlExtensionIsNotLoaded();
+
+        $intlDecimalFormatter = new NumberFormatter('en', NumberFormatter::DECIMAL);
+        $intlCurrencyFormatter = new NumberFormatter('en', NumberFormatter::CURRENCY);
+
+        $stubDecimalFormatter = $this->getStubFormatterWithDecimalStyle();
+        $stubCurrencyFormatter = $this->getStubFormatterWithCurrencyStyle();
+
+        for ($i = 0; $i <= 17; $i++) {
+            $this->assertSame($stubDecimalFormatter->getSymbol($i), $intlDecimalFormatter->getSymbol($i), $i);
+            $this->assertSame($stubCurrencyFormatter->getSymbol($i), $intlCurrencyFormatter->getSymbol($i), $i);
+        }
     }
 
-    /**
-     * @expectedException Symfony_Component_Locale_Exception_MethodNotImplementedException
-     */
     public function testGetTextAttribute()
     {
-        $formatter = $this->getStubFormatterWithDecimalStyle();
-        $formatter->getTextAttribute(null);
+        $this->skipIfIntlExtensionIsNotLoaded();
+
+        $intlDecimalFormatter = new NumberFormatter('en', NumberFormatter::DECIMAL);
+        $intlCurrencyFormatter = new NumberFormatter('en', NumberFormatter::CURRENCY);
+
+        $stubDecimalFormatter = $this->getStubFormatterWithDecimalStyle();
+        $stubCurrencyFormatter = $this->getStubFormatterWithCurrencyStyle();
+
+        for ($i = 0; $i <= 5; $i++) {
+            $this->assertSame($stubDecimalFormatter->getTextAttribute($i), $intlDecimalFormatter->getTextAttribute($i), $i);
+            $this->assertSame($stubCurrencyFormatter->getTextAttribute($i), $intlCurrencyFormatter->getTextAttribute($i), 'fooo '.$i);
+        }
     }
 
     /**
@@ -730,11 +843,13 @@ class Symfony_Component_Locale_Tests_Stub_StubNumberFormatterTest extends Symfon
     /**
      * @dataProvider parseProvider
      */
-    public function testParseStub($value, $expected, $message = '')
+    public function testParseStub($value, $expected, $message, $expectedPosition)
     {
         $formatter = $this->getStubFormatterWithDecimalStyle();
-        $parsedValue = $formatter->parse($value, Symfony_Component_Locale_Stub_StubNumberFormatter::TYPE_DOUBLE);
+        $position = 0;
+        $parsedValue = $formatter->parse($value, Symfony_Component_Locale_Stub_StubNumberFormatter::TYPE_DOUBLE, $position);
         $this->assertSame($expected, $parsedValue, $message);
+        $this->assertSame($expectedPosition, $position, $message);
 
         if ($expected === false) {
             $errorCode = Symfony_Component_Locale_Stub_StubIntl::U_PARSE_ERROR;
@@ -755,14 +870,16 @@ class Symfony_Component_Locale_Tests_Stub_StubNumberFormatterTest extends Symfon
     /**
      * @dataProvider parseProvider
      */
-    public function testParseIntl($value, $expected, $message = '')
+    public function testParseIntl($value, $expected, $message, $expectedPosition)
     {
         $this->skipIfIntlExtensionIsNotLoaded();
         $this->skipIfICUVersionIsTooOld();
 
         $formatter = $this->getIntlFormatterWithDecimalStyle();
-        $parsedValue = $formatter->parse($value, NumberFormatter::TYPE_DOUBLE);
+        $position = 0;
+        $parsedValue = $formatter->parse($value, NumberFormatter::TYPE_DOUBLE, $position);
         $this->assertSame($expected, $parsedValue, $message);
+        $this->assertSame($expectedPosition, $position, $message);
 
         if ($expected === false) {
             $errorCode = Symfony_Component_Locale_Stub_StubIntl::U_PARSE_ERROR;
@@ -783,8 +900,8 @@ class Symfony_Component_Locale_Tests_Stub_StubNumberFormatterTest extends Symfon
     public function parseProvider()
     {
         return array(
-            array('prefix1', false, '->parse() does not parse a number with a string prefix.'),
-            array('1suffix', (float) 1, '->parse() parses a number with a string suffix.'),
+            array('prefix1', false, '->parse() does not parse a number with a string prefix.', 0),
+            array('1.4suffix', (float) 1.4, '->parse() parses a number with a string suffix.', 3),
         );
     }
 
@@ -833,6 +950,7 @@ class Symfony_Component_Locale_Tests_Stub_StubNumberFormatterTest extends Symfon
         return array(
             array('1', 1),
             array('1.1', 1),
+            array('.1', 0),
             array('2,147,483,647', 2147483647),
             array('-2,147,483,648', -2147483647 - 1),
             array('2,147,483,648', false, '->parse() TYPE_INT32 returns false when the number is greater than the integer positive range.'),
@@ -1097,10 +1215,10 @@ class Symfony_Component_Locale_Tests_Stub_StubNumberFormatterTest extends Symfon
 
     public function testParseWithNullPositionValueStub()
     {
-        $position = null;
+        $position = 0;
         $formatter = $this->getStubFormatterWithDecimalStyle();
         $formatter->parse('123', Symfony_Component_Locale_Stub_StubNumberFormatter::TYPE_INT32, $position);
-        $this->assertNull($position);
+        $this->assertEquals(3, $position);
     }
 
     public function testParseWithNullPositionValueIntl()
@@ -1112,14 +1230,12 @@ class Symfony_Component_Locale_Tests_Stub_StubNumberFormatterTest extends Symfon
         $this->assertEquals(3, $position);
     }
 
-    /**
-     * @expectedException Symfony_Component_Locale_Exception_MethodArgumentNotImplementedException
-     */
     public function testParseWithNotNullPositionValueStub()
     {
         $position = 1;
         $formatter = $this->getStubFormatterWithDecimalStyle();
         $formatter->parse('123', Symfony_Component_Locale_Stub_StubNumberFormatter::TYPE_INT32, $position);
+        $this->assertEquals(3, $position);
     }
 
     public function testParseWithNotNullPositionValueIntl()
