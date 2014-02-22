@@ -85,18 +85,28 @@ function genrb($source, $target, $icuBinPath = '', $params = '')
 
 function genrb_file($target, $source, $locale, $icuBinPath = '')
 {
-    exec($icuBinPath.'genrb --quiet -d '.$target.' '.$source.DIRECTORY_SEPARATOR.$locale.'.txt', $output, $result);
+    $file = $source.DIRECTORY_SEPARATOR.$locale.'.txt';
+
+    if (!file_exists($file)) {
+        return false;
+    }
+
+    exec($icuBinPath.'genrb --quiet -d '.$target.' '.$file, $output, $result);
 
     if ($result !== 0) {
         bailout('genrb failed');
     }
 }
 
-function load_resource_bundle($locale, $directory)
+function load_resource_bundle($locale, $directory, $quiet = false)
 {
     $bundle = ResourceBundle::create($locale, $directory);
 
     if (null === $bundle) {
+        if (true === $quiet) {
+            return false;
+        }
+
         bailout('The resource bundle for locale '.$locale.' could not be loaded from directory '.$directory);
     }
 
@@ -106,7 +116,11 @@ function load_resource_bundle($locale, $directory)
 function get_data($index, $dataDir, $locale = 'en', $constraint = null)
 {
     $data = array();
-    $bundle = load_resource_bundle($locale, $dataDir);
+    $bundle = load_resource_bundle($locale, $dataDir, true);
+
+    if (false === $bundle) {
+        return $data;
+    }
 
     foreach ($bundle->get($index) as $code => $name) {
         if (null !== $constraint) {
@@ -294,28 +308,6 @@ $regionDir = $target.DIRECTORY_SEPARATOR.'region';
 make_directory($target);
 clear_directory($target);
 create_svn_info_file($source, $target);
-
-make_directory($currDir);
-clear_directory($currDir);
-
-// Currency data is available at the locales data files in ICU <= 4.2 and the supplementalData file is available at the
-// misc directory
-if (is_icu_version_42_or_earlier($version)) {
-    genrb_file($currDir, $source.DIRECTORY_SEPARATOR.'locales', 'en', $icuBinPath);
-    genrb_file($currDir, $source.DIRECTORY_SEPARATOR.'misc', 'supplementalData', $icuBinPath);
-} else {
-    genrb_file($currDir, $source.DIRECTORY_SEPARATOR.'curr', 'en', $icuBinPath);
-    genrb_file($currDir, $source.DIRECTORY_SEPARATOR.'curr', 'supplementalData', $icuBinPath);
-}
-
-// It seems ResourceBundle does not like locale names with uppercase chars then we rename the binary file
-// See: http://bugs.php.net/bug.php?id=54025
-$filename_from = $currDir.DIRECTORY_SEPARATOR.'supplementalData.res';
-$filename_to   = $currDir.DIRECTORY_SEPARATOR.'supplementaldata.res';
-
-if (!rename($filename_from, $filename_to)) {
-    bailout('The file '.$filename_from.' could not be renamed');
-}
 
 make_directory($langDir);
 clear_directory($langDir);
@@ -530,11 +522,26 @@ if (is_icu_version_42_or_earlier($version)) {
 clear_directory($namesGeneratedDir);
 rmdir($namesGeneratedDir);
 
-// Generate the data to the stubbed intl classes We only extract data for the 'en' locale
-// The extracted data is used only by the stub classes
-$defaultLocale = 'en';
+make_directory($currDir);
+clear_directory($currDir);
 
-$currencies = array();
+// Currency data is available at the locales data files in ICU <= 4.2 and the supplementalData file is available at the
+// misc directory
+if (is_icu_version_42_or_earlier($version)) {
+    genrb_file($currDir, $source.DIRECTORY_SEPARATOR.'misc', 'supplementalData', $icuBinPath);
+} else {
+    genrb_file($currDir, $source.DIRECTORY_SEPARATOR.'curr', 'supplementalData', $icuBinPath);
+}
+
+// It seems ResourceBundle does not like locale names with uppercase chars then we rename the binary file
+// See: http://bugs.php.net/bug.php?id=54025
+$filename_from = $currDir.DIRECTORY_SEPARATOR.'supplementalData.res';
+$filename_to   = $currDir.DIRECTORY_SEPARATOR.'supplementaldata.res';
+
+if (!rename($filename_from, $filename_to)) {
+    bailout('The file '.$filename_from.' could not be renamed');
+}
+
 $currenciesMeta = array();
 $defaultMeta = array();
 
@@ -556,51 +563,6 @@ foreach ($bundle->get('CurrencyMeta') as $code => $data) {
     $currenciesMeta[$code]['roundingIncrement'] = $data[1];
 }
 
-$bundle = load_resource_bundle('en', $currDir);
-
-foreach ($bundle->get('Currencies') as $code => $data) {
-    $currencies[$code]['symbol'] = $data[0];
-    $currencies[$code]['name']   = $data[1];
-
-    if (!isset($currenciesMeta[$code])) {
-        $currencies[$code]['fractionDigits'] = $defaultMeta['fractionDigits'];
-        $currencies[$code]['roundingIncrement'] = $defaultMeta['roundingIncrement'];
-        continue;
-    }
-
-    $currencies[$code]['fractionDigits'] = $currenciesMeta[$code]['fractionDigits'];
-    $currencies[$code]['roundingIncrement'] = $currenciesMeta[$code]['roundingIncrement'];
-}
-
-// Countries.
-$countriesConstraint = create_function('$code', '
-    // Global countries (f.i. "America") have numeric codes
-    // Countries have alphabetic codes
-    // "ZZ" is the code for unknown country
-    if (ctype_alpha($code) && "ZZ" !== $code) {
-        return true;
-    }
-
-    return false;
-');
-
-$countries = get_data('Countries', $regionDir, $defaultLocale, $countriesConstraint);
-
-// Languages
-$languagesConstraint = create_function('$code', '
-    // "mul" is the code for multiple languages
-    if ("mul" !== $code) {
-        return true;
-    }
-
-    return false;
-');
-
-$languages = get_data('Languages', $langDir, $defaultLocale, $languagesConstraint);
-
-// Display locales
-$displayLocales = get_data('Locales', $namesDir, $defaultLocale);
-
 // Create the stubs datafiles
 $stubDir = $target.DIRECTORY_SEPARATOR.'stub';
 $stubCurrDir = $stubDir.DIRECTORY_SEPARATOR.'curr';
@@ -620,10 +582,80 @@ clear_directory($stubLangDir);
 clear_directory($stubNamesDir);
 clear_directory($stubRegionDir);
 
-create_stub_datafile($defaultLocale, $stubCurrDir, $currencies);
-create_stub_datafile($defaultLocale, $stubLangDir, $languages);
-create_stub_datafile($defaultLocale, $stubNamesDir, $displayLocales);
-create_stub_datafile($defaultLocale, $stubRegionDir, $countries);
+// Generate the data to the stubbed intl classes
+// The extracted data is used only by the stub classes
+foreach ($translatedLocales as $translatedLocale) {
+    // Don't include ICU's root resource bundle
+    if ($translatedLocale === 'root') {
+        continue;
+    }
+
+    $currencies = array();
+
+    // Currency data is available at the locales data files in ICU <= 4.2 and the supplementalData file is available at the
+    // misc directory
+    if (is_icu_version_42_or_earlier($version)) {
+        $hasCurrency = genrb_file($currDir, $source.DIRECTORY_SEPARATOR.'locales', $translatedLocale, $icuBinPath);
+    } else {
+        $hasCurrency = genrb_file($currDir, $source.DIRECTORY_SEPARATOR.'curr', $translatedLocale, $icuBinPath);
+    }
+
+    if (false !== $hasCurrency) {
+        $bundle = load_resource_bundle($translatedLocale, $currDir);
+        $bundleCurrencies = $bundle->get('Currencies');
+
+        if (null !== $bundleCurrencies) {
+            foreach ($bundleCurrencies as $code => $data) {
+                $currencies[$code]['symbol'] = $data[0];
+                $currencies[$code]['name']   = $data[1];
+
+                if (!isset($currenciesMeta[$code])) {
+                    $currencies[$code]['fractionDigits'] = $defaultMeta['fractionDigits'];
+                    $currencies[$code]['roundingIncrement'] = $defaultMeta['roundingIncrement'];
+                    continue;
+                }
+
+                $currencies[$code]['fractionDigits'] = $currenciesMeta[$code]['fractionDigits'];
+                $currencies[$code]['roundingIncrement'] = $currenciesMeta[$code]['roundingIncrement'];
+            }
+
+            create_stub_datafile($translatedLocale, $stubCurrDir, $currencies);
+        }
+    }
+
+    // Countries.
+    $countriesConstraint = create_function('$code', '
+        // Global countries (f.i. "America") have numeric codes
+        // Countries have alphabetic codes
+        // "ZZ" is the code for unknown country
+        if (ctype_alpha($code) && "ZZ" !== $code) {
+            return true;
+        }
+
+        return false;
+    ');
+
+    $countries = get_data('Countries', $regionDir, $translatedLocale, $countriesConstraint);
+
+    // Languages
+    $languagesConstraint = create_function('$code', '
+        // "mul" is the code for multiple languages
+        if ("mul" !== $code) {
+            return true;
+        }
+
+        return false;
+    ');
+
+    $languages = get_data('Languages', $langDir, $translatedLocale, $languagesConstraint);
+
+    // Display locales
+    $displayLocales = get_data('Locales', $namesDir, $translatedLocale);
+
+    create_stub_datafile($translatedLocale, $stubLangDir, $languages);
+    create_stub_datafile($translatedLocale, $stubNamesDir, $displayLocales);
+    create_stub_datafile($translatedLocale, $stubRegionDir, $countries);
+}
 
 // Clean up
 clear_directory($currDir);
