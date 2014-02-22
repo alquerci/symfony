@@ -72,7 +72,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         }
 
         if ($this->isConfigEnabled($container, $config['form'])) {
-            // TODO $this->registerFormConfiguration($config, $container, $loader);
+            $this->registerFormConfiguration($config, $container, $loader);
             $config['validation']['enabled'] = true;
         }
 
@@ -80,7 +80,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
             $this->registerTemplatingConfiguration($config['templating'], $config['ide'], $container, $loader);
         }
 
-        // TODO $this->registerValidationConfiguration($config['validation'], $container, $loader);
+        $this->registerValidationConfiguration($config['validation'], $container, $loader);
         $this->registerEsiConfiguration($config['esi'], $container, $loader);
         $this->registerFragmentsConfiguration($config['fragments'], $container, $loader);
         // TODO $this->registerProfilerConfiguration($config['profiler'], $container, $loader);
@@ -205,13 +205,13 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
 
         // Choose storage class based on the DSN
         $supported = array(
-            'sqlite'    => 'Symfony\Component\HttpKernel\Profiler\SqliteProfilerStorage',
-            'mysql'     => 'Symfony\Component\HttpKernel\Profiler\MysqlProfilerStorage',
-            'file'      => 'Symfony\Component\HttpKernel\Profiler\FileProfilerStorage',
-            'mongodb'   => 'Symfony\Component\HttpKernel\Profiler\MongoDbProfilerStorage',
-            'memcache'  => 'Symfony\Component\HttpKernel\Profiler\MemcacheProfilerStorage',
-            'memcached' => 'Symfony\Component\HttpKernel\Profiler\MemcachedProfilerStorage',
-            'redis'     => 'Symfony\Component\HttpKernel\Profiler\RedisProfilerStorage',
+            'sqlite'    => 'Symfony_Component_HttpKernel_Profiler_SqliteProfilerStorage',
+            'mysql'     => 'Symfony_Component_HttpKernel_Profiler_MysqlProfilerStorage',
+            'file'      => 'Symfony_Component_HttpKernel_Profiler_FileProfilerStorage',
+            'mongodb'   => 'Symfony_Component_HttpKernel_Profiler_MongoDbProfilerStorage',
+            'memcache'  => 'Symfony_Component_HttpKernel_Profiler_MemcacheProfilerStorage',
+            'memcached' => 'Symfony_Component_HttpKernel_Profiler_MemcachedProfilerStorage',
+            'redis'     => 'Symfony_Component_HttpKernel_Profiler_RedisProfilerStorage',
         );
         list($class, ) = explode(':', $config['dsn'], 2);
         if (!isset($supported[$class])) {
@@ -229,7 +229,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
             if (isset($config['matcher']['service'])) {
                 $container->setAlias('profiler.request_matcher', $config['matcher']['service']);
             } elseif (isset($config['matcher']['ip']) || isset($config['matcher']['path'])) {
-                $definition = $container->register('profiler.request_matcher', 'Symfony\\Component\\HttpFoundation\\RequestMatcher');
+                $definition = $container->register('profiler.request_matcher', 'Symfony_Component_HttpFoundation_RequestMatcher');
                 $definition->setPublic(false);
 
                 if (isset($config['matcher']['ip'])) {
@@ -610,13 +610,14 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
         $container->setParameter('validator.mapping.loader.xml_files_loader.mapping_files', $this->getValidatorXmlMappingFiles($container));
         $container->setParameter('validator.mapping.loader.yaml_files_loader.mapping_files', $this->getValidatorYamlMappingFiles($container));
 
+/* TODO Annotations
         if (array_key_exists('enable_annotations', $config) && $config['enable_annotations']) {
             $loaderChain = $container->getDefinition('validator.mapping.loader.loader_chain');
             $arguments = $loaderChain->getArguments();
             array_unshift($arguments[0], new Symfony_Component_DependencyInjection_Reference('validator.mapping.loader.annotation_loader'));
             $loaderChain->setArguments($arguments);
         }
-
+ */
         if (isset($config['cache'])) {
             $container->getDefinition('validator.mapping.class_metadata_factory')
                 ->replaceArgument(1, new Symfony_Component_DependencyInjection_Reference('validator.mapping.cache.'.$config['cache']));
@@ -629,7 +630,7 @@ class Symfony_Bundle_FrameworkBundle_DependencyInjection_FrameworkExtension exte
 
     private function getValidatorXmlMappingFiles(Symfony_Component_DependencyInjection_ContainerBuilder $container)
     {
-        $reflClass = new ReflectionClass('Symfony\Component\Form\FormInterface');
+        $reflClass = new ReflectionClass('Symfony_Component_Form_FormInterface');
         $files = array(dirname($reflClass->getFileName()).'/Resources/config/validation.xml');
         $container->addResource(new Symfony_Component_Config_Resource_FileResource($files[0]));
 

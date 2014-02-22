@@ -13,7 +13,6 @@ abstract class Symfony_Bundle_FrameworkBundle_Tests_DependencyInjection_Framewor
 {
     abstract protected function loadFromFile(Symfony_Component_DependencyInjection_ContainerBuilder $container, $file);
 
-/* TODO Form component
     public function testCsrfProtection()
     {
         $container = $this->createContainerFromFile('full');
@@ -26,7 +25,7 @@ abstract class Symfony_Bundle_FrameworkBundle_Tests_DependencyInjection_Framewor
         $this->assertEquals('%form.type_extension.csrf.field_name%', $def->getArgument(2));
         $this->assertEquals('s3cr3t', $container->getParameterBag()->resolveValue($container->findDefinition('form.csrf_provider')->getArgument(1)));
     }
-*/
+
 
     public function testProxies()
     {
@@ -196,7 +195,6 @@ abstract class Symfony_Bundle_FrameworkBundle_Tests_DependencyInjection_Framewor
             $files[] = str_replace($rootDirectory, '', realpath($resource[1]));
         }
 
-/* TODO Validator component
         $this->assertContains(
             str_replace('/', DIRECTORY_SEPARATOR, 'Symfony/Component/Validator/Resources/translations/validators.en.xlf'),
             $files,
@@ -207,7 +205,7 @@ abstract class Symfony_Bundle_FrameworkBundle_Tests_DependencyInjection_Framewor
             $files,
             '->registerTranslatorConfiguration() finds Form translation resources'
         );
-*/
+
         $this->assertContains(
             str_replace('/', DIRECTORY_SEPARATOR, 'Symfony/Component/Security/Resources/translations/security.en.xlf'),
             $files,
@@ -228,7 +226,6 @@ abstract class Symfony_Bundle_FrameworkBundle_Tests_DependencyInjection_Framewor
         $loader->load(array(array('templating' => null)), $container);
     }
 
-/* TODO Validator
     public function testValidation()
     {
         $container = $this->createContainerFromFile('full');
@@ -244,7 +241,6 @@ abstract class Symfony_Bundle_FrameworkBundle_Tests_DependencyInjection_Framewor
             '->registerValidationConfiguration() adds Form validation.xml to XML loader'
         );
     }
-*/
 
 /* TODO Annotations
     public function testAnnotations()
@@ -284,7 +280,6 @@ abstract class Symfony_Bundle_FrameworkBundle_Tests_DependencyInjection_Framewor
     }
 */
 
-/* TODO Validator
     public function testValidationPaths()
     {
         require_once dirname(__FILE__)."/Fixtures/TestBundle/TestBundle.php";
@@ -302,7 +297,6 @@ abstract class Symfony_Bundle_FrameworkBundle_Tests_DependencyInjection_Framewor
         $this->assertStringEndsWith('Component'.DIRECTORY_SEPARATOR.'Form/Resources/config/validation.xml', $xmlArgs[0]);
         $this->assertStringEndsWith('TestBundle'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'validation.xml', $xmlArgs[1]);
     }
-*/
 
     protected function createContainer(array $data = array())
     {

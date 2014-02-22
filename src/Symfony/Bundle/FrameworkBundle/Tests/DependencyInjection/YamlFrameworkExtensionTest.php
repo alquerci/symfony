@@ -17,12 +17,10 @@ class Symfony_Bundle_FrameworkBundle_Tests_DependencyInjection_YamlFrameworkExte
         $loader->load($file.'.yml');
     }
 
-/* TODO Form
     public function testCsrfProtectionShouldBeEnabledByDefault()
     {
         $container = $this->createContainerFromFile('csrf');
 
         $this->assertTrue($container->getParameter('form.type_extension.csrf.enabled'));
     }
-*/
 }

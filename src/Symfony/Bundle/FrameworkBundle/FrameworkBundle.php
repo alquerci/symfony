@@ -32,12 +32,12 @@ class Symfony_Bundle_FrameworkBundle_FrameworkBundle extends Symfony_Component_H
         $container->addScope(new Symfony_Component_DependencyInjection_Scope('request'));
 
         $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_RoutingResolverPass());
-        // TODO $container->addCompilerPass(new ProfilerPass());
+        // TODO $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_ProfilerPass());
         $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_RegisterKernelListenersPass(), Symfony_Component_DependencyInjection_Compiler_PassConfig::TYPE_AFTER_REMOVING);
         $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_TemplatingPass());
-        // TODO $container->addCompilerPass(new AddConstraintValidatorsPass());
-        // TODO $container->addCompilerPass(new AddValidatorInitializersPass());
-        // TODO $container->addCompilerPass(new FormPass());
+        $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_AddConstraintValidatorsPass());
+        $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_AddValidatorInitializersPass());
+        $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_FormPass());
         $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_TranslatorPass());
         $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_AddCacheWarmerPass());
         $container->addCompilerPass(new Symfony_Bundle_FrameworkBundle_DependencyInjection_Compiler_AddCacheClearerPass());
