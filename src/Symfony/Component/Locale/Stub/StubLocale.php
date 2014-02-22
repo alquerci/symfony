@@ -460,7 +460,9 @@ class Symfony_Component_Locale_Stub_StubLocale
      */
     public static function setDefault($locale)
     {
-        throw new Symfony_Component_Locale_Exception_MethodNotImplementedException(__METHOD__);
+        if ('en' !== $locale) {
+            throw new Symfony_Component_Locale_Exception_MethodNotImplementedException(__METHOD__);
+        }
     }
 
     public static function getDataDirectory()

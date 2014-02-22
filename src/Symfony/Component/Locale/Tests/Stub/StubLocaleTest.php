@@ -251,4 +251,9 @@ class Symfony_Component_Locale_Tests_Stub_StubLocaleTest extends Symfony_Compone
     {
         Symfony_Component_Locale_Stub_StubLocale::setDefault('pt_BR');
     }
+
+    public function testSetDefaultAcceptsEn()
+    {
+        Symfony_Component_Locale_Stub_StubLocale::setDefault('en');
+    }
 }
