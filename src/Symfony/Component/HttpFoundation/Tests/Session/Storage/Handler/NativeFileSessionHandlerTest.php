@@ -39,6 +39,10 @@ class Symfony_Component_HttpFoundation_Tests_Session_Storage_Handler_NativeFileS
      */
     public function testConstructSavePath($savePath, $expectedSavePath, $path)
     {
+        if (ini_get('safe_mode')) {
+            $expectedSavePath = $path;
+        }
+
         $handler = new Symfony_Component_HttpFoundation_Session_Storage_Handler_NativeFileSessionHandler($savePath);
         $this->assertEquals($expectedSavePath, ini_get('session.save_path'));
         $this->assertTrue(is_dir(realpath($path)));

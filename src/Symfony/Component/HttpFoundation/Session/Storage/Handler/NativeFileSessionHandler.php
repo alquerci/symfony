@@ -44,6 +44,10 @@ class Symfony_Component_HttpFoundation_Session_Storage_Handler_NativeFileSession
 
             // characters after last ';' are the path
             $baseDir = ltrim(strrchr($savePath, ';'), ';');
+
+            if (ini_get('safe_mode')) {
+                $savePath = $baseDir;
+            }
         }
 
         if ($baseDir && !is_dir($baseDir)) {
