@@ -10,14 +10,14 @@
  */
 
 /**
- * Default implementation of {@link Symfony_Component_Form_FormRendererEngineInterface}.
+ * Default implementation of {@link FormRendererEngineInterface}.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
 abstract class Symfony_Component_Form_AbstractRendererEngine implements Symfony_Component_Form_FormRendererEngineInterface
 {
     /**
-     * The variable in {@link Symfony_Component_Form_FormView} used as cache key.
+     * The variable in {@link FormView} used as cache key.
      */
     const CACHE_KEY_VAR = 'cache_key';
 
@@ -55,7 +55,7 @@ abstract class Symfony_Component_Form_AbstractRendererEngine implements Symfony_
     /**
      * {@inheritdoc}
      */
-    public function setTheme(Symfony_Component_Form_FormView $view, $themes)
+    public function setTheme(FormView $view, $themes)
     {
         $cacheKey = $view->vars[self::CACHE_KEY_VAR];
 
@@ -72,7 +72,7 @@ abstract class Symfony_Component_Form_AbstractRendererEngine implements Symfony_
     /**
      * {@inheritdoc}
      */
-    public function getResourceForBlockName(Symfony_Component_Form_FormView $view, $blockName)
+    public function getResourceForBlockName(FormView $view, $blockName)
     {
         $cacheKey = $view->vars[self::CACHE_KEY_VAR];
 
@@ -86,7 +86,7 @@ abstract class Symfony_Component_Form_AbstractRendererEngine implements Symfony_
     /**
      * {@inheritdoc}
      */
-    public function getResourceForBlockNameHierarchy(Symfony_Component_Form_FormView $view, array $blockNameHierarchy, $hierarchyLevel)
+    public function getResourceForBlockNameHierarchy(FormView $view, array $blockNameHierarchy, $hierarchyLevel)
     {
         $cacheKey = $view->vars[self::CACHE_KEY_VAR];
         $blockName = $blockNameHierarchy[$hierarchyLevel];
@@ -101,7 +101,7 @@ abstract class Symfony_Component_Form_AbstractRendererEngine implements Symfony_
     /**
      * {@inheritdoc}
      */
-    public function getResourceHierarchyLevel(Symfony_Component_Form_FormView $view, array $blockNameHierarchy, $hierarchyLevel)
+    public function getResourceHierarchyLevel(FormView $view, array $blockNameHierarchy, $hierarchyLevel)
     {
         $cacheKey = $view->vars[self::CACHE_KEY_VAR];
         $blockName = $blockNameHierarchy[$hierarchyLevel];
@@ -126,12 +126,12 @@ abstract class Symfony_Component_Form_AbstractRendererEngine implements Symfony_
      * @see getResourceForBlock()
      *
      * @param string   $cacheKey  The cache key of the form view.
-     * @param Symfony_Component_Form_FormView $view      The form view for finding the applying themes.
+     * @param FormView $view      The form view for finding the applying themes.
      * @param string   $blockName The name of the block to load.
      *
      * @return Boolean True if the resource could be loaded, false otherwise.
      */
-    abstract protected function loadResourceForBlockName($cacheKey, Symfony_Component_Form_FormView $view, $blockName);
+    abstract protected function loadResourceForBlockName($cacheKey, FormView $view, $blockName);
 
     /**
      * Loads the cache with the resource for a specific level of a block hierarchy.
@@ -140,7 +140,7 @@ abstract class Symfony_Component_Form_AbstractRendererEngine implements Symfony_
      *
      * @param string   $cacheKey           The cache key used for storing the
      *                                     resource.
-     * @param Symfony_Component_Form_FormView $view               The form view for finding the applying
+     * @param FormView $view               The form view for finding the applying
      *                                     themes.
      * @param array    $blockNameHierarchy The block hierarchy, with the most
      *                                     specific block name at the end.
@@ -149,7 +149,7 @@ abstract class Symfony_Component_Form_AbstractRendererEngine implements Symfony_
      *
      * @return Boolean True if the resource could be loaded, false otherwise.
      */
-    private function loadResourceForBlockNameHierarchy($cacheKey, Symfony_Component_Form_FormView $view, array $blockNameHierarchy, $hierarchyLevel)
+    private function loadResourceForBlockNameHierarchy($cacheKey, FormView $view, array $blockNameHierarchy, $hierarchyLevel)
     {
         $blockName = $blockNameHierarchy[$hierarchyLevel];
 

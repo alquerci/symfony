@@ -12,7 +12,7 @@
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate, \Countable
+class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate, Countable
 {
     /**
      * The variables assigned to this view.
@@ -62,7 +62,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function getName()
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getName() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead which contains an entry named "name".', E_USER_DEPRECATED);
+        trigger_error('getName() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead which contains an entry named "name".', E_USER_DEPRECATED);
 
         return $this->vars['name'];
     }
@@ -78,7 +78,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function set($name, $value)
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('set() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead.', E_USER_DEPRECATED);
+        trigger_error('set() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead.', E_USER_DEPRECATED);
 
         $this->vars[$name] = $value;
 
@@ -95,7 +95,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function has($name)
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('has() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead.', E_USER_DEPRECATED);
+        trigger_error('has() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead.', E_USER_DEPRECATED);
 
         return array_key_exists($name, $this->vars);
     }
@@ -111,7 +111,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function get($name, $default = null)
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('get() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead.', E_USER_DEPRECATED);
+        trigger_error('get() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead.', E_USER_DEPRECATED);
 
         if (false === $this->has($name)) {
             return $default;
@@ -128,7 +128,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function all()
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('all() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead.', E_USER_DEPRECATED);
+        trigger_error('all() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead.', E_USER_DEPRECATED);
 
         return $this->vars;
     }
@@ -143,7 +143,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function getVars()
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getVars() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead.', E_USER_DEPRECATED);
+        trigger_error('getVars() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead.', E_USER_DEPRECATED);
 
         return $this->vars;
     }
@@ -162,7 +162,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function setAttribute($name, $value)
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('setAttribute() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead which contains an entry named "attr".', E_USER_DEPRECATED);
+        trigger_error('setAttribute() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'vars\' instead which contains an entry named "attr".', E_USER_DEPRECATED);
 
         $this->vars['attr'][$name] = $value;
 
@@ -219,7 +219,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function setParent(Symfony_Component_Form_FormView $parent = null)
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('setParent() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'parent\' instead.', E_USER_DEPRECATED);
+        trigger_error('setParent() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'parent\' instead.', E_USER_DEPRECATED);
 
         $this->parent = $parent;
 
@@ -236,7 +236,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function getParent()
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getParent() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'parent\' instead.', E_USER_DEPRECATED);
+        trigger_error('getParent() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'parent\' instead.', E_USER_DEPRECATED);
 
         return $this->parent;
     }
@@ -251,7 +251,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function hasParent()
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('hasParent() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'parent\' instead.', E_USER_DEPRECATED);
+        trigger_error('hasParent() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'parent\' instead.', E_USER_DEPRECATED);
 
         return null !== $this->parent;
     }
@@ -259,7 +259,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
     /**
      * Sets the children view.
      *
-     * @param array $children The children as instances of FormView
+     * @param array $children The children as instances of Symfony_Component_Form_FormView
      *
      * @return Symfony_Component_Form_FormView The current view
      *
@@ -268,7 +268,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function setChildren(array $children)
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('setChildren() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'children\' instead.', E_USER_DEPRECATED);
+        trigger_error('setChildren() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'children\' instead.', E_USER_DEPRECATED);
 
         $this->children = $children;
 
@@ -278,14 +278,14 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
     /**
      * Returns the children.
      *
-     * @return array The children as instances of FormView
+     * @return array The children as instances of Symfony_Component_Form_FormView
      *
      * @deprecated Deprecated since version 2.1, to be removed in 2.3. Access
      *             the public property {@link children} instead.
      */
     public function getChildren()
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getChildren() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'children\' instead.', E_USER_DEPRECATED);
+        trigger_error('getChildren() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'children\' instead.', E_USER_DEPRECATED);
 
         return $this->children;
     }
@@ -302,7 +302,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function getChild($name)
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('getChild() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'children\' instead.', E_USER_DEPRECATED);
+        trigger_error('getChild() is deprecated since version 2.1 and will be removed in 2.3. Access the public property \'children\' instead.', E_USER_DEPRECATED);
 
         return $this->children[$name];
     }
@@ -317,13 +317,13 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
      */
     public function hasChildren()
     {
-        version_compare(PHP_VERSION, '5.3.0', '>=') && trigger_error('hasChildren() is deprecated since version 2.1 and will be removed in 2.3. Use count() instead.', E_USER_DEPRECATED);
+        trigger_error('hasChildren() is deprecated since version 2.1 and will be removed in 2.3. Use count() instead.', E_USER_DEPRECATED);
 
         return count($this->children) > 0;
     }
 
     /**
-     * Returns a child by name (implements \ArrayAccess).
+     * Returns a child by name (implements ArrayAccess).
      *
      * @param string $name The child name
      *
@@ -335,7 +335,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
     }
 
     /**
-     * Returns whether the given child exists (implements \ArrayAccess).
+     * Returns whether the given child exists (implements ArrayAccess).
      *
      * @param string $name The child name
      *
@@ -347,7 +347,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
     }
 
     /**
-     * Implements \ArrayAccess.
+     * Implements ArrayAccess.
      *
      * @throws BadMethodCallException always as setting a child by name is not allowed
      */
@@ -357,7 +357,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
     }
 
     /**
-     * Removes a child (implements \ArrayAccess).
+     * Removes a child (implements ArrayAccess).
      *
      * @param string $name The child name
      */
@@ -367,7 +367,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
     }
 
     /**
-     * Returns an iterator to iterate over children (implements \IteratorAggregate)
+     * Returns an iterator to iterate over children (implements IteratorAggregate)
      *
      * @return ArrayIterator The iterator
      */
@@ -377,7 +377,7 @@ class Symfony_Component_Form_FormView implements ArrayAccess, IteratorAggregate,
     }
 
     /**
-     * Implements \Countable.
+     * Implements Countable.
      *
      * @return integer The number of children views
      */

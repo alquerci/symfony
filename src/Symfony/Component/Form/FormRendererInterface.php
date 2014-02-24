@@ -76,7 +76,7 @@ interface Symfony_Component_Form_FormRendererInterface
      * <code>
      * $csrfProvider = $this->get('form.csrf_provider');
      * if (!$csrfProvider->isCsrfTokenValid('rm_user_'.$user->getId(), $token)) {
-     *     throw new \RuntimeException('CSRF attack detected.');
+     *     throw new RuntimeException('CSRF attack detected.');
      * }
      * </code>
      *

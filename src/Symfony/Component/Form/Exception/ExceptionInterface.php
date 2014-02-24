@@ -10,7 +10,7 @@
  */
 
 /**
- * Base ExceptionInterface for the Form component.
+ * Base Symfony_Component_Form_Exception_ExceptionInterface for the Form component.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
