@@ -12,6 +12,7 @@
 abstract class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_LocalizedTestCase extends PHPUnit_Framework_TestCase
 {
     protected static $icuVersion = null;
+    private $backupDefaultLocale;
 
     protected function setUp()
     {
@@ -20,6 +21,13 @@ abstract class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_Local
         if (!$this->isIntlExtensionLoaded()) {
             $this->markTestSkipped('The "intl" extension is not available');
         }
+
+        $this->backupDefaultLocale = Locale::getDefault();
+    }
+
+    protected function tearDown()
+    {
+        Locale::setDefault($this->backupDefaultLocale);
     }
 
     protected function isIntlExtensionLoaded()

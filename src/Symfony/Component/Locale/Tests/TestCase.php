@@ -13,6 +13,18 @@ abstract class Symfony_Component_Locale_Tests_TestCase extends PHPUnit_Framework
 {
     protected static $icuVersion = null;
 
+    private $backupDefaultLocale;
+
+    protected function setUp()
+    {
+        $this->backupDefaultLocale = Locale::getDefault();
+    }
+
+    protected function tearDown()
+    {
+        Locale::setDefault($this->backupDefaultLocale);
+    }
+
     protected function is32Bit()
     {
         return PHP_INT_SIZE == 4;

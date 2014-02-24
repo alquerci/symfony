@@ -15,11 +15,15 @@ abstract class Symfony_Component_Form_Tests_AbstractLayoutTest extends Symfony_C
 
     protected $factory;
 
+    private $backupDefaultLocale;
+
     protected function setUp()
     {
         if (!extension_loaded('intl')) {
             $this->markTestSkipped('The "intl" extension is not available');
         }
+
+        $this->backupDefaultLocale = Locale::getDefault();
 
         Locale::setDefault('en');
 
@@ -39,6 +43,8 @@ abstract class Symfony_Component_Form_Tests_AbstractLayoutTest extends Symfony_C
     {
         $this->csrfProvider = null;
         $this->factory = null;
+
+        Locale::setDefault($this->backupDefaultLocale);
 
         parent::tearDown();
     }

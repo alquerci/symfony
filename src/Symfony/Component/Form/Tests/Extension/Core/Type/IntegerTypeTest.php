@@ -11,6 +11,13 @@
 
 class Symfony_Component_Form_Tests_Extension_Core_Type_IntegerTypeTest extends Symfony_Component_Form_Tests_Extension_Core_Type_LocalizedTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        Locale::setDefault('en');
+    }
+
     public function testSubmitCastsToInteger()
     {
         $form = $this->factory->create('integer');

@@ -28,6 +28,8 @@ class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_DateTimeToLoca
     {
         $this->dateTime = null;
         $this->dateTimeWithoutSeconds = null;
+
+        parent::tearDown();
     }
 
     public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)

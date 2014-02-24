@@ -11,6 +11,8 @@
 
 abstract class Symfony_Component_Form_Tests_Extension_Core_Type_LocalizedTestCase extends Symfony_Component_Form_Tests_Extension_Core_Type_TypeTestCase
 {
+    private $backupDefaultLocale;
+
     protected function setUp()
     {
         parent::setUp();
@@ -22,5 +24,12 @@ abstract class Symfony_Component_Form_Tests_Extension_Core_Type_LocalizedTestCas
         if (!extension_loaded('intl')) {
             $this->markTestSkipped('The "intl" extension is not available');
         }
+
+        $this->backupDefaultLocale = Locale::getDefault();
+    }
+
+    protected function tearDown()
+    {
+        Locale::setDefault($this->backupDefaultLocale);
     }
 }
