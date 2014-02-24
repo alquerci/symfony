@@ -18,8 +18,8 @@ abstract class Symfony_Component_Form_Tests_Extension_Core_DataTransformer_Local
     {
         parent::setUp();
 
-        if (!$this->isIntlExtensionLoaded()) {
-            $this->markTestSkipped('The "intl" extension is not available');
+        if (!$this->isIntlExtensionLoaded() && !class_exists('Symfony_Component_Locale_Locale')) {
+            $this->markTestSkipped('The "intl" extension and "Locale" component are not available');
         }
 
         $this->backupDefaultLocale = Locale::getDefault();

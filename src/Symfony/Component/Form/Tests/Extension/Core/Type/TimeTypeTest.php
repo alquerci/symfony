@@ -11,6 +11,16 @@
 
 class Symfony_Component_Form_Tests_Extension_Core_Type_TimeTypeTest extends Symfony_Component_Form_Tests_Extension_Core_Type_LocalizedTestCase
 {
+    public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
+    {
+        if ($expected instanceof DateTime && $actual instanceof DateTime) {
+            $expected = $expected->format('c');
+            $actual = $actual->format('c');
+        }
+
+        parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+    }
+
     public function testSubmitDateTime()
     {
         $form = $this->factory->create('time', null, array(

@@ -13,17 +13,17 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_CountryTypeTest extends S
 {
     public function testCountriesAreSelectable()
     {
-        Locale::setDefault('de_AT');
+        Locale::setDefault('en');
 
         $form = $this->factory->create('country');
         $view = $form->createView();
         $choices = $view->vars['choices'];
 
         // Don't check objects for identity
-        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('DE', 'DE', 'Deutschland'), $choices, '', false, false);
-        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('GB', 'GB', 'Vereinigtes Königreich'), $choices, '', false, false);
-        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('US', 'US', 'Vereinigte Staaten'), $choices, '', false, false);
-        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('FR', 'FR', 'Frankreich'), $choices, '', false, false);
+        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('DE', 'DE', 'Germany'), $choices, '', false, false);
+        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('GB', 'GB', 'United Kingdom'), $choices, '', false, false);
+        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('US', 'US', 'United States'), $choices, '', false, false);
+        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('FR', 'FR', 'France'), $choices, '', false, false);
         $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('MY', 'MY', 'Malaysia'), $choices, '', false, false);
     }
 

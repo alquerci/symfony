@@ -15,7 +15,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
     {
         parent::setUp();
 
-        Locale::setDefault('de_AT');
+        Locale::setDefault('en');
     }
 
     /**
@@ -63,10 +63,10 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
             'input' => 'datetime',
         ));
 
-        $form->bind('2.6.2010');
+        $form->bind('Jun 2, 2010');
 
         $this->assertDateTimeEquals(new DateTime('2010-06-02 UTC'), $form->getData());
-        $this->assertEquals('02.06.2010', $form->getViewData());
+        $this->assertEquals('Jun 2, 2010', $form->getViewData());
     }
 
     public function testSubmitFromSingleTextString()
@@ -79,10 +79,10 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
             'input' => 'string',
         ));
 
-        $form->bind('2.6.2010');
+        $form->bind('Jun 2, 2010');
 
         $this->assertEquals('2010-06-02', $form->getData());
-        $this->assertEquals('02.06.2010', $form->getViewData());
+        $this->assertEquals('Jun 2, 2010', $form->getViewData());
     }
 
     public function testSubmitFromSingleTextTimestamp()
@@ -95,12 +95,12 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
             'input' => 'timestamp',
         ));
 
-        $form->bind('2.6.2010');
+        $form->bind('Jun 2, 2010');
 
         $dateTime = new DateTime('2010-06-02 UTC');
 
         $this->assertEquals($dateTime->format('U'), $form->getData());
-        $this->assertEquals('02.06.2010', $form->getViewData());
+        $this->assertEquals('Jun 2, 2010', $form->getViewData());
     }
 
     public function testSubmitFromSingleTextRaw()
@@ -113,7 +113,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
             'input' => 'array',
         ));
 
-        $form->bind('2.6.2010');
+        $form->bind('Jun 2, 2010');
 
         $output = array(
             'day' => '2',
@@ -122,7 +122,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
         );
 
         $this->assertEquals($output, $form->getData());
-        $this->assertEquals('02.06.2010', $form->getViewData());
+        $this->assertEquals('Jun 2, 2010', $form->getViewData());
     }
 
     public function testSubmitFromText()
@@ -320,7 +320,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
 
         $form->setData('2010-06-02');
 
-        $this->assertEquals('01.06.2010', $form->getViewData());
+        $this->assertEquals('Jun 1, 2010', $form->getViewData());
     }
 
     public function testSetDataWithDifferentTimezonesDateTime()
@@ -338,7 +338,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
         $form->setData($dateTime);
 
         $this->assertDateTimeEquals($dateTime, $form->getData());
-        $this->assertEquals('01.06.2010', $form->getViewData());
+        $this->assertEquals('Jun 1, 2010', $form->getViewData());
     }
 
     public function testYearsOption()
@@ -364,8 +364,8 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
         $view = $form->createView();
 
         $this->assertEquals(array(
-            new Symfony_Component_Form_Extension_Core_View_ChoiceView('6', '6', '06'),
-            new Symfony_Component_Form_Extension_Core_View_ChoiceView('7', '7', '07'),
+            new Symfony_Component_Form_Extension_Core_View_ChoiceView('6', '6', 'Jun'),
+            new Symfony_Component_Form_Extension_Core_View_ChoiceView('7', '7', 'Jul'),
         ), $view['month']->vars['choices']);
     }
 
@@ -379,7 +379,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
         $view = $form->createView();
 
         $this->assertEquals(array(
-            new Symfony_Component_Form_Extension_Core_View_ChoiceView('1', '1', 'Jän'),
+            new Symfony_Component_Form_Extension_Core_View_ChoiceView('1', '1', 'Jan'),
             new Symfony_Component_Form_Extension_Core_View_ChoiceView('4', '4', 'Apr')
         ), $view['month']->vars['choices']);
     }
@@ -394,7 +394,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
         $view = $form->createView();
 
         $this->assertEquals(array(
-            new Symfony_Component_Form_Extension_Core_View_ChoiceView('1', '1', 'Jänner'),
+            new Symfony_Component_Form_Extension_Core_View_ChoiceView('1', '1', 'January'),
             new Symfony_Component_Form_Extension_Core_View_ChoiceView('4', '4', 'April'),
         ), $view['month']->vars['choices']);
     }
@@ -409,7 +409,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
         $view = $form->createView();
 
         $this->assertEquals(array(
-            new Symfony_Component_Form_Extension_Core_View_ChoiceView('1', '1', 'Jänner'),
+            new Symfony_Component_Form_Extension_Core_View_ChoiceView('1', '1', 'January'),
             new Symfony_Component_Form_Extension_Core_View_ChoiceView('4', '4', 'April'),
         ), $view['month']->vars['choices']);
     }
@@ -505,7 +505,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
         $form = $this->factory->create('date');
         $view = $form->createView();
 
-        $this->assertSame('{{ day }}{{ month }}{{ year }}', $view->vars['date_pattern']);
+        $this->assertSame('{{ month }}{{ day }}{{ year }}', $view->vars['date_pattern']);
     }
 
     public function testPassDatePatternToViewDifferentFormat()
@@ -516,7 +516,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_DateTypeTest extends Symf
 
         $view = $form->createView();
 
-        $this->assertSame('{{ day }}{{ month }}{{ year }}', $view->vars['date_pattern']);
+        $this->assertSame('{{ month }}{{ day }}{{ year }}', $view->vars['date_pattern']);
     }
 
     public function testPassDatePatternToViewDifferentPattern()

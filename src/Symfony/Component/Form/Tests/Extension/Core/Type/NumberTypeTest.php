@@ -15,7 +15,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_NumberTypeTest extends Sy
     {
         parent::setUp();
 
-        Locale::setDefault('de_DE');
+        Locale::setDefault('en');
     }
 
     public function testDefaultFormatting()
@@ -24,7 +24,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_NumberTypeTest extends Sy
         $form->setData('12345.67890');
         $view = $form->createView();
 
-        $this->assertSame('12345,679', $view->vars['value']);
+        $this->assertSame('12345.679', $view->vars['value']);
     }
 
     public function testDefaultFormattingWithGrouping()
@@ -33,7 +33,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_NumberTypeTest extends Sy
         $form->setData('12345.67890');
         $view = $form->createView();
 
-        $this->assertSame('12.345,679', $view->vars['value']);
+        $this->assertSame('12,345.679', $view->vars['value']);
     }
 
     public function testDefaultFormattingWithPrecision()
@@ -42,7 +42,7 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_NumberTypeTest extends Sy
         $form->setData('12345.67890');
         $view = $form->createView();
 
-        $this->assertSame('12345,68', $view->vars['value']);
+        $this->assertSame('12345.68', $view->vars['value']);
     }
 
     public function testDefaultFormattingWithRounding()

@@ -13,14 +13,14 @@ class Symfony_Component_Form_Tests_Extension_Core_Type_LocaleTypeTest extends Sy
 {
     public function testLocalesAreSelectable()
     {
-        Locale::setDefault('de_AT');
+        Locale::setDefault('en');
 
         $form = $this->factory->create('locale');
         $view = $form->createView();
         $choices = $view->vars['choices'];
 
-        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('en', 'en', 'Englisch'), $choices, '', false, false);
-        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('en_GB', 'en_GB', 'Englisch (Vereinigtes Königreich)'), $choices, '', false, false);
-        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('zh_Hant_MO', 'zh_Hant_MO', 'Chinesisch (traditionell, Sonderverwaltungszone Macao)'), $choices, '', false, false);
+        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('en', 'en', 'English'), $choices, '', false, false);
+        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('en_GB', 'en_GB', 'English (United Kingdom)'), $choices, '', false, false);
+        $this->assertContains(new Symfony_Component_Form_Extension_Core_View_ChoiceView('zh_Hant_MO', 'zh_Hant_MO', 'Traditional Chinese (Macau SAR China)'), $choices, '', false, false);
     }
 }

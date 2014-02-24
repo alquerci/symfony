@@ -18,11 +18,11 @@ abstract class Symfony_Component_Form_Tests_Extension_Core_Type_LocalizedTestCas
         parent::setUp();
 
         if (!class_exists('Symfony_Component_Locale_Locale')) {
-            $this->markTestSkipped('The "Locale" component is not available');
-        }
+            if (!extension_loaded('intl')) {
+                $this->markTestSkipped('The "intl" extension is not available');
+            }
 
-        if (!extension_loaded('intl')) {
-            $this->markTestSkipped('The "intl" extension is not available');
+            $this->markTestSkipped('The "Locale" component is not available');
         }
 
         $this->backupDefaultLocale = Locale::getDefault();
