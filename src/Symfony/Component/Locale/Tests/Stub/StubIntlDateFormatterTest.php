@@ -723,6 +723,47 @@ class Symfony_Component_Locale_Tests_Stub_StubIntlDateFormatterTest extends Symf
         $this->assertEquals('yyyy-MM-dd', $formatter->getPattern());
     }
 
+    /**
+     * @dataProvider getPatternProvider
+     *
+     * @param integer $dateType
+     * @param integer $timeType
+     * @param string  $expected
+     */
+    public function testGetPatternIntl($dateType, $timeType, $expected)
+    {
+        $this->skipIfIntlExtensionIsNotLoaded();
+
+        $formatter = new IntlDateFormatter('en', $dateType, $timeType);
+        $this->assertEquals($expected, $formatter->getPattern());
+    }
+
+    /**
+     * @dataProvider getPatternProvider
+     *
+     * @param integer $dateType
+     * @param integer $timeType
+     * @param string  $expected
+     */
+    public function testGetPatternStub($dateType, $timeType, $expected)
+    {
+        $formatter = new Symfony_Component_Locale_Stub_StubIntlDateFormatter('en', $dateType, $timeType);
+        $this->assertEquals($expected, $formatter->getPattern());
+    }
+
+    public function getPatternProvider()
+    {
+        return array(
+            array(IntlDateFormatter::NONE, IntlDateFormatter::NONE, 'yyyyMMdd hh:mm a'),
+            array(IntlDateFormatter::FULL, IntlDateFormatter::FULL, 'EEEE, MMMM d, y h:mm:ss a zzzz'),
+            array(IntlDateFormatter::LONG, IntlDateFormatter::LONG, 'MMMM d, y h:mm:ss a z'),
+            array(IntlDateFormatter::MEDIUM, IntlDateFormatter::MEDIUM, 'MMM d, y h:mm:ss a'),
+            array(IntlDateFormatter::SHORT, IntlDateFormatter::SHORT, 'M/d/yy h:mm a'),
+            array(IntlDateFormatter::NONE, IntlDateFormatter::FULL, 'h:mm:ss a zzzz'),
+            array(IntlDateFormatter::FULL, IntlDateFormatter::NONE, 'EEEE, MMMM d, y'),
+        );
+    }
+
     public function testGetTimeType()
     {
         $formatter = new Symfony_Component_Locale_Stub_StubIntlDateFormatter('en', Symfony_Component_Locale_Stub_StubIntlDateFormatter::NONE, Symfony_Component_Locale_Stub_StubIntlDateFormatter::FULL);

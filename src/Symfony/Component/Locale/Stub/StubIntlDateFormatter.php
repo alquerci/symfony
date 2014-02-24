@@ -47,10 +47,10 @@ class Symfony_Component_Locale_Stub_StubIntlDateFormatter
      * @var array
      */
     private $defaultDateFormats = array(
-        self::NONE      => '',
-        self::FULL      => 'EEEE, LLLL d, y',
-        self::LONG      => 'LLLL d, y',
-        self::MEDIUM    => 'LLL d, y',
+        self::NONE      => 'yyyyMMdd',
+        self::FULL      => 'EEEE, MMMM d, y',
+        self::LONG      => 'MMMM d, y',
+        self::MEDIUM    => 'MMM d, y',
         self::SHORT     => 'M/d/yy',
     );
 
@@ -60,6 +60,7 @@ class Symfony_Component_Locale_Stub_StubIntlDateFormatter
      * @var array
      */
     private $defaultTimeFormats = array(
+        self::NONE   => 'hh:mm a',
         self::FULL   => 'h:mm:ss a zzzz',
         self::LONG   => 'h:mm:ss a z',
         self::MEDIUM => 'h:mm:ss a',
@@ -588,6 +589,12 @@ class Symfony_Component_Locale_Stub_StubIntlDateFormatter
         if (self::NONE !== $this->timetype) {
             $patternParts[] = $this->defaultTimeFormats[$this->timetype];
         }
+
+        if (self::NONE === $this->datetype && self::NONE === $this->timetype) {
+            $patternParts[] = $this->defaultDateFormats[$this->datetype];
+            $patternParts[] = $this->defaultTimeFormats[$this->timetype];
+        }
+
         $pattern = implode(' ', $patternParts);
 
         return $pattern;
