@@ -12,6 +12,7 @@
 namespace Symfony\Component\Stopwatch\Tests;
 
 use Symfony\Component\Stopwatch\StopwatchEvent;
+use Symfony\Component\Stopwatch\Tests\Fixtures\TimelessStopwatchEvent;
 
 /**
  * StopwatchEventTest
@@ -135,19 +136,23 @@ class StopwatchEventTest extends \PHPUnit_Framework_TestCase
 
     public function testEndTime()
     {
-        $event = new StopwatchEvent(microtime(true) * 1000);
+        $event = new TimelessStopwatchEvent(0);
+        $event->setMicrotime(0.0001);
         $this->assertEquals(0, $event->getEndTime());
 
-        $event = new StopwatchEvent(microtime(true) * 1000);
+        $event = new TimelessStopwatchEvent(0);
+        $event->setMicrotime(0.0001);
         $event->start();
         $this->assertEquals(0, $event->getEndTime());
 
-        $event = new StopwatchEvent(microtime(true) * 1000);
+        $event = new TimelessStopwatchEvent(0);
+        $event->setMicrotime(0.0001);
         $event->start();
-        usleep(100000);
+        $event->setMicrotime(0.1001);
         $event->stop();
+        $event->setMicrotime(0.1002);
         $event->start();
-        usleep(100000);
+        $event->setMicrotime(0.2002);
         $event->stop();
         $this->assertEquals(200, $event->getEndTime(), null, self::DELTA);
     }

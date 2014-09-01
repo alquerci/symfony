@@ -207,7 +207,12 @@ class StopwatchEvent
      */
     protected function getNow()
     {
-        return $this->formatTime(microtime(true) * 1000 - $this->origin);
+        return $this->formatTime($this->getMicrotime() * 1000 - $this->origin);
+    }
+
+    protected function getMicrotime()
+    {
+        return microtime(true);
     }
 
     /**
