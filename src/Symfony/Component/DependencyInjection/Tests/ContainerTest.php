@@ -177,6 +177,17 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($foo, $services['foo']['foo']);
     }
 
+    public function testSetServiceSynchronized()
+    {
+        $sc = new ProjectServiceContainer();
+
+        $sc->set('foo_bar', new \stdClass());
+        $this->assertSame(1, $sc->__foo_bar->synchronizeCount);
+
+        $sc->set('foobar', new \stdClass());
+        $this->assertSame(1, $sc->__foo_bar->synchronizeCount);
+    }
+
     /**
      * @covers Symfony\Component\DependencyInjection\Container::get
      */
@@ -224,6 +235,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf('Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException', $e, '->get() throws an Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException if the key does not exist');
             $this->assertEquals('You have requested a non-existent service "bag". Did you mean one of these: "bar", "baz"?', $e->getMessage(), '->get() throws an Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException with some advices');
         }
+
+        try {
+            $sc->get('foobar');
+            $this->fail('->get() throws an Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException if the key does not exist');
+        } catch (\Exception $e) {
+            $this->assertInstanceOf('Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException', $e, '->get() throws an Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException if the key does not exist');
+            $this->assertEquals('You have requested a non-existent service "foobar".', $e->getMessage(), '->get() throws an Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException with some advices');
+        }
     }
 
     public function testGetCircularReference()
@@ -256,6 +275,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $sc = new ProjectServiceContainer();
         $sc->set('foo', new \stdClass());
         $this->assertFalse($sc->has('foo1'), '->has() returns false if the service does not exist');
+        $this->assertFalse($sc->has('foobar'), '->has() returns false if the service does not exist');
         $this->assertTrue($sc->has('foo'), '->has() returns true if the service exists');
         $this->assertTrue($sc->has('bar'), '->has() returns true if a get*Method() is defined');
         $this->assertTrue($sc->has('foo_bar'), '->has() returns true if a get*Method() is defined');
@@ -533,6 +553,7 @@ class ProjectServiceContainer extends Container
 
         $this->__bar = new \stdClass();
         $this->__foo_bar = new \stdClass();
+        $this->__foo_bar->synchronizeCount = 0;
         $this->__foo_baz = new \stdClass();
         $this->aliases = array('alias' => 'bar');
     }
@@ -568,6 +589,11 @@ class ProjectServiceContainer extends Container
     protected function getFooBarService()
     {
         return $this->__foo_bar;
+    }
+
+    protected function synchronizeFooBarService()
+    {
+        $this->__foo_bar->synchronizeCount++;
     }
 
     protected function getFoo_BazService()
