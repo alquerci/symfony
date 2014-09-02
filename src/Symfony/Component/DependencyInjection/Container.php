@@ -77,6 +77,11 @@ class Container implements IntrospectableContainerInterface
     protected $loading = array();
 
     /**
+     * @var array
+     */
+    private $serviceIdsFromMethods = array();
+
+    /**
      * Constructor.
      *
      * @param ParameterBagInterface $parameterBag A ParameterBagInterface instance
@@ -218,7 +223,9 @@ class Container implements IntrospectableContainerInterface
 
         $this->services[$id] = $service;
 
-        if (method_exists($this, $method = 'synchronize'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service')) {
+        if (in_array(strtr($id, '\\', '.'), $this->getServiceIdsFromMethods('synchronize'))) {
+            $method = 'synchronize'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service';
+
             $this->$method();
         }
 
@@ -251,7 +258,7 @@ class Container implements IntrospectableContainerInterface
         return isset($this->services[$id])
             || array_key_exists($id, $this->services)
             || isset($this->aliases[$id])
-            || method_exists($this, 'get'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service')
+            || in_array(strtr($id, '\\', '.'), $this->getServiceIdsFromMethods())
         ;
     }
 
@@ -303,8 +310,8 @@ class Container implements IntrospectableContainerInterface
 
         if (isset($this->methodMap[$id])) {
             $method = $this->methodMap[$id];
-        } elseif (method_exists($this, $method = 'get'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service')) {
-            // $method is set to the right value, proceed
+        } elseif (in_array(strtr($id, '\\', '.'), $this->getServiceIdsFromMethods())) {
+            $method = 'get'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service';
         } else {
             if (self::EXCEPTION_ON_INVALID_REFERENCE === $invalidBehavior) {
                 if (!$id) {
@@ -375,13 +382,7 @@ class Container implements IntrospectableContainerInterface
      */
     public function getServiceIds()
     {
-        $ids = array();
-        $r = new \ReflectionClass($this);
-        foreach ($r->getMethods() as $method) {
-            if (preg_match('/^get(.+)Service$/', $method->name, $match)) {
-                $ids[] = self::underscore($match[1]);
-            }
-        }
+        $ids = $this->getServiceIdsFromMethods();
         $ids[] = 'service_container';
 
         return array_unique(array_merge($ids, array_keys($this->services)));
@@ -540,6 +541,32 @@ class Container implements IntrospectableContainerInterface
     public function isScopeActive($name)
     {
         return isset($this->scopedServices[$name]);
+    }
+
+    /**
+     * Gets all services defined by methods.
+     *
+     * @param string $prefix The method prefix
+     *
+     * @return array An array of all defined service ids from methods
+     */
+    private function getServiceIdsFromMethods($prefix = 'get')
+    {
+        if (isset($this->serviceIdsFromMethods[$prefix])) {
+            return $this->serviceIdsFromMethods[$prefix];
+        }
+
+        $ids = array();
+        $r = new \ReflectionClass($this);
+        foreach ($r->getMethods() as $method) {
+            $pattern = sprintf('/^%s(.+)Service$/', $prefix);
+
+            if (preg_match($pattern, $method->name, $match)) {
+                $ids[] = self::underscore($match[1]);
+            }
+        }
+
+        return $this->serviceIdsFromMethods[$prefix] = $ids;
     }
 
     /**
