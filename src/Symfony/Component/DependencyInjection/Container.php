@@ -218,7 +218,7 @@ class Container implements IntrospectableContainerInterface
 
         $this->services[$id] = $service;
 
-        if (method_exists($this, $method = 'synchronize'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service')) {
+        if ($this->methodExists($this, $method = 'synchronize'.self::camelize($id).'Service')) {
             $this->$method();
         }
 
@@ -251,7 +251,7 @@ class Container implements IntrospectableContainerInterface
         return isset($this->services[$id])
             || array_key_exists($id, $this->services)
             || isset($this->aliases[$id])
-            || method_exists($this, 'get'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service')
+            || $this->methodExists($this, 'get'.self::camelize($id).'Service')
         ;
     }
 
@@ -303,7 +303,7 @@ class Container implements IntrospectableContainerInterface
 
         if (isset($this->methodMap[$id])) {
             $method = $this->methodMap[$id];
-        } elseif (method_exists($this, $method = 'get'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service')) {
+        } elseif ($this->methodExists($this, $method = 'get'.self::camelize($id).'Service')) {
             // $method is set to the right value, proceed
         } else {
             if (self::EXCEPTION_ON_INVALID_REFERENCE === $invalidBehavior) {
@@ -540,6 +540,27 @@ class Container implements IntrospectableContainerInterface
     public function isScopeActive($name)
     {
         return isset($this->scopedServices[$name]);
+    }
+
+    /**
+     * Checks if method is defined case sensitive.
+     *
+     * @param object $object
+     * @param string $name
+     *
+     * @return bool
+     */
+    private function methodExists($object, $name)
+    {
+        $r = new \ReflectionObject($object);
+
+        foreach ($r->getMethods() as $method) {
+            if ($name === $method->name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
