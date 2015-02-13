@@ -218,7 +218,7 @@ class Container implements IntrospectableContainerInterface
 
         $this->services[$id] = $service;
 
-        if (method_exists($this, $method = 'synchronize'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service')) {
+        if (method_exists($this, $method = 'synchronize'.strtr($id, array('.' => '__', '\\' => '__')).'Service')) {
             $this->$method();
         }
 
@@ -251,7 +251,7 @@ class Container implements IntrospectableContainerInterface
         return isset($this->services[$id])
             || array_key_exists($id, $this->services)
             || isset($this->aliases[$id])
-            || method_exists($this, 'get'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service')
+            || method_exists($this, 'get'.strtr($id, array('.' => '__', '\\' => '__')).'Service')
         ;
     }
 
@@ -303,7 +303,7 @@ class Container implements IntrospectableContainerInterface
 
         if (isset($this->methodMap[$id])) {
             $method = $this->methodMap[$id];
-        } elseif (method_exists($this, $method = 'get'.strtr($id, array('_' => '', '.' => '_', '\\' => '_')).'Service')) {
+        } elseif (method_exists($this, $method = 'get'.strtr($id, array('.' => '__', '\\' => '__')).'Service')) {
             // $method is set to the right value, proceed
         } else {
             if (self::EXCEPTION_ON_INVALID_REFERENCE === $invalidBehavior) {
@@ -551,7 +551,7 @@ class Container implements IntrospectableContainerInterface
      */
     public static function camelize($id)
     {
-        return strtr(ucwords(strtr($id, array('_' => ' ', '.' => '_ ', '\\' => '_ '))), array(' ' => ''));
+        return strtr(ucwords(strtr($id, array('_' => '_ ', '.' => '__ ', '\\' => '__ '))), array(' ' => ''));
     }
 
     /**
@@ -563,6 +563,6 @@ class Container implements IntrospectableContainerInterface
      */
     public static function underscore($id)
     {
-        return strtolower(preg_replace(array('/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'), array('\\1_\\2', '\\1_\\2'), strtr($id, '_', '.')));
+        return strtolower(preg_replace(array('/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/', '/_{2,}/'), array('\\1_\\2', '\\1_\\2', '.'), $id));
     }
 }
