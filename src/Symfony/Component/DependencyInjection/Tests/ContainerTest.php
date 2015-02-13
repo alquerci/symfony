@@ -42,16 +42,39 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function dataForTestCamelize()
     {
         return array(
-            array('foo_bar', 'FooBar'),
-            array('foo.bar', 'Foo_Bar'),
-            array('foo.bar_baz', 'Foo_BarBaz'),
-            array('foo._bar', 'Foo_Bar'),
-            array('foo_.bar', 'Foo_Bar'),
-            array('_foo', 'Foo'),
-            array('.foo', '_Foo'),
-            array('foo_', 'Foo'),
-            array('foo.', 'Foo_'),
-            array('foo\bar', 'Foo_Bar'),
+            array('foo_bar', 'Foo_Bar'),
+            array('foo.bar', 'Foo__Bar'),
+            array('foo.bar_baz', 'Foo__Bar_Baz'),
+            array('foo._bar', 'Foo___Bar'),
+            array('foo_.bar', 'Foo___Bar'),
+            array('_foo', '_Foo'),
+            array('.foo', '__Foo'),
+            array('foo_', 'Foo_'),
+            array('foo.', 'Foo__'),
+            array('foo\bar', 'Foo__Bar'),
+        );
+    }
+
+    /**
+     * @dataProvider dataForTestUnderscore
+     */
+    public function testUnderscore($expected, $id)
+    {
+        $this->assertEquals($expected, Container::underscore($id), sprintf('Container::camelize("%s")', $id));
+    }
+
+    public function dataForTestUnderscore()
+    {
+        return array(
+            array('foo_bar', 'Foo_Bar'),
+            array('foo.bar', 'Foo__Bar'),
+            array('foo.bar_baz', 'Foo__Bar_Baz'),
+            array('foo.bar', 'Foo___Bar'),
+            array('foo.bar', 'Foo___Bar'),
+            array('_foo', '_Foo'),
+            array('.foo', '__Foo'),
+            array('foo_', 'Foo_'),
+            array('foo.', 'Foo__'),
         );
     }
 
@@ -566,7 +589,7 @@ class ProjectServiceContainer extends Container
         return $this->services['scoped'] = $this->scopedServices['foo']['scoped'] = new \stdClass();
     }
 
-    protected function getScopedFooService()
+    protected function getScoped_FooService()
     {
         if (!isset($this->scopedServices['foo'])) {
             throw new \RuntimeException('invalid call');
@@ -585,17 +608,17 @@ class ProjectServiceContainer extends Container
         return $this->__bar;
     }
 
-    protected function getFooBarService()
+    protected function getFoo_BarService()
     {
         return $this->__foo_bar;
     }
 
-    protected function synchronizeFooBarService()
+    protected function synchronizeFoo_BarService()
     {
         $this->__foo_bar->synchronizeCount++;
     }
 
-    protected function getFoo_BazService()
+    protected function getFoo__BazService()
     {
         return $this->__foo_baz;
     }
@@ -605,12 +628,12 @@ class ProjectServiceContainer extends Container
         return $this->get('circular');
     }
 
-    protected function getThrowExceptionService()
+    protected function getThrow_ExceptionService()
     {
         throw new \Exception('Something went terribly wrong!');
     }
 
-    protected function getThrowsExceptionOnServiceConfigurationService()
+    protected function getThrows_Exception_On_Service_ConfigurationService()
     {
         $this->services['throws_exception_on_service_configuration'] = $instance = new \stdClass();
 
