@@ -22,7 +22,7 @@ use Symfony\Component\Kernel\Kernel as BaseKernel;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-abstract class Kernel extends BaseKernel implements TerminableInterface
+abstract class Kernel extends BaseKernel implements HttpKernelInterface, TerminableInterface
 {
     /**
      * {@inheritdoc}

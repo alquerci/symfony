@@ -123,6 +123,9 @@
         "classmap": [
             "src/Symfony/Component/Intl/Resources/stubs"
         ],
+        "files": [
+            "src/Symfony/Component/HttpKernel/Resources/bootstrap.php"
+        ],
         "exclude-from-classmap": [
             "**/Tests/"
         ]

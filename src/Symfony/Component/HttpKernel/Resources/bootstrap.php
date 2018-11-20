@@ -15,7 +15,9 @@ class_alias(Kernel\CacheClearer\CacheClearerInterface::class, HttpKernel\CacheCl
 class_alias(Kernel\CacheClearer\ChainCacheClearer::class, HttpKernel\CacheClearer\ChainCacheClearer::class);
 class_alias(Kernel\CacheClearer\Psr6CacheClearer::class, HttpKernel\CacheClearer\Psr6CacheClearer::class);
 
-class_alias(Kernel\CacheWarmer\WarmableInterface::class, HttpKernel\CacheWarmer\WarmableInterface::class);
+class_alias(Kernel\Config\FileLocator::class, HttpKernel\Config\FileLocator::class);
+
+class_alias(Kernel\CacheWarmer\CacheWarmerInterface::class, HttpKernel\CacheWarmer\CacheWarmerInterface::class);
 class_alias(Kernel\CacheWarmer\CacheWarmer::class, HttpKernel\CacheWarmer\CacheWarmer::class);
 class_alias(Kernel\CacheWarmer\CacheWarmerAggregate::class, HttpKernel\CacheWarmer\CacheWarmerAggregate::class);
 
