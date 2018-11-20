@@ -32,6 +32,7 @@
         "symfony/dom-crawler": "~3.4|~4.0",
         "symfony/expression-language": "~3.4|~4.0",
         "symfony/finder": "~3.4|~4.0",
+        "symfony/kernel": "~3.4|~4.0",
         "symfony/process": "~3.4|~4.0",
         "symfony/routing": "~3.4|~4.0",
         "symfony/stopwatch": "~3.4|~4.0",
@@ -58,6 +59,9 @@
     },
     "autoload": {
         "psr-4": { "Symfony\\Component\\HttpKernel\\": "" },
+        "files": [
+            "Resources/bootstrap.php"
+        ],
         "exclude-from-classmap": [
             "/Tests/"
         ]

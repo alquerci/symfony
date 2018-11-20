@@ -1,0 +1,60 @@
+{
+    "name": "symfony/kernel",
+    "type": "library",
+    "description": "Symfony Kernel Component",
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com",
+            "role": "Symfony Project Leader"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors",
+            "role": "Symfony Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "symfony/config": "^4.1",
+        "symfony/dependency-injection": "^4.1",
+        "symfony/polyfill-ctype": "^1.8"
+    },
+    "require-dev": {
+        "psr/cache": "^1.0",
+        "psr/log": "^1.0",
+        "symfony/config": "self.version",
+        "symfony/console": "self.version",
+        "symfony/dependency-injection": "self.version",
+        "symfony/event-dispatcher": "self.version",
+        "symfony/filesystem": "self.version",
+        "symfony/phpunit-bridge": "self.version",
+        "symfony/var-dumper": "self.version"
+    },
+    "conflict": {
+        "symfony/config": "<3.4",
+        "symfony/dependency-injection": "<4.1"
+    },
+    "suggest": {
+        "symfony/console": "",
+        "symfony/http-kernel": "",
+        "symfony/var-dumper": "",
+        "symfony/yaml": ""
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Component\\Kernel\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.1-dev"
+        }
+    }
+}
