@@ -16,13 +16,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Kernel\Kernel as BaseKernel;
 
 /**
- * The Kernel is the heart of the Symfony system.
+ * The HTTP Kernel is the heart of the Symfony system to handle HTTP request.
  *
- * It manages an environment made of bundles.
+ * It manages an environment made of application kernel and bundles.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-abstract class Kernel extends BaseKernel implements HttpKernelInterface, TerminableInterface
+abstract class Kernel extends BaseKernel implements KernelInterface, TerminableInterface
 {
     /**
      * {@inheritdoc}

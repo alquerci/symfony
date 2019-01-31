@@ -5,7 +5,6 @@ use Symfony\Component\Kernel;
 
 // Naïve implementation of the BC layer
 
-class_alias(Kernel\KernelInterface::class, HttpKernel\KernelInterface::class);
 class_alias(Kernel\RebootableInterface::class, HttpKernel\RebootableInterface::class);
 
 class_alias(Kernel\Bundle\BundleInterface::class, HttpKernel\Bundle\BundleInterface::class);
